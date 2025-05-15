@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Tibs3DPrints</string>
+
+    <string name="title_home">Home</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
