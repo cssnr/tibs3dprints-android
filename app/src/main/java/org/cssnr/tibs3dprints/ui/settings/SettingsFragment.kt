@@ -1,4 +1,4 @@
-package org.cssnr.tibs3dprints.ui.dashboard
+package org.cssnr.tibs3dprints.ui.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,26 +7,25 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import org.cssnr.tibs3dprints.databinding.FragmentDashboardBinding
+import org.cssnr.tibs3dprints.databinding.FragmentSettingsBinding
 
-class NewsFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val newsViewModel =
-            ViewModelProvider(this).get(NewsViewModel::class.java)
+        val settingsViewModel = ViewModelProvider(this)[SettingsViewModel::class.java]
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        newsViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textNotifications
+        settingsViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
