@@ -14,9 +14,15 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.cssnr.tibs3dprints.databinding.ActivityMainBinding
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -113,6 +119,32 @@ class MainActivity : AppCompatActivity() {
         //channel.enableVibration(true)
         //channel.vibrationPattern = longArrayOf(0, 250, 250, 250)
         //(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+
+        // TODO: Improve initialization of the WorkRequest
+        val sharedPreferences = this.getSharedPreferences("org.cssnr.tibs3dprints", MODE_PRIVATE)
+        // TODO: Improve initialization of default preferences, 60 is defined in 2 places...
+        val workInterval = sharedPreferences.getString("work_interval", null) ?: "60"
+        Log.i(LOG_TAG, "workInterval: $workInterval")
+        Log.i(LOG_TAG, "raw: ${sharedPreferences.getString("work_interval", null)}")
+        if (workInterval != "0") {
+            val workRequest =
+                PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
+                    .setConstraints(
+                        Constraints.Builder()
+                            .setRequiresBatteryNotLow(true)
+                            .setRequiresCharging(false)
+                            .setRequiresDeviceIdle(false)
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    )
+                    .build()
+            Log.i(LOG_TAG, "workRequest: $workRequest")
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "app_worker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
+        }
 
         // TODO: Determine if this is the correct way to handle onNewIntent...
         Log.i("MainActivity", "intent.action: ${intent.action}")

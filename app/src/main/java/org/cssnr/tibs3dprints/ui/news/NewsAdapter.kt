@@ -57,7 +57,7 @@ class NewsAdapter(
         // Description
         val description = data.description ?: "No Description."
         holder.itemDescription.text = Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY)
-        Log.d(LOG_TAG, "holder.itemDescription.text: ${holder.itemDescription.text}")
+        //Log.d(LOG_TAG, "holder.itemDescription.text: ${holder.itemDescription.text}")
     }
 
     @SuppressLint("NotifyDataSetChanged")

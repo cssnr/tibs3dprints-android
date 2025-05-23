@@ -17,12 +17,21 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.cssnr.tibs3dprints.AppWorker
 import org.cssnr.tibs3dprints.MainActivity
+import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
+import java.util.concurrent.TimeUnit
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -60,7 +69,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("SettingsFragment", "CHANGE - enable_notifications: newValue: $newValue")
+            Log.d(LOG_TAG, "CHANGE - enable_notifications: newValue: $newValue")
             if (newValue == true) {
                 ctx.requestPerms(requestPermissionLauncher, ::callback)
                 false
@@ -71,7 +80,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Manage Notifications
         findPreference<Preference>("manage_notifications")?.setOnPreferenceClickListener {
-            Log.d("SettingsFragment", "CLICK - manage_notifications")
+            Log.d(LOG_TAG, "CLICK - manage_notifications")
             val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
                 putExtra(Settings.EXTRA_APP_PACKAGE, ctx.packageName)
                 putExtra(Settings.EXTRA_CHANNEL_ID, "default_channel_id")
@@ -82,34 +91,62 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Send Test Alert
         findPreference<Preference>("send_test_alert")?.setOnPreferenceClickListener {
-            Log.d("SettingsFragment", "CLICK - send_test_alert")
+            Log.d(LOG_TAG, "CLICK - send_test_alert")
             //findNavController().navigate(R.id.nav_settings_notifications)
-            if (enableNotifications?.isChecked != true) return@setOnPreferenceClickListener false
-
-            val intent = Intent(ctx, MainActivity::class.java).apply {
-                action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-            val pendingIntent = PendingIntent.getActivity(
-                ctx,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            val builder = NotificationCompat.Builder(ctx, "default_channel_id")
-                .setSmallIcon(R.drawable.md_notifications_24px)
-                .setContentTitle("Test Alert")
-                .setContentText("This is a test of the alert system.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-            if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(ctx, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                with(NotificationManagerCompat.from(ctx)) {
-                    Log.d("SettingsFragment", "SEND NOTIFICATION")
-                    notify(1, builder.build())
-                }
+            if (enableNotifications?.isChecked == true) {
+                val builder = NotificationCompat.Builder(ctx, "default_channel_id")
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle("Test Notification")
+                    .setContentText("This is a test of the alert system.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                ctx.sendNotification(builder)
             }
             false
+        }
+
+        // Work Interval
+        val workInterval = findPreference<ListPreference>("work_interval")
+        Log.d(LOG_TAG, "workInterval.value: ${workInterval?.value}")
+        workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
+        workInterval?.setOnPreferenceChangeListener { _, rawValue ->
+            Log.d(LOG_TAG, "Current Value: ${workInterval.value}")
+            val newValue = rawValue.toString()
+            Log.d(LOG_TAG, "New Value: $newValue")
+            if (workInterval.value != newValue) {
+                Log.i(LOG_TAG, "Rescheduling Work Request")
+                val interval = newValue.toLongOrNull()
+                Log.d(LOG_TAG, "interval: $interval")
+                if (newValue != "0" && interval != null) {
+                    val newRequest =
+                        PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
+                            .setConstraints(
+                                Constraints.Builder()
+                                    .setRequiresBatteryNotLow(true)
+                                    .setRequiresCharging(false)
+                                    .setRequiresDeviceIdle(false)
+                                    .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                                    .build()
+                            )
+                            .build()
+                    WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                        "app_worker",
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        newRequest
+                    )
+                } else {
+                    if (interval == null) {
+                        Log.e(LOG_TAG, "Interval is null: $interval")
+                    }
+                    Log.i(LOG_TAG, "CANCEL WORK: app_worker")
+                    WorkManager.getInstance(requireContext()).cancelUniqueWork("app_worker")
+                }
+                Log.d(LOG_TAG, "true: ACCEPTED")
+                true
+            } else {
+                Log.d(LOG_TAG, "false: REJECTED")
+                false
+            }
         }
 
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -149,5 +186,29 @@ fun Context.requestPerms(
         }
     } else {
         callback(true, false)
+    }
+}
+
+fun Context.sendNotification(builder: NotificationCompat.Builder) {
+    val intent = Intent(this, MainActivity::class.java).apply {
+        action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    val pendingIntent = PendingIntent.getActivity(
+        this,
+        0,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    builder.setContentIntent(pendingIntent)
+    if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        with(NotificationManagerCompat.from(this)) {
+            Log.d(LOG_TAG, "SEND NOTIFICATION")
+            notify(1, builder.build())
+        }
     }
 }
