@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:baselineAligned="false"
+    android:paddingVertical="1dp"
+    android:paddingHorizontal="2dp"
+    android:background="?attr/selectableItemBackground">
+    <LinearLayout
+        android:id="@+id/item_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="2dp"
+        android:background="@drawable/item_border">
+
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            tools:text="Some Reeeaaalllyyy Long Title Goes Here That is Just Way Too Long for a Title" />
+        <TextView
+            android:id="@+id/item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="5"
+            tools:text="Were still weighing the pros and cons of upgrading to the xTool F1 Ultra, but we’re excited about the possibilities it could bring to Tibs3DPrints. Whether it’s creating intricate designs, exploring new materials, or fulfilling bulk orders faster, the F1 Ultra feels like the next step in our laser engraving journey. What do you think? Should we take the leap? Let us know your thoughts or share your experience with the F1 Ultra!" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/item_author"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                tools:text="Someone Else" />
+            <TextView
+                android:id="@+id/item_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:ellipsize="end"
+                tools:text="2024-11-19T23:30:10-05:00" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

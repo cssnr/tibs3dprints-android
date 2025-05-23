@@ -1,4 +1,4 @@
-package org.cssnr.tibs3dprints.ui.notifications
+package org.cssnr.tibs3dprints.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
