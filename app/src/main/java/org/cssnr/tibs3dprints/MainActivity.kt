@@ -1,5 +1,8 @@
 package org.cssnr.tibs3dprints
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -91,6 +94,42 @@ class MainActivity : AppCompatActivity() {
         //    binding.drawerLayout.closeDrawer(GravityCompat.START)
         //    true
         //}
+
+        // TODO: This should be done after enabling alerts for better control...
+        Log.d("SettingsFragment", "REGISTER - notification channel")
+        val channelId = "default_channel_id"
+        val channelName = "Default Channel"
+
+        // TODO: Determine how to properly setup channels as desired...
+        // Normal Notification. I think...
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance)
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+
+        //// Note: Notification with no sound? Nobody knows...
+        //val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        //channel.setSound(null, null)
+        //channel.enableVibration(true)
+        //channel.vibrationPattern = longArrayOf(0, 250, 250, 250)
+        //(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+
+        // TODO: Determine if this is the correct way to handle onNewIntent...
+        Log.i("MainActivity", "intent.action: ${intent.action}")
+        onNewIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val action = intent.action
+        val data = intent.data
+        val type = intent.type
+        Log.i("handleIntent", "action: $action")
+        Log.d("handleIntent", "data: $data")
+        Log.d("handleIntent", "type: $type")
+        if (intent.action == "org.cssnr.tibs3dprints.ACTION_NOTIFICATION") {
+            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

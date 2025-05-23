@@ -1,0 +1,28 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="app_settings"
+        app:title="Notification Settings">
+
+        <SwitchPreferenceCompat
+            app:key="enable_notifications"
+            app:title="Enable Notifications"
+            app:summary="For New News Alerts"
+            app:icon="@drawable/md_notifications_24px" />
+
+        <Preference
+            app:key="manage_notifications"
+            app:title="Manage Notifications"
+            app:summary="Configure Notification Settings"
+            app:icon="@drawable/md_notification_settings_24px" />
+
+        <Preference
+            app:key="send_test_alert"
+            app:title="Send Test Alert"
+            app:summary="Based on Above Settings"
+            app:icon="@drawable/md_mark_unread_chat_alt_24px" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
