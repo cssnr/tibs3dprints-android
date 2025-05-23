@@ -52,7 +52,7 @@ class NewsAdapter(
         // Data
         holder.itemTitle.text = data.title ?: "Unknown"
         holder.itemAuthor.text = data.author ?: "Unknown"
-        holder.itemTimestamp.text = data.pubDate ?: "Unknown"
+        holder.itemTimestamp.text = formatDate(data.pubDate)
 
         // Description
         val description = data.description ?: "No Description."
@@ -62,7 +62,7 @@ class NewsAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newItems: List<RssItem>) {
-        Log.i(LOG_TAG, "updateData: newItems.size: ${newItems.size}")
+        Log.d(LOG_TAG, "updateData: newItems.size: ${newItems.size}")
         items = newItems
         notifyDataSetChanged()
     }

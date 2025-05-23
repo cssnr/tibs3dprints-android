@@ -44,7 +44,7 @@ class NewsItemChildFragment : Fragment() {
 
         binding.itemTitle.text = arguments?.getString("title") ?: "Unknown"
         binding.itemAuthor.text = arguments?.getString("author") ?: "Unknown"
-        binding.itemTimestamp.text = arguments?.getString("timestamp") ?: "Unknown"
+        binding.itemTimestamp.text = formatDate(arguments?.getString("timestamp"))
 
         val description = arguments?.getString("description") ?: "No Description."
         Log.d(LOG_TAG, "description: $description")

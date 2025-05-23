@@ -15,7 +15,7 @@ class NewsItemAdapter(fragment: Fragment, var items: List<RssItem>) :
     override fun createFragment(position: Int): Fragment {
         val fragment = NewsItemChildFragment()
         Log.d(LOG_TAG, "STEP 1 - createFragment: position: $position")
-        //Log.d(LOG_TAG, "STEP 1 - createFragment: data: ${items[position]}")
+        Log.i(LOG_TAG, "STEP 1 - createFragment: data: ${items[position]}")
         fragment.arguments = Bundle().apply {
             //putParcelable("item", items[position])
             putString("title", items[position].title)

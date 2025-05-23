@@ -19,6 +19,10 @@ import okhttp3.OkHttpClient
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentNewsBinding
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class NewsFragment : Fragment() {
 
@@ -81,4 +85,10 @@ class NewsFragment : Fragment() {
             }
         }
     }
+}
+
+fun formatDate(dateString: String?): String {
+    val zonedDateTime = ZonedDateTime.parse(dateString)
+    val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+    return zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).format(formatter)
 }
