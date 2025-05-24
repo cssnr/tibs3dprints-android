@@ -1,0 +1,37 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        app:key="app_settings"
+        app:title="Notification Settings">
+
+        <SwitchPreferenceCompat
+            app:key="enable_notifications"
+            app:title="Enable Notifications"
+            app:summary="For New News Alerts"
+            app:icon="@drawable/md_notifications_24px" />
+
+        <Preference
+            app:key="manage_notifications"
+            app:title="Manage Notifications"
+            app:summary="Configure Notification Settings"
+            app:icon="@drawable/md_notification_settings_24px" />
+
+        <ListPreference
+            app:key="work_interval"
+            app:title="Update Interval"
+            app:defaultValue="60"
+            app:icon="@drawable/md_timer_play_24px"
+            app:entries="@array/work_interval_entries"
+            app:entryValues="@array/work_interval_values"
+            tools:summary="1 Hour" />
+
+        <Preference
+            app:key="send_test_alert"
+            app:title="Send Test Alert"
+            app:summary="Based on Above Settings"
+            app:icon="@drawable/md_mark_unread_chat_alt_24px" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

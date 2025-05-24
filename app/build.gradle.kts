@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.rssparser)
     //implementation(libs.androidyoutubeplayer)
