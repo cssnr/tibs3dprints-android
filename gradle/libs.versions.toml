@@ -16,6 +16,10 @@ preferenceKtx = "1.2.1"
 workRuntimeKtx = "2.10.1"
 viewpager2 = "1.1.0"
 rssparser = "6.0.11"
+firebaseBom = "33.14.0"
+firebaseMessagingKtx = "24.1.1"
+googleServices = "4.4.2"
+firebaseAnalytics = "22.4.0"
 #androidyoutubeplayer = "12.1.1"
 
 [libraries]
@@ -34,8 +38,12 @@ androidx-preference-ktx = { group = "androidx.preference", name = "preference-kt
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 rssparser = { group = "com.prof18.rssparser", name = "rssparser", version.ref = "rssparser" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 #androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }

@@ -107,7 +107,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Work Interval
         val workInterval = findPreference<ListPreference>("work_interval")
-        Log.d(LOG_TAG, "workInterval.value: ${workInterval?.value}")
         workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         workInterval?.setOnPreferenceChangeListener { _, rawValue ->
             Log.d(LOG_TAG, "Current Value: ${workInterval.value}")

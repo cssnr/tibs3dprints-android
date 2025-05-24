@@ -8,12 +8,12 @@ import android.util.Log
 import android.view.Menu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupWithNavController
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -23,6 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.cssnr.tibs3dprints.databinding.ActivityMainBinding
 import java.util.concurrent.TimeUnit
+
+//import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,13 +45,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //setSupportActionBar(binding.appBarMain.toolbar)
-
         //binding.appBarMain.fab.setOnClickListener { view ->
         //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //        .setAction("Action", null)
         //        .setAnchorView(R.id.fab).show()
         //}
-
         //val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -59,19 +59,46 @@ class MainActivity : AppCompatActivity() {
         //    ), drawerLayout
         //)
         //setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-
+        //navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
         //setupWithNavController(bottomNav, navController)
+
+        // TODO: Determine why navigation is so fucking bad...
+        //  Note: This comments out: navView.setupWithNavController(navController)
+        //          which disables automatic handling of navigation
+        //          and manually handles selecting navigation items...
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            Log.d(LOG_TAG, "1 CONTROLLER - destination: ${destination.label}")
+            when (destination.id) {
+                R.id.nav_home -> {
+                    bottomNav.menu.findItem(R.id.nav_home).isChecked = true
+                    navView.setCheckedItem(R.id.nav_home)
+                }
+
+                R.id.nav_news -> {
+                    bottomNav.menu.findItem(R.id.nav_news).isChecked = true
+                    navView.setCheckedItem(R.id.nav_news)
+                }
+
+                R.id.nav_settings -> {
+                    bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
+                    navView.setCheckedItem(R.id.nav_settings)
+                }
+            }
+        }
+
         val topLevelDestinations = setOf(
             R.id.nav_home,
             R.id.nav_news,
             R.id.nav_settings
         )
-        bottomNav.setOnItemSelectedListener { item ->
-            if (item.itemId in topLevelDestinations) {
+
+        // TODO: Give up and go to iOS? just for navigation???
+        fun handleTopLevelNavigation(itemId: Int): Boolean {
+            Log.d(LOG_TAG, "handleTopLevelNavigation: $itemId")
+            return if (itemId in topLevelDestinations) {
                 navController.navigate(
-                    item.itemId, null, NavOptions.Builder()
+                    itemId, null, NavOptions.Builder()
                         .setPopUpTo(navController.graph.startDestinationId, false)
                         .setLaunchSingleTop(true)
                         .build()
@@ -81,31 +108,23 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.nav_home -> bottomNav.menu.findItem(R.id.nav_home).isChecked = true
-                R.id.nav_news -> bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-                R.id.nav_settings -> bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
-            }
+
+        bottomNav.setOnItemSelectedListener { item ->
+            Log.d(LOG_TAG, "2 BOTTOM - item: $item")
+            handleTopLevelNavigation(item.itemId)
         }
 
-        // The setNavigationItemSelectedListener is optional for manual processing
-        //navView.setNavigationItemSelectedListener { item ->
-        //    Log.d(LOG_TAG, "item: $item")
-        //    when (item.itemId) {
-        //        R.id.nav_home -> navController.navigate(R.id.nav_home)
-        //        R.id.nav_gallery -> navController.navigate(R.id.nav_gallery)
-        //        R.id.nav_slideshow -> navController.navigate(R.id.nav_slideshow)
-        //    }
-        //    binding.drawerLayout.closeDrawer(GravityCompat.START)
-        //    true
-        //}
+        navView.setNavigationItemSelectedListener { item ->
+            Log.d(LOG_TAG, "3 NAVVIEW - item: $item")
+            val result = handleTopLevelNavigation(item.itemId)
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            result
+        }
 
         // TODO: This should be done after enabling alerts for better control...
         Log.d("SettingsFragment", "REGISTER - notification channel")
         val channelId = "default_channel_id"
         val channelName = "Default Channel"
-
         // TODO: Determine how to properly setup channels as desired...
         // Normal Notification. I think...
         val importance = NotificationManager.IMPORTANCE_DEFAULT
