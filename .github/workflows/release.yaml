@@ -91,6 +91,19 @@ jobs:
       #  run: |
       #    bash prepare.sh
 
+      - name: "Write Google Services File"
+        if: ${{ !github.event.act }}
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
+
+      - name: "Debug App Directory"
+        if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          ls .
+          ls -lAh app
+          stat app/google-services.json
+
       - name: "Setup Java"
         uses: actions/setup-java@v4
         with:

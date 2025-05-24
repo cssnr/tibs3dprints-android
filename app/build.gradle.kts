@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -56,6 +57,9 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.rssparser)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     //implementation(libs.androidyoutubeplayer)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
