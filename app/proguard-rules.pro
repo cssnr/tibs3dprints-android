@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Logging
+## Logging
 -assumenosideeffects class android.util.Log {
     public static int d(...);
     public static int v(...);
@@ -28,3 +28,15 @@
     public static int w(...);
     public static int e(...);
 }
+
+
+## Firebase
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
+-keep class com.google.android.gms.measurement.** { *; }
+-dontwarn com.google.android.gms.measurement.**
+
+-keep class com.google.firebase.analytics.FirebaseAnalytics { *; }
+-keep class com.google.firebase.messaging.FirebaseMessagingService { *; }
+-keep class com.google.firebase.messaging.RemoteMessage { *; }
+-keep class org.cssnr.tibs3dprints.MyFirebaseMessagingService { *; }
