@@ -9,11 +9,14 @@ import android.view.Menu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -23,8 +26,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.cssnr.tibs3dprints.databinding.ActivityMainBinding
 import java.util.concurrent.TimeUnit
-
-//import androidx.navigation.ui.setupWithNavController
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,24 +45,25 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setSupportActionBar(binding.appBarMain.toolbar)
         //binding.appBarMain.fab.setOnClickListener { view ->
         //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //        .setAction("Action", null)
         //        .setAnchorView(R.id.fab).show()
         //}
-        //val drawerLayout: DrawerLayout = binding.drawerLayout
+
+        setSupportActionBar(binding.appBarMain.toolbar)
+        val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_content_main)
-        //appBarConfiguration = AppBarConfiguration(
-        //    setOf(
-        //        R.id.nav_home, R.id.nav_news, R.id.nav_settings
-        //    ), drawerLayout
-        //)
-        //setupActionBarWithNavController(navController, appBarConfiguration)
-        //navView.setupWithNavController(navController)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_home, R.id.nav_news
+            ), drawerLayout
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
-        //setupWithNavController(bottomNav, navController)
+        setupWithNavController(bottomNav, navController)
 
         // TODO: Determine why navigation is so fucking bad...
         //  Note: This comments out: navView.setupWithNavController(navController)
@@ -69,57 +71,59 @@ class MainActivity : AppCompatActivity() {
         //          and manually handles selecting navigation items...
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(LOG_TAG, "1 CONTROLLER - destination: ${destination.label}")
-            when (destination.id) {
-                R.id.nav_home -> {
-                    bottomNav.menu.findItem(R.id.nav_home).isChecked = true
-                    navView.setCheckedItem(R.id.nav_home)
-                }
-
-                R.id.nav_news -> {
-                    bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-                    navView.setCheckedItem(R.id.nav_news)
-                }
-
-                R.id.nav_settings -> {
-                    bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
-                    navView.setCheckedItem(R.id.nav_settings)
-                }
-            }
-        }
-
-        val topLevelDestinations = setOf(
-            R.id.nav_home,
-            R.id.nav_news,
-            R.id.nav_settings
-        )
-
-        // TODO: Give up and go to iOS? just for navigation???
-        fun handleTopLevelNavigation(itemId: Int): Boolean {
-            Log.d(LOG_TAG, "handleTopLevelNavigation: $itemId")
-            return if (itemId in topLevelDestinations) {
-                navController.navigate(
-                    itemId, null, NavOptions.Builder()
-                        .setPopUpTo(navController.graph.startDestinationId, false)
-                        .setLaunchSingleTop(true)
-                        .build()
-                )
-                true
-            } else {
-                false
-            }
-        }
-
-        bottomNav.setOnItemSelectedListener { item ->
-            Log.d(LOG_TAG, "2 BOTTOM - item: $item")
-            handleTopLevelNavigation(item.itemId)
-        }
-
-        navView.setNavigationItemSelectedListener { item ->
-            Log.d(LOG_TAG, "3 NAVVIEW - item: $item")
-            val result = handleTopLevelNavigation(item.itemId)
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-            result
+            //when (destination.id) {
+            //    R.id.nav_home -> {
+            //        bottomNav.menu.findItem(R.id.nav_home).isChecked = true
+            //        navView.setCheckedItem(R.id.nav_home)
+            //    }
+            //
+            //    R.id.nav_news -> {
+            //        bottomNav.menu.findItem(R.id.nav_news).isChecked = true
+            //        navView.setCheckedItem(R.id.nav_news)
+            //    }
+            //
+            //    R.id.nav_settings -> {
+            //        bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
+            //        navView.setCheckedItem(R.id.nav_settings)
+            //    }
+            //}
         }
+
+        // TODO: Disabling Manual Navigation or going to iOS...
+        //val topLevelDestinations = setOf(
+        //    R.id.nav_home,
+        //    R.id.nav_news,
+        //    R.id.nav_settings
+        //)
+        //
+        //// TODO: Give up and go to iOS? just for navigation???
+        //fun handleTopLevelNavigation(itemId: Int): Boolean {
+        //    Log.d(LOG_TAG, "handleTopLevelNavigation: $itemId")
+        //    return if (itemId in topLevelDestinations) {
+        //        navController.navigate(
+        //            itemId, null, NavOptions.Builder()
+        //                .setPopUpTo(navController.graph.startDestinationId, false)
+        //                .setLaunchSingleTop(true)
+        //                .build()
+        //        )
+        //        true
+        //    } else {
+        //        false
+        //    }
+        //}
+        //
+        //bottomNav.setOnItemSelectedListener { item ->
+        //    Log.d(LOG_TAG, "2 BOTTOM - item: $item")
+        //    handleTopLevelNavigation(item.itemId)
+        //}
+        //
+        //navView.setNavigationItemSelectedListener { item ->
+        //    Log.d(LOG_TAG, "3 NAVVIEW - item: $item")
+        //    val result = handleTopLevelNavigation(item.itemId)
+        //    binding.drawerLayout.closeDrawer(GravityCompat.START)
+        //    result
+        //}
 
         // TODO: This should be done after enabling alerts for better control...
         Log.d("SettingsFragment", "REGISTER - notification channel")
