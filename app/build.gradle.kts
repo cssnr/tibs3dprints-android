@@ -65,3 +65,18 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+//afterEvaluate {
+//    if (project.hasProperty("android.injected.signing.store.file")) {
+//        println("store.file: ${project.property("android.injected.signing.store.file")}")
+//    }
+//    if (project.hasProperty("android.injected.signing.store.password")) {
+//        println("store.password: ${project.property("android.injected.signing.store.password")}")
+//    }
+//    if (project.hasProperty("android.injected.signing.key.alias")) {
+//        println("key.alias: ${project.property("android.injected.signing.key.alias")}")
+//    }
+//    if (project.hasProperty("android.injected.signing.key.password")) {
+//        println("key.password: ${project.property("android.injected.signing.key.password")}")
+//    }
+//}
