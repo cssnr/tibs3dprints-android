@@ -6,8 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_news
+                R.id.nav_home, R.id.nav_news, R.id.nav_settings
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -172,6 +174,21 @@ class MainActivity : AppCompatActivity() {
         // TODO: Determine if this is the correct way to handle onNewIntent...
         Log.i("MainActivity", "intent.action: ${intent.action}")
         onNewIntent(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(LOG_TAG, "onOptionsItemSelected: $item")
+        return when (item.itemId) {
+            R.id.action_browser -> {
+                navController.navigate(R.id.nav_settings)
+                val url = getString(R.string.website_url)
+                val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                startActivity(intent)
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
