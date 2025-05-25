@@ -206,9 +206,13 @@ fun Context.showAppInfoDialog() {
     val appId = view.findViewById<TextView>(R.id.app_identifier)
     val appVersion = view.findViewById<TextView>(R.id.app_version)
     val sourceLink = view.findViewById<TextView>(R.id.source_link)
+    val websiteLink = view.findViewById<TextView>(R.id.website_link)
 
-    val linkText = getString(R.string.github_link, sourceLink.tag)
-    Log.d(LOG_TAG, "linkText: $linkText")
+    val sourceText = getString(R.string.github_link, sourceLink.tag)
+    Log.d(LOG_TAG, "sourceText: $sourceText")
+
+    val websiteText = getString(R.string.website_link, websiteLink.tag)
+    Log.d(LOG_TAG, "websiteText: $websiteText")
 
     val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
     val versionName = packageInfo.versionName
@@ -225,8 +229,10 @@ fun Context.showAppInfoDialog() {
     dialog.setOnShowListener {
         appId.text = this.packageName
         appVersion.text = formattedVersion
-        sourceLink.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
+        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
         sourceLink.movementMethod = LinkMovementMethod.getInstance()
+        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
+        websiteLink.movementMethod = LinkMovementMethod.getInstance()
     }
     dialog.show()
 

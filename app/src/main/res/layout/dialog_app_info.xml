@@ -27,28 +27,28 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:text="Version" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:text="Identifier" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:text="Name" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Source" />
+                android:paddingVertical="@dimen/dialog_vertical_margin"
+                android:text="GitHub" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
+                android:text="Website" />
         </LinearLayout>
 
         <LinearLayout
@@ -59,35 +59,37 @@
                 android:id="@+id/app_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 tools:text="v0.0.1" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:id="@+id/app_identifier"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 tools:text="org.cssnr.tibs3dprints" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:text="@string/app_name" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dialog_vertical_margin" />
             <TextView
                 android:id="@+id/source_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
                 android:tag="cssnr/tibs3dprints-android"
                 android:text="cssnr/tibs3dprints-android" />
+            <TextView
+                android:id="@+id/website_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
+                android:tag="www.tibs3dprints.com"
+                android:text="www.tibs3dprints.com" />
         </LinearLayout>
     </LinearLayout>
 
