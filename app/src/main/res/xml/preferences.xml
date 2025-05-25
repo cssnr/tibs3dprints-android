@@ -44,6 +44,12 @@
             android:icon="@drawable/md_monitoring_24px"
             android:defaultValue="true" />
 
+        <Preference
+            android:key="app_info"
+            android:title="Application Information"
+            android:summary="View Mobile App Details"
+            android:icon="@drawable/md_mobile_info_24px" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

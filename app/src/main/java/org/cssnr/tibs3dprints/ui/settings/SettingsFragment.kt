@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat
@@ -152,6 +154,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        // Toggle Analytics
         val toggleAnalytics = findPreference<SwitchPreferenceCompat>("analytics_enabled")
         toggleAnalytics?.setOnPreferenceChangeListener { _, newValue ->
             Log.d("toggleAnalytics", "analytics_enabled: $newValue")
@@ -175,6 +178,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
 
+        // Show App Info Dialog
+        findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
+            Log.d("app_info", "showAppInfoDialog")
+            requireContext().showAppInfoDialog()
+            false
+        }
+
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         //    ContextCompat.checkSelfPermission(
         //        requireContext(),
@@ -186,6 +196,45 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //Log.i("RequestPermission", "showButton: $showButton")
 
     }
+}
+
+fun Context.showAppInfoDialog() {
+    val inflater = LayoutInflater.from(this)
+    val view = inflater.inflate(R.layout.dialog_app_info, null)
+    val appId = view.findViewById<TextView>(R.id.app_identifier)
+    val appVersion = view.findViewById<TextView>(R.id.app_version)
+
+    val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
+    val versionName = packageInfo.versionName
+    Log.d(LOG_TAG, "versionName: $versionName")
+
+    val formattedVersion = getString(R.string.version_string, versionName)
+    Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+
+    val dialog = MaterialAlertDialogBuilder(this)
+        .setView(view)
+        .setNegativeButton("Close", null)
+        //.setPositiveButton("Send", null)
+        .create()
+
+    dialog.setOnShowListener {
+        //val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        appId.text = this.packageName
+        appVersion.text = formattedVersion
+
+        //val link = view.findViewById<TextView>(R.id.github_link)
+        //val linkText = getString(R.string.github_link, "Visit GitHub for More")
+        //link.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
+        //link.movementMethod = LinkMovementMethod.getInstance()
+
+        //val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        //imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    //dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send") { _, _ -> }
+    dialog.show()
+
 }
 
 fun Context.requestPerms(

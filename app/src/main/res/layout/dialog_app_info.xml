@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="24dp"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:labelFor="@+id/feedback_input"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Version" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Identifier" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                tools:text="v0.0.1" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:id="@+id/app_identifier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                tools:text="org.cssnr.tibs3dprints" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:text="@string/app_name" />
+        </LinearLayout>
+    </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:id="@+id/github_link"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:textColorLink="@android:color/holo_blue_dark"-->
+<!--        android:drawablePadding="8dp"-->
+<!--        app:drawableStartCompat="@drawable/fa_github"-->
+<!--        tools:text="github.com/cssnr/zipline-android" />-->
+
+</LinearLayout>
