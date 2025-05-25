@@ -1,36 +1,48 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceCategory
-        app:key="app_settings"
-        app:title="Notification Settings">
+        android:key="app_settings"
+        android:title="Notification Settings">
 
         <SwitchPreferenceCompat
-            app:key="enable_notifications"
-            app:title="Enable Notifications"
-            app:summary="For New News Alerts"
-            app:icon="@drawable/md_notifications_24px" />
+            android:key="enable_notifications"
+            android:title="Enable Notifications"
+            android:summary="For New News Alerts"
+            android:icon="@drawable/md_notifications_24px" />
 
         <Preference
-            app:key="manage_notifications"
-            app:title="Manage Notifications"
-            app:summary="Configure Notification Settings"
-            app:icon="@drawable/md_notification_settings_24px" />
+            android:key="manage_notifications"
+            android:title="Manage Notifications"
+            android:summary="Configure Notification Settings"
+            android:icon="@drawable/md_notification_settings_24px" />
 
         <ListPreference
-            app:key="work_interval"
-            app:title="Update Interval"
-            app:defaultValue="60"
-            app:icon="@drawable/md_timer_play_24px"
-            app:entries="@array/work_interval_entries"
-            app:entryValues="@array/work_interval_values"
+            android:key="work_interval"
+            android:title="Update Interval"
+            android:defaultValue="60"
+            android:icon="@drawable/md_timer_play_24px"
+            android:entries="@array/work_interval_entries"
+            android:entryValues="@array/work_interval_values"
             tools:summary="1 Hour" />
 
         <Preference
-            app:key="send_test_alert"
-            app:title="Send Test Alert"
-            app:summary="Based on Above Settings"
-            app:icon="@drawable/md_mark_unread_chat_alt_24px" />
+            android:key="send_test_alert"
+            android:title="Send Test Alert"
+            android:summary="Based on Above Settings"
+            android:icon="@drawable/md_mark_unread_chat_alt_24px" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="App Settings">
+
+        <SwitchPreferenceCompat
+            android:key="analytics_enabled"
+            android:title="Enable Analytics"
+            android:summary="Help Fix Bugs"
+            android:icon="@drawable/md_monitoring_24px"
+            android:defaultValue="true" />
 
     </PreferenceCategory>
 

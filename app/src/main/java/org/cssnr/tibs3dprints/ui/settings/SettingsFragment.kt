@@ -27,6 +27,8 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import org.cssnr.tibs3dprints.AppWorker
 import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
@@ -146,6 +148,29 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Log.d(LOG_TAG, "false: REJECTED")
                 false
             }
+        }
+
+        val toggleAnalytics = findPreference<SwitchPreferenceCompat>("analytics_enabled")
+        toggleAnalytics?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("toggleAnalytics", "analytics_enabled: $newValue")
+            if (newValue as Boolean) {
+                Log.d("toggleAnalytics", "ENABLE Analytics")
+                Firebase.analytics.setAnalyticsCollectionEnabled(true)
+                toggleAnalytics.isChecked = true
+            } else {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Please Reconsider")
+                    .setMessage("Analytics are only used to fix bugs and make improvements.")
+                    .setPositiveButton("Disable Anyway") { _, _ ->
+                        Log.d("toggleAnalytics", "DISABLE Analytics")
+                        Firebase.analytics.logEvent("disable_analytics", null)
+                        Firebase.analytics.setAnalyticsCollectionEnabled(false)
+                        toggleAnalytics.isChecked = false
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+            false
         }
 
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
