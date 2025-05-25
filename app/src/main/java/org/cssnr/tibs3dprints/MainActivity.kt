@@ -74,22 +74,21 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(LOG_TAG, "1 CONTROLLER - destination: ${destination.label}")
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-            //when (destination.id) {
-            //    R.id.nav_home -> {
-            //        bottomNav.menu.findItem(R.id.nav_home).isChecked = true
-            //        navView.setCheckedItem(R.id.nav_home)
-            //    }
-            //
-            //    R.id.nav_news -> {
-            //        bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-            //        navView.setCheckedItem(R.id.nav_news)
-            //    }
-            //
-            //    R.id.nav_settings -> {
-            //        bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
-            //        navView.setCheckedItem(R.id.nav_settings)
-            //    }
-            //}
+            when (destination.id) {
+                //R.id.nav_home -> {
+                //    bottomNav.menu.findItem(R.id.nav_home).isChecked = true
+                //    navView.setCheckedItem(R.id.nav_home)
+                //}
+                // TODO: Ghetto fix to select top level item on sub level navigation...
+                R.id.nav_news_item -> {
+                    bottomNav.menu.findItem(R.id.nav_news).isChecked = true
+                    navView.setCheckedItem(R.id.nav_news)
+                }
+                //R.id.nav_settings -> {
+                //    bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
+                //    navView.setCheckedItem(R.id.nav_settings)
+                //}
+            }
         }
 
         // TODO: Disabling Manual Navigation or going to iOS...
