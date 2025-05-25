@@ -26,12 +26,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            manifestPlaceholders["firebaseAnalyticsDeactivated"] = false
         }
-        //debug {
-        //    applicationIdSuffix = ".dev"
-        //    versionNameSuffix = "-dev"
-        //}
+        debug {
+            //applicationIdSuffix = ".dev"
+            //versionNameSuffix = "-dev"
+            manifestPlaceholders["firebaseAnalyticsDeactivated"] = true
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
