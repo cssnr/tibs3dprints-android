@@ -42,6 +42,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Source" />
         </LinearLayout>
 
         <LinearLayout
@@ -72,6 +79,15 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:text="@string/app_name" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dialog_vertical_margin" />
+            <TextView
+                android:id="@+id/source_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="cssnr/tibs3dprints-android"
+                android:text="cssnr/tibs3dprints-android" />
         </LinearLayout>
     </LinearLayout>
 

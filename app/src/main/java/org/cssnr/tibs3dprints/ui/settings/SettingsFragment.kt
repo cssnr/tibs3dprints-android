@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -203,6 +205,10 @@ fun Context.showAppInfoDialog() {
     val view = inflater.inflate(R.layout.dialog_app_info, null)
     val appId = view.findViewById<TextView>(R.id.app_identifier)
     val appVersion = view.findViewById<TextView>(R.id.app_version)
+    val sourceLink = view.findViewById<TextView>(R.id.source_link)
+
+    val linkText = getString(R.string.github_link, sourceLink.tag)
+    Log.d(LOG_TAG, "linkText: $linkText")
 
     val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
     val versionName = packageInfo.versionName
@@ -214,28 +220,18 @@ fun Context.showAppInfoDialog() {
     val dialog = MaterialAlertDialogBuilder(this)
         .setView(view)
         .setNegativeButton("Close", null)
-        //.setPositiveButton("Send", null)
         .create()
 
     dialog.setOnShowListener {
-        //val sendButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-
         appId.text = this.packageName
         appVersion.text = formattedVersion
-
-        //val link = view.findViewById<TextView>(R.id.github_link)
-        //val linkText = getString(R.string.github_link, "Visit GitHub for More")
-        //link.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
-        //link.movementMethod = LinkMovementMethod.getInstance()
-
-        //val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        //imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
+        sourceLink.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
+        sourceLink.movementMethod = LinkMovementMethod.getInstance()
     }
-
-    //dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send") { _, _ -> }
     dialog.show()
 
 }
+
 
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
