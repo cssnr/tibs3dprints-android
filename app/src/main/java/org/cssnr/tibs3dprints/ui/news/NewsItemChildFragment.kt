@@ -51,7 +51,7 @@ class NewsItemChildFragment : Fragment() {
         binding.itemDescription.text = Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY)
         binding.itemDescription.movementMethod = LinkMovementMethod.getInstance()
 
-        binding.backButton.setOnClickListener { findNavController().navigateUp() }
+        //binding.backButton.setOnClickListener { findNavController().navigateUp() }
 
         //videoId = arguments?.getString("videoId") ?: "fwnVRmySssI"
         //Log.d(LOG_TAG, "videoId: $videoId")

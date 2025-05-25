@@ -5,6 +5,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="website_url">https://tibs3dprints.com/</string>
+
     <string-array name="work_interval_entries">
         <item>15 Minutes</item>
         <item>30 Minutes</item>
