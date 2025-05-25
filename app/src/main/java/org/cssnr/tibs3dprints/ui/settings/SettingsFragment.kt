@@ -62,6 +62,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
+            } else {
+                Firebase.analytics.logEvent("notifications_enabled", null)
             }
         }
 
