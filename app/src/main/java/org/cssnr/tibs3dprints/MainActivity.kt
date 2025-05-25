@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
             R.id.action_browser -> {
-                navController.navigate(R.id.nav_settings)
+                //navController.navigate(R.id.nav_settings)
                 val url = getString(R.string.website_url)
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 startActivity(intent)
