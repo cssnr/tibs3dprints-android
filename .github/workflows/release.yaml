@@ -10,13 +10,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  path: app/build/outputs/apk/release # Output Path
-  output: app-release-unsigned.apk # Output File Name
   name: tibs3dprints.apk # Final APK Name
   key_name: tibs-release
-  key_file: release.keystore
-  tools_path: /usr/local/lib/android/sdk/build-tools/36.0.0
-  cmdline_tools: /usr/local/lib/android/sdk/cmdline-tools/latest/bin
 
 jobs:
   release:
@@ -25,6 +20,12 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
+    env:
+      path: app/build/outputs/apk/release # Output Path
+      output: app-release-unsigned.apk # Output File Name
+      key_file: release.keystore
+      tools_path: /usr/local/lib/android/sdk/build-tools/36.0.0
+      cmdline_tools: /usr/local/lib/android/sdk/cmdline-tools/latest/bin
 
     steps:
       - name: "Checkout"
@@ -156,7 +157,7 @@ jobs:
         if: ${{ !github.event.act }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.repository_owner }}-release
+          name: ${{ env.key_name }}
           path: ${{ env.path }}
 
       - name: "Upload to Release"

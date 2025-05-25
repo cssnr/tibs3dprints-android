@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -90,6 +91,16 @@ class MainActivity : AppCompatActivity() {
                 //}
             }
         }
+
+        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
+        val versionName = packageInfo.versionName
+        Log.d(LOG_TAG, "versionName: $versionName")
+
+        val headerView = binding.navView.getHeaderView(0)
+        val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
+        val formattedVersion = getString(R.string.version_string, versionName)
+        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        versionTextView.text = formattedVersion
 
         // TODO: Disabling Manual Navigation or going to iOS...
         //val topLevelDestinations = setOf(
