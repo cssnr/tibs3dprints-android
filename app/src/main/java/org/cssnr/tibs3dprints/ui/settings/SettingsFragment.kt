@@ -10,7 +10,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat
@@ -152,6 +156,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
+        // Toggle Analytics
         val toggleAnalytics = findPreference<SwitchPreferenceCompat>("analytics_enabled")
         toggleAnalytics?.setOnPreferenceChangeListener { _, newValue ->
             Log.d("toggleAnalytics", "analytics_enabled: $newValue")
@@ -175,6 +180,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
 
+        // Show App Info Dialog
+        findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
+            Log.d("app_info", "showAppInfoDialog")
+            requireContext().showAppInfoDialog()
+            false
+        }
+
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         //    ContextCompat.checkSelfPermission(
         //        requireContext(),
@@ -187,6 +199,45 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 }
+
+fun Context.showAppInfoDialog() {
+    val inflater = LayoutInflater.from(this)
+    val view = inflater.inflate(R.layout.dialog_app_info, null)
+    val appId = view.findViewById<TextView>(R.id.app_identifier)
+    val appVersion = view.findViewById<TextView>(R.id.app_version)
+    val sourceLink = view.findViewById<TextView>(R.id.source_link)
+    val websiteLink = view.findViewById<TextView>(R.id.website_link)
+
+    val sourceText = getString(R.string.github_link, sourceLink.tag)
+    Log.d(LOG_TAG, "sourceText: $sourceText")
+
+    val websiteText = getString(R.string.website_link, websiteLink.tag)
+    Log.d(LOG_TAG, "websiteText: $websiteText")
+
+    val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
+    val versionName = packageInfo.versionName
+    Log.d(LOG_TAG, "versionName: $versionName")
+
+    val formattedVersion = getString(R.string.version_string, versionName)
+    Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+
+    val dialog = MaterialAlertDialogBuilder(this)
+        .setView(view)
+        .setNegativeButton("Close", null)
+        .create()
+
+    dialog.setOnShowListener {
+        appId.text = this.packageName
+        appVersion.text = formattedVersion
+        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
+        sourceLink.movementMethod = LinkMovementMethod.getInstance()
+        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
+        websiteLink.movementMethod = LinkMovementMethod.getInstance()
+    }
+    dialog.show()
+
+}
+
 
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,

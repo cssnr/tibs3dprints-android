@@ -6,6 +6,10 @@
     <string name="action_settings">Settings</string>
 
     <string name="website_url">https://tibs3dprints.com/</string>
+    <string name="website_link"><![CDATA[<a href="https://github.com/cssnr/tibs3dprints-android">%s</a>]]></string>
+    <string name="github_link"><![CDATA[<a href="https://github.com/cssnr/tibs3dprints-android">%s</a>]]></string>
+
+    <string name="version_string">v%s</string>
 
     <string-array name="work_interval_entries">
         <item>15 Minutes</item>
