@@ -5,5 +5,5 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="dialog_vertical_margin">4dp</dimen>
+    <dimen name="dialog_vertical_margin">6dp</dimen>
 </resources>
