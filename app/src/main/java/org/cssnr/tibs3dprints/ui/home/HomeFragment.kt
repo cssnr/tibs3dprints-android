@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -41,8 +42,11 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        Log.d("Home[onDestroyView]", "webView.destroy()")
         super.onDestroyView()
+        Log.d("Home[onDestroyView]", "cookieManager.flush()")
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.flush()
+        Log.d("Home[onDestroyView]", "webView.destroy()")
         binding.webView.apply {
             loadUrl("about:blank")
             stopLoading()

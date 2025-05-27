@@ -45,6 +45,12 @@
             android:defaultValue="true" />
 
         <Preference
+            android:key="send_feedback"
+            android:title="Send Feedback"
+            android:summary="Submit Suggestions or Bugs"
+            android:icon="@drawable/md_bug_report_24px" />
+
+        <Preference
             android:key="app_info"
             android:title="Application Information"
             android:summary="View Mobile App Details"

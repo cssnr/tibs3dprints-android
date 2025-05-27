@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.google.services)
 }
 
@@ -59,11 +60,15 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
     implementation(libs.rssparser)
     implementation(libs.firebase.messaging.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     //implementation(libs.androidyoutubeplayer)
+    ksp(libs.moshi.kotlin.codegen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
