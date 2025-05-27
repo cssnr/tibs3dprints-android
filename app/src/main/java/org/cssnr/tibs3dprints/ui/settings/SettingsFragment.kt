@@ -308,7 +308,6 @@ fun Context.showAppInfoDialog() {
         websiteLink.movementMethod = LinkMovementMethod.getInstance()
     }
     dialog.show()
-
 }
 
 
