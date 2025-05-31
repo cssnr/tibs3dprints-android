@@ -12,9 +12,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
@@ -48,16 +51,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //binding.appBarMain.fab.setOnClickListener { view ->
-        //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-        //        .setAction("Action", null)
-        //        .setAnchorView(R.id.fab).show()
-        //}
-
         setSupportActionBar(binding.appBarMain.toolbar)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        navController = findNavController(R.id.nav_host_fragment_content_main)
+        // Note: this is used to use androidx.fragment.app.FragmentContainerView instead of fragment
+        val navHostFragment =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
+        navController = navHostFragment.navController
+
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_news, R.id.nav_settings
@@ -73,22 +74,19 @@ class MainActivity : AppCompatActivity() {
         //          which disables automatic handling of navigation
         //          and manually handles selecting navigation items...
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d(LOG_TAG, "1 CONTROLLER - destination: ${destination.label}")
+            Log.d(LOG_TAG, "NAV CONTROLLER - destination: ${destination.label}")
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (destination.id) {
-                //R.id.nav_home -> {
-                //    bottomNav.menu.findItem(R.id.nav_home).isChecked = true
-                //    navView.setCheckedItem(R.id.nav_home)
-                //}
-                // TODO: Ghetto fix to select top level item on sub level navigation...
                 R.id.nav_news_item -> {
+                    Log.d(LOG_TAG, "nav_news_item")
                     bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-                    navView.setCheckedItem(R.id.nav_news)
+                    //navView.setCheckedItem(R.id.nav_news)
+                    val menu = navView.menu
+                    for (i in 0 until menu.size) {
+                        val item = menu[i]
+                        item.isChecked = item.itemId == R.id.nav_news
+                    }
                 }
-                //R.id.nav_settings -> {
-                //    bottomNav.menu.findItem(R.id.nav_settings).isChecked = true
-                //    navView.setCheckedItem(R.id.nav_settings)
-                //}
             }
         }
 
@@ -215,7 +213,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.options, menu)
         return true
     }
 

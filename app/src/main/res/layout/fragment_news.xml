@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:itemCount="12"
+        tools:itemCount="6"
         tools:viewBindingType="androidx.recyclerview.widget.RecyclerView"
         tools:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_news" />
