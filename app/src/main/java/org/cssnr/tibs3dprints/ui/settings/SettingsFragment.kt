@@ -271,70 +271,69 @@ class SettingsFragment : PreferenceFragmentCompat() {
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send") { _, _ -> }
         dialog.show()
     }
-}
 
-fun Context.showAppInfoDialog() {
-    val inflater = LayoutInflater.from(this)
-    val view = inflater.inflate(R.layout.dialog_app_info, null)
-    val appId = view.findViewById<TextView>(R.id.app_identifier)
-    val appVersion = view.findViewById<TextView>(R.id.app_version)
-    val sourceLink = view.findViewById<TextView>(R.id.source_link)
-    val websiteLink = view.findViewById<TextView>(R.id.website_link)
+    fun Context.showAppInfoDialog() {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_app_info, null)
+        val appId = view.findViewById<TextView>(R.id.app_identifier)
+        val appVersion = view.findViewById<TextView>(R.id.app_version)
+        val sourceLink = view.findViewById<TextView>(R.id.source_link)
+        val websiteLink = view.findViewById<TextView>(R.id.website_link)
 
-    val sourceText = getString(R.string.github_link, sourceLink.tag)
-    Log.d(LOG_TAG, "sourceText: $sourceText")
+        val sourceText = getString(R.string.github_link, sourceLink.tag)
+        Log.d(LOG_TAG, "sourceText: $sourceText")
 
-    val websiteText = getString(R.string.website_link, websiteLink.tag)
-    Log.d(LOG_TAG, "websiteText: $websiteText")
+        val websiteText = getString(R.string.website_link, websiteLink.tag)
+        Log.d(LOG_TAG, "websiteText: $websiteText")
 
-    val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
-    val versionName = packageInfo.versionName
-    Log.d(LOG_TAG, "versionName: $versionName")
+        val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
+        val versionName = packageInfo.versionName
+        Log.d(LOG_TAG, "versionName: $versionName")
 
-    val formattedVersion = getString(R.string.version_string, versionName)
-    Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        val formattedVersion = getString(R.string.version_string, versionName)
+        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
 
-    val dialog = MaterialAlertDialogBuilder(this)
-        .setView(view)
-        .setNegativeButton("Close", null)
-        .create()
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setNegativeButton("Close", null)
+            .create()
 
-    dialog.setOnShowListener {
-        appId.text = this.packageName
-        appVersion.text = formattedVersion
-        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
-        sourceLink.movementMethod = LinkMovementMethod.getInstance()
-        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
-        websiteLink.movementMethod = LinkMovementMethod.getInstance()
-    }
-    dialog.show()
-}
-
-
-fun Context.requestPerms(
-    requestPermissionLauncher: ActivityResultLauncher<String>,
-    callback: (Boolean, Boolean) -> Unit,
-) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        val perm = Manifest.permission.POST_NOTIFICATIONS
-        when {
-            ContextCompat.checkSelfPermission(this, perm) ==
-                    PackageManager.PERMISSION_GRANTED -> {
-                Log.d("RequestPermission", "Permission Already Granted")
-                callback(true, false)
-            }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
-                Log.d("RequestPermission", "Permissions Denied, Show Alert")
-                callback(false, true)
-            }
-
-            else -> {
-                requestPermissionLauncher.launch(perm)
-            }
+        dialog.setOnShowListener {
+            appId.text = this.packageName
+            appVersion.text = formattedVersion
+            sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
+            sourceLink.movementMethod = LinkMovementMethod.getInstance()
+            websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
+            websiteLink.movementMethod = LinkMovementMethod.getInstance()
         }
-    } else {
-        callback(true, false)
+        dialog.show()
+    }
+
+    fun Context.requestPerms(
+        requestPermissionLauncher: ActivityResultLauncher<String>,
+        callback: (Boolean, Boolean) -> Unit,
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val perm = Manifest.permission.POST_NOTIFICATIONS
+            when {
+                ContextCompat.checkSelfPermission(this, perm) ==
+                        PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("RequestPermission", "Permission Already Granted")
+                    callback(true, false)
+                }
+
+                ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
+                    Log.d("RequestPermission", "Permissions Denied, Show Alert")
+                    callback(false, true)
+                }
+
+                else -> {
+                    requestPermissionLauncher.launch(perm)
+                }
+            }
+        } else {
+            callback(true, false)
+        }
     }
 }
 
