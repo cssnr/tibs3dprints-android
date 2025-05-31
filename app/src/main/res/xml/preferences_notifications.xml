@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <EditTextPreference
-        app:key="feedback_text"
-        app:title="Your feedback" />
-
-</PreferenceScreen>
