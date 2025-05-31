@@ -144,7 +144,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                     .build()
                             )
                             .build()
-                    WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                    WorkManager.getInstance(ctx).enqueueUniquePeriodicWork(
                         "app_worker",
                         ExistingPeriodicWorkPolicy.REPLACE,
                         newRequest
@@ -154,7 +154,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         Log.e(LOG_TAG, "Interval is null: $interval")
                     }
                     Log.i(LOG_TAG, "CANCEL WORK: app_worker")
-                    WorkManager.getInstance(requireContext()).cancelUniqueWork("app_worker")
+                    WorkManager.getInstance(ctx).cancelUniqueWork("app_worker")
                 }
                 Log.d(LOG_TAG, "true: ACCEPTED")
                 true
@@ -173,7 +173,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 Firebase.analytics.setAnalyticsCollectionEnabled(true)
                 toggleAnalytics.isChecked = true
             } else {
-                MaterialAlertDialogBuilder(requireContext())
+                MaterialAlertDialogBuilder(ctx)
                     .setTitle("Please Reconsider")
                     .setMessage("Analytics are only used to fix bugs and make improvements.")
                     .setPositiveButton("Disable Anyway") { _, _ ->
@@ -191,21 +191,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Send Feedback
         val sendFeedback = findPreference<Preference>("send_feedback")
         sendFeedback?.setOnPreferenceClickListener {
-            Log.d("sendFeedback", "setOnPreferenceClickListener")
-            showFeedbackDialog()
+            Log.d("send_feedback", "setOnPreferenceClickListener")
+            ctx.showFeedbackDialog()
             false
         }
 
         // Show App Info
         findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
-            Log.d("app_info", "showAppInfoDialog")
-            requireContext().showAppInfoDialog()
+            Log.d("app_info", "setOnPreferenceClickListener")
+            ctx.showAppInfoDialog()
             false
         }
 
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         //    ContextCompat.checkSelfPermission(
-        //        requireContext(),
+        //        ctx,
         //        Manifest.permission.POST_NOTIFICATIONS
         //    ) != PackageManager.PERMISSION_GRANTED
         //} else {
@@ -215,12 +215,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 
-    fun showFeedbackDialog() {
-        val inflater = LayoutInflater.from(context)
+    fun Context.showFeedbackDialog() {
+        val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_feedback, null)
         val input = view.findViewById<EditText>(R.id.feedback_input)
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Send", null)
@@ -233,7 +233,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val message = input.text.toString().trim()
                 Log.d("showFeedbackDialog", "message: $message")
                 if (message.isNotEmpty()) {
-                    val api = FeedbackApi(requireContext())
+                    val api = FeedbackApi(this)
                     lifecycleScope.launch {
                         val response = withContext(Dispatchers.IO) { api.sendFeedback(message) }
                         Log.d("showFeedbackDialog", "response: $response")
@@ -247,11 +247,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                 putString("message", response.message())
                                 putString("code", response.code().toString())
                             }
-                            Firebase.analytics.logEvent("feedback_failed", params)
+                            Firebase.analytics.logEvent("send_feedback_failed", params)
                             "Error: ${response.code()}"
                         }
                         Log.d("showFeedbackDialog", "msg: $msg")
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@showFeedbackDialog, msg, Toast.LENGTH_LONG).show()
                     }
                 } else {
                     sendButton.isEnabled = true
@@ -260,11 +260,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 
             input.requestFocus()
+
             val link = view.findViewById<TextView>(R.id.github_link)
-            val linkText = getString(R.string.github_link, "Visit GitHub for More")
+            val linkText = getString(R.string.github_link, link.tag)
             link.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
             link.movementMethod = LinkMovementMethod.getInstance()
-            //val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+            //val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             //imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
         }
 
