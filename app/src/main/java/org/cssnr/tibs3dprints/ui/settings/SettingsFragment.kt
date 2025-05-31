@@ -165,26 +165,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // Toggle Analytics
-        val toggleAnalytics = findPreference<SwitchPreferenceCompat>("analytics_enabled")
-        toggleAnalytics?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("toggleAnalytics", "analytics_enabled: $newValue")
-            if (newValue as Boolean) {
-                Log.d("toggleAnalytics", "ENABLE Analytics")
-                Firebase.analytics.setAnalyticsCollectionEnabled(true)
-                toggleAnalytics.isChecked = true
-            } else {
-                MaterialAlertDialogBuilder(ctx)
-                    .setTitle("Please Reconsider")
-                    .setMessage("Analytics are only used to fix bugs and make improvements.")
-                    .setPositiveButton("Disable Anyway") { _, _ ->
-                        Log.d("toggleAnalytics", "DISABLE Analytics")
-                        Firebase.analytics.logEvent("disable_analytics", null)
-                        Firebase.analytics.setAnalyticsCollectionEnabled(false)
-                        toggleAnalytics.isChecked = false
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
+        val analyticsEnabled = findPreference<SwitchPreferenceCompat>("analytics_enabled")
+        analyticsEnabled?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("analyticsEnabled", "analytics_enabled: $newValue")
+            ctx.toggleAnalytics(analyticsEnabled, newValue)
             false
         }
 
@@ -213,6 +197,27 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //}
         //Log.i("RequestPermission", "showButton: $showButton")
 
+    }
+
+    fun Context.toggleAnalytics(switchPreference: SwitchPreferenceCompat, newValue: Any) {
+        Log.d("toggleAnalytics", "newValue: $newValue")
+        if (newValue as Boolean) {
+            Log.d("toggleAnalytics", "ENABLE Analytics")
+            Firebase.analytics.setAnalyticsCollectionEnabled(true)
+            switchPreference.isChecked = true
+        } else {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Please Reconsider")
+                .setMessage("Analytics are only used to fix bugs and make improvements.")
+                .setPositiveButton("Disable Anyway") { _, _ ->
+                    Log.d("toggleAnalytics", "DISABLE Analytics")
+                    Firebase.analytics.logEvent("disable_analytics", null)
+                    Firebase.analytics.setAnalyticsCollectionEnabled(false)
+                    switchPreference.isChecked = false
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
     }
 
     fun Context.showFeedbackDialog() {
