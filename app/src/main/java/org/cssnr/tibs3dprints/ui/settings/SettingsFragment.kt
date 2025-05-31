@@ -121,91 +121,40 @@ class SettingsFragment : PreferenceFragmentCompat() {
             false
         }
 
-        // Work Interval
+        // Background Update Interval
         val workInterval = findPreference<ListPreference>("work_interval")
         workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-        workInterval?.setOnPreferenceChangeListener { _, rawValue ->
-            Log.d(LOG_TAG, "Current Value: ${workInterval.value}")
-            val newValue = rawValue.toString()
-            Log.d(LOG_TAG, "New Value: $newValue")
-            if (workInterval.value != newValue) {
-                Log.i(LOG_TAG, "Rescheduling Work Request")
-                val interval = newValue.toLongOrNull()
-                Log.d(LOG_TAG, "interval: $interval")
-                if (newValue != "0" && interval != null) {
-                    val newRequest =
-                        PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
-                            .setConstraints(
-                                Constraints.Builder()
-                                    .setRequiresBatteryNotLow(true)
-                                    .setRequiresCharging(false)
-                                    .setRequiresDeviceIdle(false)
-                                    .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-                                    .build()
-                            )
-                            .build()
-                    WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-                        "app_worker",
-                        ExistingPeriodicWorkPolicy.REPLACE,
-                        newRequest
-                    )
-                } else {
-                    if (interval == null) {
-                        Log.e(LOG_TAG, "Interval is null: $interval")
-                    }
-                    Log.i(LOG_TAG, "CANCEL WORK: app_worker")
-                    WorkManager.getInstance(requireContext()).cancelUniqueWork("app_worker")
-                }
-                Log.d(LOG_TAG, "true: ACCEPTED")
-                true
-            } else {
-                Log.d(LOG_TAG, "false: REJECTED")
-                false
-            }
+        workInterval?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("work_interval", "newValue: $newValue")
+            ctx.toggleWorkManager(workInterval, newValue)
         }
 
         // Toggle Analytics
-        val toggleAnalytics = findPreference<SwitchPreferenceCompat>("analytics_enabled")
-        toggleAnalytics?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("toggleAnalytics", "analytics_enabled: $newValue")
-            if (newValue as Boolean) {
-                Log.d("toggleAnalytics", "ENABLE Analytics")
-                Firebase.analytics.setAnalyticsCollectionEnabled(true)
-                toggleAnalytics.isChecked = true
-            } else {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Please Reconsider")
-                    .setMessage("Analytics are only used to fix bugs and make improvements.")
-                    .setPositiveButton("Disable Anyway") { _, _ ->
-                        Log.d("toggleAnalytics", "DISABLE Analytics")
-                        Firebase.analytics.logEvent("disable_analytics", null)
-                        Firebase.analytics.setAnalyticsCollectionEnabled(false)
-                        toggleAnalytics.isChecked = false
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
+        val analyticsEnabled = findPreference<SwitchPreferenceCompat>("analytics_enabled")
+        analyticsEnabled?.setOnPreferenceChangeListener { _, newValue ->
+            Log.d("analyticsEnabled", "analytics_enabled: $newValue")
+            ctx.toggleAnalytics(analyticsEnabled, newValue)
             false
         }
 
         // Send Feedback
         val sendFeedback = findPreference<Preference>("send_feedback")
         sendFeedback?.setOnPreferenceClickListener {
-            Log.d("sendFeedback", "setOnPreferenceClickListener")
-            showFeedbackDialog()
+            Log.d("send_feedback", "setOnPreferenceClickListener")
+            ctx.showFeedbackDialog()
             false
         }
 
         // Show App Info
         findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
-            Log.d("app_info", "showAppInfoDialog")
-            requireContext().showAppInfoDialog()
+            Log.d("app_info", "setOnPreferenceClickListener")
+            ctx.showAppInfoDialog()
             false
         }
 
         //val showButton = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         //    ContextCompat.checkSelfPermission(
-        //        requireContext(),
+        //        ctx,
         //        Manifest.permission.POST_NOTIFICATIONS
         //    ) != PackageManager.PERMISSION_GRANTED
         //} else {
@@ -215,12 +164,73 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     }
 
-    fun showFeedbackDialog() {
-        val inflater = LayoutInflater.from(context)
+    fun Context.toggleWorkManager(pref: ListPreference, newValue: Any): Boolean {
+        Log.d("toggleWorkManager", "newValue: $newValue")
+        val value = newValue as? String
+        Log.d("toggleWorkManager", "String value: $value")
+        if (value.isNullOrEmpty()) {
+            Log.w("toggleWorkManager", "NULL OR EMPTY - false")
+            return false
+        } else if (pref.value != value) {
+            Log.i("toggleWorkManager", "RESCHEDULING WORK - true")
+            val interval = value.toLongOrNull()
+            Log.i("toggleWorkManager", "interval: $interval")
+            if (interval != null) {
+                val newRequest =
+                    PeriodicWorkRequestBuilder<AppWorker>(interval, TimeUnit.MINUTES)
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiresBatteryNotLow(true)
+                                .setRequiresCharging(false)
+                                .setRequiresDeviceIdle(false)
+                                .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                                .build()
+                        )
+                        .build()
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "daily_worker",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    newRequest
+                )
+                return true
+            } else {
+                Log.i("toggleWorkManager", "DISABLING WORK - true")
+                WorkManager.getInstance(this).cancelUniqueWork("daily_worker")
+                return true
+            }
+        } else {
+            Log.i("toggleWorkManager", "NO CHANGE - false")
+            return false
+        }
+    }
+
+    fun Context.toggleAnalytics(switchPreference: SwitchPreferenceCompat, newValue: Any) {
+        Log.d("toggleAnalytics", "newValue: $newValue")
+        if (newValue as Boolean) {
+            Log.d("toggleAnalytics", "ENABLE Analytics")
+            Firebase.analytics.setAnalyticsCollectionEnabled(true)
+            switchPreference.isChecked = true
+        } else {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Please Reconsider")
+                .setMessage("Analytics are only used to fix bugs and make improvements.")
+                .setPositiveButton("Disable Anyway") { _, _ ->
+                    Log.d("toggleAnalytics", "DISABLE Analytics")
+                    Firebase.analytics.logEvent("disable_analytics", null)
+                    Firebase.analytics.setAnalyticsCollectionEnabled(false)
+                    switchPreference.isChecked = false
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+    }
+
+    fun Context.showFeedbackDialog() {
+        val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.dialog_feedback, null)
         val input = view.findViewById<EditText>(R.id.feedback_input)
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(this)
             .setView(view)
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Send", null)
@@ -233,7 +243,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val message = input.text.toString().trim()
                 Log.d("showFeedbackDialog", "message: $message")
                 if (message.isNotEmpty()) {
-                    val api = FeedbackApi(requireContext())
+                    val api = FeedbackApi(this)
                     lifecycleScope.launch {
                         val response = withContext(Dispatchers.IO) { api.sendFeedback(message) }
                         Log.d("showFeedbackDialog", "response: $response")
@@ -247,11 +257,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
                                 putString("message", response.message())
                                 putString("code", response.code().toString())
                             }
-                            Firebase.analytics.logEvent("feedback_failed", params)
+                            Firebase.analytics.logEvent("send_feedback_failed", params)
                             "Error: ${response.code()}"
                         }
                         Log.d("showFeedbackDialog", "msg: $msg")
-                        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@showFeedbackDialog, msg, Toast.LENGTH_LONG).show()
                     }
                 } else {
                     sendButton.isEnabled = true
@@ -260,81 +270,82 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
 
             input.requestFocus()
+
             val link = view.findViewById<TextView>(R.id.github_link)
-            val linkText = getString(R.string.github_link, "Visit GitHub for More")
+            val linkText = getString(R.string.github_link, link.tag)
             link.text = Html.fromHtml(linkText, Html.FROM_HTML_MODE_LEGACY)
             link.movementMethod = LinkMovementMethod.getInstance()
-            //val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+            //val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             //imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
         }
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Send") { _, _ -> }
         dialog.show()
     }
-}
 
-fun Context.showAppInfoDialog() {
-    val inflater = LayoutInflater.from(this)
-    val view = inflater.inflate(R.layout.dialog_app_info, null)
-    val appId = view.findViewById<TextView>(R.id.app_identifier)
-    val appVersion = view.findViewById<TextView>(R.id.app_version)
-    val sourceLink = view.findViewById<TextView>(R.id.source_link)
-    val websiteLink = view.findViewById<TextView>(R.id.website_link)
+    fun Context.showAppInfoDialog() {
+        val inflater = LayoutInflater.from(this)
+        val view = inflater.inflate(R.layout.dialog_app_info, null)
+        val appId = view.findViewById<TextView>(R.id.app_identifier)
+        val appVersion = view.findViewById<TextView>(R.id.app_version)
+        val sourceLink = view.findViewById<TextView>(R.id.source_link)
+        val websiteLink = view.findViewById<TextView>(R.id.website_link)
 
-    val sourceText = getString(R.string.github_link, sourceLink.tag)
-    Log.d(LOG_TAG, "sourceText: $sourceText")
+        val sourceText = getString(R.string.github_link, sourceLink.tag)
+        Log.d(LOG_TAG, "sourceText: $sourceText")
 
-    val websiteText = getString(R.string.website_link, websiteLink.tag)
-    Log.d(LOG_TAG, "websiteText: $websiteText")
+        val websiteText = getString(R.string.website_link, websiteLink.tag)
+        Log.d(LOG_TAG, "websiteText: $websiteText")
 
-    val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
-    val versionName = packageInfo.versionName
-    Log.d(LOG_TAG, "versionName: $versionName")
+        val packageInfo = this.packageManager.getPackageInfo(this.packageName, 0)
+        val versionName = packageInfo.versionName
+        Log.d(LOG_TAG, "versionName: $versionName")
 
-    val formattedVersion = getString(R.string.version_string, versionName)
-    Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        val formattedVersion = getString(R.string.version_string, versionName)
+        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
 
-    val dialog = MaterialAlertDialogBuilder(this)
-        .setView(view)
-        .setNegativeButton("Close", null)
-        .create()
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(view)
+            .setNegativeButton("Close", null)
+            .create()
 
-    dialog.setOnShowListener {
-        appId.text = this.packageName
-        appVersion.text = formattedVersion
-        sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
-        sourceLink.movementMethod = LinkMovementMethod.getInstance()
-        websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
-        websiteLink.movementMethod = LinkMovementMethod.getInstance()
-    }
-    dialog.show()
-}
-
-
-fun Context.requestPerms(
-    requestPermissionLauncher: ActivityResultLauncher<String>,
-    callback: (Boolean, Boolean) -> Unit,
-) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        val perm = Manifest.permission.POST_NOTIFICATIONS
-        when {
-            ContextCompat.checkSelfPermission(this, perm) ==
-                    PackageManager.PERMISSION_GRANTED -> {
-                Log.d("RequestPermission", "Permission Already Granted")
-                callback(true, false)
-            }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
-                Log.d("RequestPermission", "Permissions Denied, Show Alert")
-                callback(false, true)
-            }
-
-            else -> {
-                requestPermissionLauncher.launch(perm)
-            }
+        dialog.setOnShowListener {
+            appId.text = this.packageName
+            appVersion.text = formattedVersion
+            sourceLink.text = Html.fromHtml(sourceText, Html.FROM_HTML_MODE_LEGACY)
+            sourceLink.movementMethod = LinkMovementMethod.getInstance()
+            websiteLink.text = Html.fromHtml(websiteText, Html.FROM_HTML_MODE_LEGACY)
+            websiteLink.movementMethod = LinkMovementMethod.getInstance()
         }
-    } else {
-        callback(true, false)
+        dialog.show()
+    }
+
+    fun Context.requestPerms(
+        requestPermissionLauncher: ActivityResultLauncher<String>,
+        callback: (Boolean, Boolean) -> Unit,
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val perm = Manifest.permission.POST_NOTIFICATIONS
+            when {
+                ContextCompat.checkSelfPermission(this, perm) ==
+                        PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("RequestPermission", "Permission Already Granted")
+                    callback(true, false)
+                }
+
+                ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
+                    Log.d("RequestPermission", "Permissions Denied, Show Alert")
+                    callback(false, true)
+                }
+
+                else -> {
+                    requestPermissionLauncher.launch(perm)
+                }
+            }
+        } else {
+            callback(true, false)
+        }
     }
 }
 
