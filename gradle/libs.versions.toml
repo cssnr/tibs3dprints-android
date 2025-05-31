@@ -22,10 +22,9 @@ retrofit = "3.0.0"
 moshiKotlinCodegen = "1.15.2"
 rssparser = "6.0.11"
 
-firebaseBom = "33.14.0"
-firebaseMessagingKtx = "24.1.1"
 googleServices = "4.4.2"
-firebaseAnalytics = "22.4.0"
+firebaseBom = "33.14.0"
+crashlyticsPlugin = "3.0.3"
 
 #androidyoutubeplayer = "12.1.1"
 
@@ -52,8 +51,9 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 rssparser = { group = "com.prof18.rssparser", name = "rssparser", version.ref = "rssparser" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 #androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 
@@ -62,3 +62,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }

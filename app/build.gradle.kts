@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -17,6 +18,8 @@ android {
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["firebaseAnalyticsDeactivated"] = false // enabled
+        manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
     }
 
     buildTypes {
@@ -27,12 +30,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            manifestPlaceholders["firebaseAnalyticsDeactivated"] = false
         }
         debug {
             //applicationIdSuffix = ".dev"
             //versionNameSuffix = "-dev"
-            manifestPlaceholders["firebaseAnalyticsDeactivated"] = true
+            manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
+            manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
         }
     }
 
@@ -60,14 +63,15 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.viewpager2)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.messaging)
+    //implementation(libs.androidyoutubeplayer)
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.rssparser)
-    implementation(libs.firebase.messaging.ktx)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    //implementation(libs.androidyoutubeplayer)
     ksp(libs.moshi.kotlin.codegen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
