@@ -29,9 +29,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -40,12 +38,12 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.cssnr.tibs3dprints.work.AppWorker
-import org.cssnr.tibs3dprints.api.FeedbackApi
 import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
+import org.cssnr.tibs3dprints.api.FeedbackApi
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
+import org.cssnr.tibs3dprints.work.AppWorker
 import java.util.concurrent.TimeUnit
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -150,6 +148,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
             Log.d("app_info", "setOnPreferenceClickListener")
             ctx.showAppInfoDialog()
+            false
+        }
+
+        // Open App Settings
+        findPreference<Preference>("android_settings")?.setOnPreferenceClickListener {
+            Log.d("android_settings", "setOnPreferenceClickListener")
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", ctx.packageName, null)
+            }
+            startActivity(intent)
             false
         }
 

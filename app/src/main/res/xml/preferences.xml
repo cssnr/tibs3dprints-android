@@ -4,7 +4,7 @@
 
     <PreferenceCategory
         android:key="app_settings"
-        android:title="Notification Settings">
+        android:title="Application Settings">
 
         <SwitchPreferenceCompat
             android:key="enable_notifications"
@@ -35,7 +35,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="App Settings">
+    <PreferenceCategory android:title="Application Information">
 
         <SwitchPreferenceCompat
             android:key="analytics_enabled"
@@ -55,6 +55,12 @@
             android:title="Application Information"
             android:summary="View Mobile App Details"
             android:icon="@drawable/md_mobile_info_24px" />
+
+        <Preference
+            android:key="android_settings"
+            android:title="Open Android Settings"
+            android:summary="Syetem App Information"
+            android:icon="@drawable/md_mobile_gear_24px" />
 
     </PreferenceCategory>
 

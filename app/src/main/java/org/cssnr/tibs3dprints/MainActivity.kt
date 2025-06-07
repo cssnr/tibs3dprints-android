@@ -24,9 +24,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -38,13 +36,15 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        const val LOG_TAG = "Tibs3DPrints"
-    }
-
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+
+    companion object {
+        const val LOG_TAG = "Tibs3DPrints"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,25 +57,19 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.appBarMain.toolbar)
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        // Note: this is used to use androidx.fragment.app.FragmentContainerView instead of fragment
         val navHostFragment =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
         navController = navHostFragment.navController
 
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_news, R.id.nav_settings
-            ), drawerLayout
-        )
+        val topLevelItems =
+            setOf(R.id.nav_home, R.id.nav_news, R.id.nav_settings)
+        appBarConfiguration = AppBarConfiguration(topLevelItems, drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
         setupWithNavController(bottomNav, navController)
 
-        // TODO: Determine why navigation is so fucking bad...
-        //  Note: This comments out: navView.setupWithNavController(navController)
-        //          which disables automatic handling of navigation
-        //          and manually handles selecting navigation items...
+        // TODO: Navigation...
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(LOG_TAG, "NAV CONTROLLER - destination: ${destination.label}")
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -103,41 +97,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         versionTextView.text = formattedVersion
 
-        // TODO: Disabling Manual Navigation or going to iOS...
-        //val topLevelDestinations = setOf(
-        //    R.id.nav_home,
-        //    R.id.nav_news,
-        //    R.id.nav_settings
-        //)
-        //
-        //// TODO: Give up and go to iOS? just for navigation???
-        //fun handleTopLevelNavigation(itemId: Int): Boolean {
-        //    Log.d(LOG_TAG, "handleTopLevelNavigation: $itemId")
-        //    return if (itemId in topLevelDestinations) {
-        //        navController.navigate(
-        //            itemId, null, NavOptions.Builder()
-        //                .setPopUpTo(navController.graph.startDestinationId, false)
-        //                .setLaunchSingleTop(true)
-        //                .build()
-        //        )
-        //        true
-        //    } else {
-        //        false
-        //    }
-        //}
-        //
-        //bottomNav.setOnItemSelectedListener { item ->
-        //    Log.d(LOG_TAG, "2 BOTTOM - item: $item")
-        //    handleTopLevelNavigation(item.itemId)
-        //}
-        //
-        //navView.setNavigationItemSelectedListener { item ->
-        //    Log.d(LOG_TAG, "3 NAVVIEW - item: $item")
-        //    val result = handleTopLevelNavigation(item.itemId)
-        //    binding.drawerLayout.closeDrawer(GravityCompat.START)
-        //    result
-        //}
-
         // TODO: This should be done after enabling alerts for better control...
         Log.d("SettingsFragment", "REGISTER - notification channel")
         val channelId = "default_channel_id"
@@ -156,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         //channel.vibrationPattern = longArrayOf(0, 250, 250, 250)
         //(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.i(LOG_TAG, "workInterval: $workInterval")
         if (workInterval != "0") {
@@ -175,16 +133,22 @@ class MainActivity : AppCompatActivity() {
             WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 
-        // TODO: Determine if this is the correct way to handle onNewIntent...
-        Log.i("MainActivity", "intent.action: ${intent.action}")
-        onNewIntent(intent)
+        // Only Handel Intent Once Here after App Start
+        if (savedInstanceState?.getBoolean("intentHandled") != true) {
+            onNewIntent(intent)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("intentHandled", true)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d(LOG_TAG, "onOptionsItemSelected: $item")
         return when (item.itemId) {
             R.id.action_browser -> {
-                //navController.navigate(R.id.nav_settings)
+                Log.d(LOG_TAG, "onOptionsItemSelected: action_browser")
                 val url = getString(R.string.website_url)
                 val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                 startActivity(intent)
@@ -203,6 +167,19 @@ class MainActivity : AppCompatActivity() {
         Log.i("handleIntent", "action: $action")
         Log.d("handleIntent", "data: $data")
         Log.d("handleIntent", "type: $type")
+
+        //if (!preferences.contains("first_run_shown")) {
+        //    Log.i(LOG_TAG, "FIRST RUN DETECTED")
+        //    preferences.edit {
+        //        putBoolean("first_run_shown", true)
+        //    }
+        //    navController.navigate(
+        //        R.id.nav_item_setup, null, NavOptions.Builder()
+        //            .setPopUpTo(R.id.nav_home, true)
+        //            .build()
+        //    )
+        //}
+
         if (intent.action == "org.cssnr.tibs3dprints.ACTION_NOTIFICATION") {
             findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
         }
@@ -216,4 +193,12 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+    //fun setDrawerLockMode(enabled: Boolean) {
+    //    Log.d("setDrawerLockMode", "enabled: $enabled")
+    //    val lockMode =
+    //        if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+    //    Log.d("setDrawerLockMode", "lockMode: $lockMode")
+    //    binding.drawerLayout.setDrawerLockMode(lockMode)
+    //}
 }
