@@ -1,4 +1,4 @@
-package org.cssnr.tibs3dprints
+package org.cssnr.tibs3dprints.api
 
 import android.content.Context
 import android.os.Build
@@ -9,6 +9,7 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.cssnr.tibs3dprints.R
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
