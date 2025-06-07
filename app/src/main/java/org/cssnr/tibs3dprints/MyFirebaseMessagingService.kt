@@ -2,6 +2,7 @@ package org.cssnr.tibs3dprints
 
 import android.util.Log
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -19,7 +20,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.i("FCM", "onNewToken: token: $token")
-        val preferences = this.getSharedPreferences("org.cssnr.tibs3dprints", MODE_PRIVATE)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         preferences.edit { putString("fcm_token", token) }
     }
 }

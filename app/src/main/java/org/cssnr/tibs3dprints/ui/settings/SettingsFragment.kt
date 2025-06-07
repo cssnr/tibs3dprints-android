@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceManager.sharedPreferencesName = "org.cssnr.tibs3dprints"
+        Log.d("SettingsFragment", "rootKey: $rootKey")
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         val ctx = requireContext()

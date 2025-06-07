@@ -3,6 +3,7 @@ package org.cssnr.tibs3dprints
 import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.prof18.rssparser.model.RssChannel
@@ -16,8 +17,7 @@ class AppWorker(val appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         Log.d("AppWorker", "START: doWork")
 
-        val preferences =
-            appContext.getSharedPreferences("org.cssnr.tibs3dprints", Context.MODE_PRIVATE)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
         val lastArticle = preferences.getString("latest_article", null)
         Log.d("AppWorker", "lastArticle: $lastArticle")
 

@@ -23,6 +23,7 @@ import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -154,11 +155,11 @@ class MainActivity : AppCompatActivity() {
         //(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
 
         // TODO: Improve initialization of the WorkRequest
-        val sharedPreferences = this.getSharedPreferences("org.cssnr.tibs3dprints", MODE_PRIVATE)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         // TODO: Improve initialization of default preferences, 60 is defined in 2 places...
-        val workInterval = sharedPreferences.getString("work_interval", null) ?: "60"
+        val workInterval = preferences.getString("work_interval", null) ?: "60"
         Log.i(LOG_TAG, "workInterval: $workInterval")
-        Log.i(LOG_TAG, "raw: ${sharedPreferences.getString("work_interval", null)}")
+        Log.i(LOG_TAG, "raw: ${preferences.getString("work_interval", null)}")
         if (workInterval != "0") {
             val workRequest =
                 PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)

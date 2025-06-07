@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prof18.rssparser.RssParserBuilder
 import com.prof18.rssparser.model.RssChannel
@@ -99,15 +100,13 @@ suspend fun Context.getRss(): RssChannel {
     val rssChannel: RssChannel = withContext(Dispatchers.IO) { rssParser.getRssChannel(url) }
     Log.d(LOG_TAG, "rssChannel.items.size: ${rssChannel.items.size}")
     if (rssChannel.items.isNotEmpty()) {
-        val preferences = this.getSharedPreferences("org.cssnr.tibs3dprints", Context.MODE_PRIVATE)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val lastArticle = preferences.getString("latest_article", null)
         Log.d(LOG_TAG, "lastArticle: $lastArticle")
         val first = rssChannel.items.first()
         if (first.pubDate != lastArticle) {
             Log.i(LOG_TAG, "SET NEW ARTICLE: ${first.pubDate}")
-            preferences.edit {
-                putString("latest_article", first.pubDate)
-            }
+            preferences.edit { putString("latest_article", first.pubDate) }
         }
     }
     return rssChannel
