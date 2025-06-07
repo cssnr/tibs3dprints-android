@@ -1,4 +1,4 @@
-package org.cssnr.tibs3dprints
+package org.cssnr.tibs3dprints.work
 
 import android.content.Context
 import android.util.Log
@@ -9,6 +9,7 @@ import androidx.work.WorkerParameters
 import com.prof18.rssparser.model.RssChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.ui.news.getRss
 import org.cssnr.tibs3dprints.ui.settings.sendNotification
 
@@ -17,7 +18,15 @@ class AppWorker(val appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         Log.d("AppWorker", "START: doWork")
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(appContext)
+        // Check Work Interval
+        val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val workInterval = preferences.getString("work_interval", null) ?: "0"
+        Log.d("AppWorker", "workInterval: $workInterval")
+        if (workInterval == "0") {
+            Log.i("AppWorker", "Work is Disabled.")
+            return Result.success()
+        }
+
         val lastArticle = preferences.getString("latest_article", null)
         Log.d("AppWorker", "lastArticle: $lastArticle")
 

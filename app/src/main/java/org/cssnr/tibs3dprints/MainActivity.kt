@@ -32,6 +32,8 @@ import androidx.work.WorkManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import org.cssnr.tibs3dprints.databinding.ActivityMainBinding
+import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
+import org.cssnr.tibs3dprints.work.AppWorker
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -154,23 +156,13 @@ class MainActivity : AppCompatActivity() {
         //channel.vibrationPattern = longArrayOf(0, 250, 250, 250)
         //(getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
 
-        // TODO: Improve initialization of the WorkRequest
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        // TODO: Improve initialization of default preferences, 60 is defined in 2 places...
-        val workInterval = preferences.getString("work_interval", null) ?: "60"
+        val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.i(LOG_TAG, "workInterval: $workInterval")
-        Log.i(LOG_TAG, "raw: ${preferences.getString("work_interval", null)}")
         if (workInterval != "0") {
             val workRequest =
                 PeriodicWorkRequestBuilder<AppWorker>(workInterval.toLong(), TimeUnit.MINUTES)
-                    .setConstraints(
-                        Constraints.Builder()
-                            .setRequiresBatteryNotLow(true)
-                            .setRequiresCharging(false)
-                            .setRequiresDeviceIdle(false)
-                            .setRequiredNetworkType(NetworkType.CONNECTED)
-                            .build()
-                    )
+                    .setConstraints(APP_WORKER_CONSTRAINTS)
                     .build()
             Log.i(LOG_TAG, "workRequest: $workRequest")
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
@@ -178,6 +170,9 @@ class MainActivity : AppCompatActivity() {
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
+        } else {
+            Log.i(LOG_TAG, "Ensuring Work is Disabled")
+            WorkManager.getInstance(this).cancelUniqueWork("app_worker")
         }
 
         // TODO: Determine if this is the correct way to handle onNewIntent...
