@@ -1,7 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Tibs3DPrints" parent="Theme.Material3.DayNight">
+    <style name="Theme.Tibs3DPrints" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="materialButtonStyle">@style/Tibs3DPrints.Button</item>
+    </style>
+
+    <style name="Tibs3DPrints.Button" parent="Widget.Material3.Button">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="iconTint">@android:color/white</item>
     </style>
 
     <style name="Theme.Tibs3DPrints.NoActionBar">
