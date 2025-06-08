@@ -58,7 +58,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
 
         fun callback(result: Boolean, denied: Boolean = false) {
-            Log.d("callback", "result: $result")
+            Log.d("callback", "result: $result - denied: $denied")
             enableNotifications?.isChecked = result
             if (denied) {
                 Log.d("callback", "Permission Denied - Show notification alert")
@@ -79,9 +79,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         val requestPermissionLauncher =
-            registerForActivityResult(RequestPermission()) { result ->
-                callback(result)
-            }
+            registerForActivityResult(RequestPermission()) { result -> callback(result) }
 
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
             Log.d(LOG_TAG, "CHANGE - enable_notifications: newValue: $newValue")
@@ -323,32 +321,32 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         dialog.show()
     }
+}
 
-    fun Context.requestPerms(
-        requestPermissionLauncher: ActivityResultLauncher<String>,
-        callback: (Boolean, Boolean) -> Unit,
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val perm = Manifest.permission.POST_NOTIFICATIONS
-            when {
-                ContextCompat.checkSelfPermission(this, perm) ==
-                        PackageManager.PERMISSION_GRANTED -> {
-                    Log.d("RequestPermission", "Permission Already Granted")
-                    callback(true, false)
-                }
-
-                ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
-                    Log.d("RequestPermission", "Permissions Denied, Show Alert")
-                    callback(false, true)
-                }
-
-                else -> {
-                    requestPermissionLauncher.launch(perm)
-                }
+fun Context.requestPerms(
+    requestPermissionLauncher: ActivityResultLauncher<String>,
+    callback: (Boolean, Boolean) -> Unit,
+) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val perm = Manifest.permission.POST_NOTIFICATIONS
+        when {
+            ContextCompat.checkSelfPermission(this, perm) ==
+                    PackageManager.PERMISSION_GRANTED -> {
+                Log.d("RequestPermission", "Permission Already Granted")
+                callback(true, false)
             }
-        } else {
-            callback(true, false)
+
+            ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
+                Log.d("RequestPermission", "Permissions Denied, Show Alert")
+                callback(false, true)
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(perm)
+            }
         }
+    } else {
+        callback(true, false)
     }
 }
 

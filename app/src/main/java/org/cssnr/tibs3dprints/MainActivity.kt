@@ -10,13 +10,14 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupWithNavController
@@ -179,9 +180,21 @@ class MainActivity : AppCompatActivity() {
         //            .build()
         //    )
         //}
-
-        if (intent.action == "org.cssnr.tibs3dprints.ACTION_NOTIFICATION") {
-            findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
+        if (intent.action == Intent.ACTION_MAIN) {
+            Log.d(LOG_TAG, "ACTION_MAIN")
+            if (!preferences.contains("first_run_shown")) {
+                Log.i(LOG_TAG, "FIRST RUN DETECTED")
+                preferences.edit { putBoolean("first_run_shown", true) }
+                navController.navigate(
+                    R.id.nav_item_setup, null, NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_home, true)
+                        .build()
+                )
+            }
+        } else if (intent.action == "org.cssnr.tibs3dprints.ACTION_NOTIFICATION") {
+            Log.d(LOG_TAG, "ACTION_NOTIFICATION")
+            //findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
+            navController.navigate(R.id.nav_news)
         }
     }
 
@@ -194,11 +207,11 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    //fun setDrawerLockMode(enabled: Boolean) {
-    //    Log.d("setDrawerLockMode", "enabled: $enabled")
-    //    val lockMode =
-    //        if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
-    //    Log.d("setDrawerLockMode", "lockMode: $lockMode")
-    //    binding.drawerLayout.setDrawerLockMode(lockMode)
-    //}
+    fun setDrawerLockMode(enabled: Boolean) {
+        Log.d("setDrawerLockMode", "enabled: $enabled")
+        val lockMode =
+            if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        Log.d("setDrawerLockMode", "lockMode: $lockMode")
+        binding.drawerLayout.setDrawerLockMode(lockMode)
+    }
 }

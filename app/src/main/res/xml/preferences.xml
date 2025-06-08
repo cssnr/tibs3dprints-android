@@ -21,11 +21,11 @@
         <ListPreference
             android:key="work_interval"
             android:title="Update Interval"
-            android:defaultValue="60"
+            android:defaultValue="0"
             android:icon="@drawable/md_timer_play_24px"
             android:entries="@array/work_interval_entries"
             android:entryValues="@array/work_interval_values"
-            tools:summary="1 Hour" />
+            tools:summary="4 Hour" />
 
         <Preference
             android:key="send_test_alert"
@@ -48,7 +48,7 @@
             android:key="send_feedback"
             android:title="Send Feedback"
             android:summary="Submit Suggestions or Bugs"
-            android:icon="@drawable/md_bug_report_24px" />
+            android:icon="@drawable/md_thumb_up_24px" />
 
         <Preference
             android:key="app_info"
