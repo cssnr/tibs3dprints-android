@@ -194,7 +194,12 @@ class MainActivity : AppCompatActivity() {
         } else if (intent.action == "org.cssnr.tibs3dprints.ACTION_NOTIFICATION") {
             Log.d(LOG_TAG, "ACTION_NOTIFICATION")
             //findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
-            navController.navigate(R.id.nav_news)
+            //navController.navigate(R.id.nav_news)
+            navController.navigate(
+                R.id.nav_news, null, NavOptions.Builder()
+                    .setPopUpTo(navController.currentDestination?.id!!, true)
+                    .build()
+            )
         }
     }
 
