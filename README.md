@@ -168,3 +168,11 @@ If you are experiencing an issue/bug or getting unexpected results, you can:
 # Contributing
 
 Currently, the best way to contribute to this project is to star this project on GitHub.
+
+You can also support other related projects:
+
+- [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
+- [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
+- [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
+- [Remote Wallpaper Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
+- [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
