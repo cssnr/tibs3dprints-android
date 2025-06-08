@@ -21,7 +21,7 @@
         <ListPreference
             android:key="work_interval"
             android:title="Update Interval"
-            android:defaultValue="240"
+            android:defaultValue="0"
             android:icon="@drawable/md_timer_play_24px"
             android:entries="@array/work_interval_entries"
             android:entryValues="@array/work_interval_values"

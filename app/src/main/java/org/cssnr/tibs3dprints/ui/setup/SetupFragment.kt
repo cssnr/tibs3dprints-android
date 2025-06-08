@@ -99,7 +99,7 @@ class SetupFragment : Fragment() {
         val adapter = ArrayAdapter(ctx, android.R.layout.simple_spinner_item, entries)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.workIntervalSpinner.adapter = adapter
-        binding.workIntervalSpinner.setSelection(3)
+        //binding.workIntervalSpinner.setSelection(3)
         binding.workIntervalSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(

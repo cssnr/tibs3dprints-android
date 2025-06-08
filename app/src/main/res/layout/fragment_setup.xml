@@ -77,17 +77,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="• Browse or Order Products" />
+                    android:text="Browse or Order Products"
+                    android:drawablePadding="6dp"
+                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="• View News and Updates" />
+                    android:text="View News and Updates"
+                    android:drawablePadding="6dp"
+                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="• Get Notified about Specials" />
+                    android:text="Get Notified about Specials"
+                    android:drawablePadding="6dp"
+                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
             </LinearLayout>
 
             <LinearLayout
