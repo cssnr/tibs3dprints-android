@@ -42,10 +42,6 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("Home[onDestroyView]", "cookieManager.flush()")
-        val cookieManager = CookieManager.getInstance()
-        cookieManager.flush()
         Log.d("Home[onDestroyView]", "webView.destroy()")
         binding.webView.apply {
             loadUrl("about:blank")
@@ -55,6 +51,7 @@ class HomeFragment : Fragment() {
             destroy()
         }
         _binding = null
+        super.onDestroyView()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -129,24 +126,23 @@ class HomeFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("Home[onSave]", "outState: ${outState.size()}")
-        super.onSaveInstanceState(outState)
-        Log.d("Home[onSave]", "webViewState: ${webViewState.size()}")
-        _binding?.webView?.saveState(outState)
         outState.putBundle("webViewState", webViewState)
-        Log.d("Home[onSave]", "outState: ${outState.size()}")
+        Log.d("Home[onSave]", "ON SAVE")
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
+        Log.d("Home[onPause]", "cookieManager.flush()")
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.flush()
+
+        Log.d("Home[onPause]", "webView. onPause() / pauseTimers()")
+        _binding?.webView?.saveState(webViewState)
+        _binding?.webView?.onPause()
+        _binding?.webView?.pauseTimers()
+
         Log.d("Home[onPause]", "ON PAUSE")
         super.onPause()
-        Log.d("Home[onPause]", "webView. onPause() / pauseTimers()")
-        binding.webView.onPause()
-        binding.webView.pauseTimers()
-
-        Log.d("Home[onPause]", "webViewState: ${webViewState.size()}")
-        binding.webView.saveState(webViewState)
-        Log.d("Home[onPause]", "webViewState: ${webViewState.size()}")
     }
 
     override fun onResume() {
