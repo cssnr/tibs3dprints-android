@@ -5,9 +5,9 @@ on:
   release:
     types: [published]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
 
 jobs:
   build:
@@ -19,8 +19,8 @@ jobs:
       key_alias: tibs-release
       artifact_name: tibs3dprints
 
-  release:
-    name: "Release"
+  process:
+    name: "Process"
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -54,15 +54,15 @@ jobs:
         with:
           type: generic
 
-  failure:
-    name: "Post"
+  cleanup:
+    name: "Cleanup"
     if: ${{ always() }}
-    needs: [build, release]
+    needs: [build, process]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: "Send Failure Notification"
-        if: ${{ needs.build.result != 'success' || needs.release.result != 'success'  }}
+        if: ${{ needs.build.result != 'success' || needs.process.result != 'success'  }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
