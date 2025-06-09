@@ -31,6 +31,11 @@ on:
         type: string
         default: artifacts
         description: "Optional: Actions artifact archive name."
+      google_services:
+        required: false
+        type: string
+        default: ""
+        description: "Optional: Actions artifact archive name."
 
 env:
   key_file: release.keystore
@@ -103,6 +108,11 @@ jobs:
           echo "::group::cat app/build.gradle.kts"
           cat app/build.gradle.kts
           echo "::endgroup::"
+
+      - name: "Write Google Services File"
+        if: ${{ inputs.google_services != '' }}
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > ${{ inputs.google_services }}
 
       - name: "Setup Java"
         uses: actions/setup-java@v4

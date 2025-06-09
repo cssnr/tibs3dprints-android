@@ -18,6 +18,7 @@ jobs:
       name: tibs3dprints.apk
       key_alias: tibs-release
       artifact_name: tibs3dprints
+      google_services: app/google-services.json
 
   process:
     name: "Process"
