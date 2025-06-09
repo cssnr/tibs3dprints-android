@@ -22,6 +22,8 @@ class NewsItemAdapter(fragment: Fragment, var items: List<RssItem>) :
             putString("description", items[position].description)
             putString("author", items[position].author)
             putString("timestamp", items[position].pubDate)
+            putString("videoUrl", items[position].youtubeItemData?.videoUrl)
+            putString("thumbnailUrl", items[position].youtubeItemData?.thumbnailUrl)
             //putString("videoId", items[position].youtubeItemData?.videoId)
         }
         return fragment

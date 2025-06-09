@@ -1,0 +1,189 @@
+name: "Build"
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+        description: "Desired Name of Signed APK: myapp.apk"
+      key_alias:
+        required: true
+        type: string
+        description: "Alias of key for secret: ANDROID_KEYSTORE"
+      command:
+        required: false
+        type: string
+        default: assembleRelease
+        description: "Gradle Command to run. Default: assembleRelease"
+      out_path:
+        required: false
+        type: string
+        default: app/build/outputs/apk/release
+        description: "Optional: Generated output path."
+      out_name:
+        required: false
+        type: string
+        default: app-release-unsigned.apk
+        description: "Optional: Generated output file name."
+      artifact_name:
+        required: false
+        type: string
+        default: artifacts
+        description: "Optional: Actions artifact archive name."
+
+env:
+  key_file: release.keystore
+  tools_path: /usr/local/lib/android/sdk/build-tools/36.0.0
+  cmdline_tools: /usr/local/lib/android/sdk/cmdline-tools/latest/bin
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: "Release"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Debug Event"
+        if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          echo "ref: ${{ github.ref }}"
+          echo "event_name: ${{ github.event_name }}"
+          echo "github.event.repository.name: ${{ github.event.repository.name }}"
+
+          echo "::group::cat event.json"
+          cat "${GITHUB_EVENT_PATH}"
+          echo "::endgroup::"
+
+      - name: "Set Tools Path"
+        if: ${{ !github.event.act }}
+        run: |
+          echo "${{ env.tools_path }}" >> "$GITHUB_PATH"
+          echo "${{ env.cmdline_tools }}" >> "$GITHUB_PATH"
+
+      - name: "Verify Tools"
+        if: ${{ !github.event.act }}
+        run: |
+          which keytool
+          which zipalign
+          which apksigner
+          which apkanalyzer
+
+          echo "::group::PATH"
+          echo "${PATH}"
+          echo "::endgroup::"
+          echo "::group::ls tools_path"
+          ls -lAh "${{ env.tools_path }}"
+          echo "::endgroup::"
+
+      - name: "Update Version"
+        uses: chkfung/android-version-actions@v1.2.2
+        with:
+          gradlePath: app/build.gradle.kts
+          versionCode: ${{ github.run_number }}
+          versionName: ${{ github.ref_name }}
+
+      - name: "Debug Version"
+        if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          echo "versionCode: ${{ github.run_number }}"
+          echo "versionName: ${{ github.ref_name }}"
+
+          echo "::group::cat app/build.gradle.kts"
+          cat app/build.gradle.kts
+          echo "::endgroup::"
+
+      - name: "Setup Java"
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+          #cache: "gradle"
+
+      - name: "Gradle Assemble"
+        run: |
+          chmod +x ./gradlew
+          ./gradlew ${{ inputs.command }}
+
+      - name: "Verify Build"
+        run: |
+          apkanalyzer -h apk summary "${{ inputs.out_path }}/${{ inputs.out_name }}"
+
+          echo "::group::ls inputs.out_path"
+          ls -lAh ${{ inputs.out_path }}
+          echo "::endgroup::"
+
+      - name: "Align APK"
+        run: |
+          zipalign -P 16 -f -v 4 "${{ inputs.out_path }}/${{ inputs.out_name }}" "${{ inputs.out_path }}/${{ inputs.name }}"
+
+      - name: "Verify Alignment"
+        run: |
+          zipalign -c -P 16 -v 4 "${{ inputs.out_path }}/${{ inputs.name }}"
+
+      - name: "Decode Keystore"
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}
+
+      - name: "Debug Keystore"
+        continue-on-error: true
+        run: |
+          echo ${{ secrets.ANDROID_KEYSTORE_PASS }} | keytool -list -keystore ${{ env.key_file }}
+
+      - name: "Sign APK"
+        run: |
+          apksigner sign --ks ${{ env.key_file }} \
+            --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASS }} \
+            --ks-key-alias ${{ inputs.key_alias }} \
+            "${{ inputs.out_path }}/${{ inputs.name }}"
+
+      - name: "Verify Signature"
+        run: |
+          apksigner verify --verbose "${{ inputs.out_path }}/${{ inputs.name }}"
+
+      - name: "Upload Artifacts"
+        if: ${{ !github.event.act }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ${{ inputs.out_path }}
+
+      - name: "Upload to Release"
+        if: ${{ github.event_name == 'release' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ${{ inputs.out_path }}/${{ inputs.name }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+
+      - name: "Write Job Summary"
+        if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          echo -e "## Android Release\n\n" >> $GITHUB_STEP_SUMMARY
+
+          echo -e "Final APK: \`${{ inputs.name }}\`\n\n" >> $GITHUB_STEP_SUMMARY
+
+          echo -e "<details><summary>Build Artifacts</summary>\n\n" >> $GITHUB_STEP_SUMMARY
+          echo -e "\`\`\`text\n$(ls -lAh ${{ inputs.out_path }})\n\`\`\`\n\n" >> $GITHUB_STEP_SUMMARY
+          echo -e "</details>\n\n" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "${{ inputs.out_path }}/output-metadata.json" ];then
+            echo -e "<details><summary>File: output-metadata.json</summary>\n\n" >> $GITHUB_STEP_SUMMARY
+            echo -e "\`\`\`json\n$(cat ${{ inputs.out_path }}/output-metadata.json)\n\`\`\`\n\n" >> $GITHUB_STEP_SUMMARY
+            echo -e "</details>\n\n" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo -e "\n\n---" >> $GITHUB_STEP_SUMMARY

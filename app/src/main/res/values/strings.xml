@@ -11,20 +11,22 @@
 
     <string-array name="work_interval_entries">
         <item>Never</item>
-        <item>1 Hour</item>
-        <item>2 Hours</item>
         <item>4 Hours</item>
         <item>6 Hours</item>
-        <item>Twice a Day</item>
-        <item>Once Daily</item>
+        <item>12 Hours</item>
+        <item>Every Day</item>
+        <item>Every 2 Days</item>
+        <item>Every 5 Days</item>
+        <item>Every Week</item>
     </string-array>
     <string-array name="work_interval_values">
         <item>0</item>
-        <item>60</item>
-        <item>120</item>
         <item>240</item>
         <item>360</item>
         <item>720</item>
         <item>1440</item>
+        <item>2880</item>
+        <item>7200</item>
+        <item>10080</item>
     </string-array>
 </resources>
