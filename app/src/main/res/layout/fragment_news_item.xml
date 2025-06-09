@@ -8,11 +8,11 @@
 <!--    tools:context=".ui.news.NewsItemFragment">-->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.news.NewsItemFragment">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +35,26 @@
             android:adjustViewBounds="true"
             android:contentDescription="YouTube Video"
             tools:src="@tools:sample/backgrounds/scenic" />
+
+        <!--<FrameLayout-->
+        <!--    android:layout_width="match_parent"-->
+        <!--    android:layout_height="wrap_content">-->
+        <!--    <ImageView-->
+        <!--        android:id="@+id/youtube_image"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:scaleType="fitCenter"-->
+        <!--        android:adjustViewBounds="true"-->
+        <!--        android:contentDescription="YouTube Video"-->
+        <!--        tools:src="@tools:sample/backgrounds/scenic" />-->
+        <!--    <ImageView-->
+        <!--        android:layout_width="64dp"-->
+        <!--        android:layout_height="64dp"-->
+        <!--        android:layout_gravity="center"-->
+        <!--        android:contentDescription="Play"-->
+        <!--        android:src="@drawable/md_youtube_activity_24px"-->
+        <!--        app:tint="@color/youtube_red" />-->
+        <!--</FrameLayout>-->
 
         <!--<LinearLayout-->
         <!--    android:layout_width="match_parent"-->

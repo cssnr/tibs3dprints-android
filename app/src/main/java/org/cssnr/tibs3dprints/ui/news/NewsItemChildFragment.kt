@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.databinding.FragmentNewsItemBinding
 
@@ -58,7 +59,12 @@ class NewsItemChildFragment : Fragment() {
         Log.d(LOG_TAG, "STEP 2 - videoUrl: $videoUrl")
         Log.d(LOG_TAG, "STEP 2 - thumbnailUrl: $thumbnailUrl")
 
-        Glide.with(binding.youtubeImage).load(thumbnailUrl).into(binding.youtubeImage)
+        //Glide.with(binding.youtubeImage).load(thumbnailUrl).into(binding.youtubeImage)
+        Glide.with(requireContext())
+            .load(thumbnailUrl)
+            .override(Target.SIZE_ORIGINAL)
+            .into(binding.youtubeImage)
+
         binding.youtubeImage.setOnClickListener {
             Log.d(LOG_TAG, "youtubeImage.setOnClickListener: $videoUrl")
             val intent = Intent(Intent.ACTION_VIEW, videoUrl?.toUri())
