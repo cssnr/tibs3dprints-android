@@ -9,19 +9,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  name: tibs3dprints.apk # Final APK Name
-  key_name: tibs-release
-
 jobs:
   build:
     name: "Build"
     uses: ./.github/workflows/build.yaml
     secrets: inherit
     with:
-      name: ${{ env.name }}
-      key_alias: ${{ env.key_name }}
-      artifact_name: ${{ env.key_name }}
+      name: tibs3dprints.apk
+      key_alias: tibs-release
+      artifact_name: tibs3dprints
 
   release:
     name: "Release"
