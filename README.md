@@ -54,7 +54,7 @@ should take you to the settings area to allow installation if not already enable
 4. Download the [Latest Release](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/tibs3dprints.apk).
 5. Open the download apk in the app you selected in step #3.
 6. Choose Install and Accept any Play Protect notifications.
-7. The app is now installed. Proceed to the [Setup](#Setup) section below.
+7. The app is now installed.
 
 </details>
 
