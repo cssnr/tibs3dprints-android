@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                     android:textColor="?attr/colorPrimary"
-                    android:text="Background Update Interval"
+                    android:text="Background News Update Interval"
                     android:labelFor="@id/work_interval_spinner"/>
                 <Spinner
                     android:id="@+id/work_interval_spinner"

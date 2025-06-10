@@ -55,12 +55,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="@dimen/dialog_vertical_margin"
-                android:text="GitHub" />
+                android:text="Website" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="@dimen/dialog_vertical_margin"
-                android:text="Website" />
+                android:text="GitHub" />
         </LinearLayout>
 
         <LinearLayout
@@ -95,15 +95,6 @@
                 android:ellipsize="end"
                 android:text="@string/app_name" />
             <TextView
-                android:id="@+id/source_link"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingVertical="@dimen/dialog_vertical_margin"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:tag="cssnr/tibs3dprints-android"
-                android:text="cssnr/tibs3dprints-android" />
-            <TextView
                 android:id="@+id/website_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,6 +103,15 @@
                 android:ellipsize="end"
                 android:tag="www.tibs3dprints.com"
                 android:text="www.tibs3dprints.com" />
+            <TextView
+                android:id="@+id/source_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/dialog_vertical_margin"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:tag="cssnr/tibs3dprints-android"
+                android:text="cssnr/tibs3dprints-android" />
         </LinearLayout>
     </LinearLayout>
 

@@ -18,20 +18,20 @@
         <!--    android:summary="Configure Notification Settings"-->
         <!--    android:icon="@drawable/md_notification_settings_24px" />-->
 
-        <ListPreference
-            android:key="work_interval"
-            android:title="Update Interval"
-            android:defaultValue="0"
-            android:icon="@drawable/md_timer_play_24px"
-            android:entries="@array/work_interval_entries"
-            android:entryValues="@array/work_interval_values"
-            tools:summary="4 Hour" />
-
         <Preference
             android:key="send_test_alert"
             android:title="Send Test Alert"
             android:summary="Based on Above Settings"
             android:icon="@drawable/md_mark_unread_chat_alt_24px" />
+
+        <ListPreference
+            android:key="work_interval"
+            android:title="News Update Interval"
+            android:defaultValue="0"
+            android:icon="@drawable/md_timer_play_24px"
+            android:entries="@array/work_interval_entries"
+            android:entryValues="@array/work_interval_values"
+            tools:summary="4 Hour" />
 
     </PreferenceCategory>
 
