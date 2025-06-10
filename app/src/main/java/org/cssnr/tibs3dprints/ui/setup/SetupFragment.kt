@@ -153,7 +153,7 @@ class SetupFragment : Fragment() {
             // Navigate Home
             findNavController().navigate(
                 R.id.nav_action_setup_home, bundle, NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_item_setup, true)
+                    .setPopUpTo(R.id.nav_setup, true)
                     .build()
             )
         }

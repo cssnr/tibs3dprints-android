@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -85,6 +86,28 @@ class MainActivity : AppCompatActivity() {
                         item.isChecked = item.itemId == R.id.nav_news
                     }
                 }
+            }
+        }
+
+        val navLinks = mapOf(
+            R.id.nav_item_tiktok to getString(R.string.tiktok_url),
+            R.id.nav_itewm_youtube to getString(R.string.youtube_url),
+            R.id.nav_item_website to getString(R.string.website_url),
+        )
+
+        // Handle Custom Navigation Items
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            binding.drawerLayout.closeDrawers()
+            val path = navLinks[menuItem.itemId]
+            if (path != null) {
+                Log.d("Drawer", "path: $path")
+                val intent = Intent(Intent.ACTION_VIEW, path.toUri())
+                startActivity(intent)
+                true
+            } else {
+                val handled = NavigationUI.onNavDestinationSelected(menuItem, navController)
+                Log.d("Drawer", "handled: $handled")
+                handled
             }
         }
 
@@ -175,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         //        putBoolean("first_run_shown", true)
         //    }
         //    navController.navigate(
-        //        R.id.nav_item_setup, null, NavOptions.Builder()
+        //        R.id.nav_setup, null, NavOptions.Builder()
         //            .setPopUpTo(R.id.nav_home, true)
         //            .build()
         //    )
@@ -186,7 +209,7 @@ class MainActivity : AppCompatActivity() {
                 Log.i(LOG_TAG, "FIRST RUN DETECTED")
                 preferences.edit { putBoolean("first_run_shown", true) }
                 navController.navigate(
-                    R.id.nav_item_setup, null, NavOptions.Builder()
+                    R.id.nav_setup, null, NavOptions.Builder()
                         .setPopUpTo(R.id.nav_home, true)
                         .build()
                 )
