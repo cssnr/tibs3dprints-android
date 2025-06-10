@@ -3,6 +3,7 @@ package org.cssnr.tibs3dprints.work
 import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -33,9 +34,14 @@ class AppWorker(val appContext: Context, workerParams: WorkerParameters) :
         val rssChannel: RssChannel = withContext(Dispatchers.IO) { appContext.getRss() }
         Log.d("AppWorker", "rssChannel.items.size: ${rssChannel.items.size}")
 
-        if (rssChannel.items.isNotEmpty() && !lastArticle.isNullOrEmpty()) {
+        if (rssChannel.items.isNotEmpty()) {
             val first = rssChannel.items.first()
             Log.d("AppWorker", "first: ${first.pubDate}")
+            if (lastArticle.isNullOrEmpty()) {
+                Log.i("AppWorker", "First Run Detected. Skipping Alert!")
+                preferences.edit { putString("latest_article", first.pubDate) }
+                return Result.success()
+            }
             if (first.pubDate != lastArticle) {
                 Log.i("AppWorker", "NEW ARTICLE - SEND ALERT: ${first.pubDate}")
                 val builder = NotificationCompat.Builder(appContext, "default_channel_id")

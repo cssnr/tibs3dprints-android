@@ -8,15 +8,15 @@
 
         <SwitchPreferenceCompat
             android:key="enable_notifications"
-            android:title="Enable Notifications"
-            android:summary="For New News Alerts"
+            android:title="Manage Notifications"
+            android:summary="Click to Manage Alerts"
             android:icon="@drawable/md_notifications_24px" />
 
-        <Preference
-            android:key="manage_notifications"
-            android:title="Manage Notifications"
-            android:summary="Configure Notification Settings"
-            android:icon="@drawable/md_notification_settings_24px" />
+        <!--<Preference-->
+        <!--    android:key="manage_notifications"-->
+        <!--    android:title="Manage Notifications"-->
+        <!--    android:summary="Configure Notification Settings"-->
+        <!--    android:icon="@drawable/md_notification_settings_24px" />-->
 
         <ListPreference
             android:key="work_interval"

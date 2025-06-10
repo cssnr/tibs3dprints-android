@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +24,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentSetupBinding
+import org.cssnr.tibs3dprints.ui.settings.SettingsFragment
+import org.cssnr.tibs3dprints.ui.settings.areNotificationsEnabled
+import org.cssnr.tibs3dprints.ui.settings.launchNotificationSettings
 import org.cssnr.tibs3dprints.ui.settings.requestPerms
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
 import org.cssnr.tibs3dprints.work.AppWorker
@@ -64,34 +66,24 @@ class SetupFragment : Fragment() {
         binding.appVersion.text = getString(R.string.version_string, versionName)
 
         // Notifications
-        fun callback(result: Boolean, denied: Boolean = false) {
-            Log.d("callback", "result: $result - denied: $denied")
-            binding.notificationsSwitch.isChecked = result
-            if (result) {
-                // Switch Enabled Block
-                binding.notificationOptions.visibility = View.VISIBLE
-                preferences.edit { putBoolean("enable_notifications", true) }
+        val requestPermissionLauncher =
+            registerForActivityResult(RequestPermission()) { result ->
+                Log.d(SettingsFragment.Companion.LOG_TAG, "result: $result")
             }
-            if (denied) {
-                // TODO: Something Else...
-                Log.w("callback", "Permissions Denied!")
-                Toast.makeText(ctx, "Permission Denied!", Toast.LENGTH_LONG).show()
+        binding.notificationsSwitch.setOnClickListener {
+            val newValue = binding.notificationsSwitch.isChecked
+            binding.notificationsSwitch.isChecked = !newValue
+            Log.d(LOG_TAG, "notificationsSwitch.setOnClickListener: $newValue")
+            if (newValue == true) {
+                ctx.requestPerms(requestPermissionLauncher)
+            } else {
+                ctx.launchNotificationSettings()
             }
         }
 
-        val requestPermissionLauncher =
-            registerForActivityResult(RequestPermission()) { result -> callback(result) }
-        binding.notificationsSwitch.setOnClickListener {
-            Log.d(LOG_TAG, "Switch isChecked: ${binding.notificationsSwitch.isChecked}")
-            if (binding.notificationsSwitch.isChecked) {
-                binding.notificationsSwitch.isChecked = false
-                ctx.requestPerms(requestPermissionLauncher, ::callback)
-            } else {
-                // Switch Disabled Block
-                binding.notificationOptions.visibility = View.GONE
-                preferences.edit { putBoolean("enable_notifications", false) }
-            }
-        }
+        val notificationsEnabled = ctx.areNotificationsEnabled()
+        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
+        binding.notificationsSwitch.isChecked = notificationsEnabled
 
         // Update Interval Spinner
         val entries = resources.getStringArray(R.array.work_interval_entries)
@@ -159,6 +151,16 @@ class SetupFragment : Fragment() {
         }
         binding.btnBack.setOnClickListener(startAppListener)
         binding.btnFinish.setOnClickListener(startAppListener)
+    }
+
+    override fun onResume() {
+        Log.d(LOG_TAG, "ON RESUME")
+        super.onResume()
+        val notificationsEnabled = context?.areNotificationsEnabled() == true
+        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
+        binding.notificationsSwitch.isChecked = notificationsEnabled
+        binding.notificationOptions.visibility =
+            if (notificationsEnabled) View.VISIBLE else View.GONE
     }
 
     override fun onStart() {
