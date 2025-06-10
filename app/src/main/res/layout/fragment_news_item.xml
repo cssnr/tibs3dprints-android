@@ -31,6 +31,7 @@
             android:id="@+id/youtube_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:contentDescription="YouTube Video"

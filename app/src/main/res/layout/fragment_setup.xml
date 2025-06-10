@@ -125,7 +125,7 @@
                 android:id="@+id/notification_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="6dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone"
@@ -145,6 +145,13 @@
                     android:padding="8dp"
                     android:entries="@array/work_interval_entries" />
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textStyle="italic"
+                android:text="Settings can be changed at any time."/>
 
         </LinearLayout>
     </ScrollView>
