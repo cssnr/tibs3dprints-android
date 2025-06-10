@@ -154,6 +154,8 @@ class SetupFragment : Fragment() {
         val notificationsEnabled = context?.areNotificationsEnabled() == true
         Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
         binding.notificationsSwitch.isChecked = notificationsEnabled
+        // TODO: Set Initial Preference for: enable_notifications
+        //  Currently this is set on first visit to settings page but not yet used...
         binding.notificationOptions.visibility =
             if (notificationsEnabled) View.VISIBLE else View.GONE
     }
