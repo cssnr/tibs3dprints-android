@@ -22,7 +22,8 @@
             android:key="send_test_alert"
             android:title="Send Test Alert"
             android:summary="Based on Above Settings"
-            android:icon="@drawable/md_mark_unread_chat_alt_24px" />
+            android:icon="@drawable/md_mark_unread_chat_alt_24px"
+            android:enabled="false" />
 
         <ListPreference
             android:key="work_interval"

@@ -73,7 +73,7 @@ class SetupFragment : Fragment() {
             val newValue = binding.notificationsSwitch.isChecked
             binding.notificationsSwitch.isChecked = !newValue
             Log.d(LOG_TAG, "notificationsSwitch.setOnClickListener: $newValue")
-            ctx.requestPerms(requestPermissionLauncher, newValue)
+            if (ctx.requestPerms(requestPermissionLauncher, newValue)) onResume()
         }
 
         val notificationsEnabled = ctx.areNotificationsEnabled()
