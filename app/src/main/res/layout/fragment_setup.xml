@@ -17,8 +17,9 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_layout">
         <LinearLayout
             android:id="@+id/linear_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:paddingVertical="12dp"
             android:orientation="vertical"
             android:gravity="center">
@@ -97,7 +98,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:gravity="center_horizontal"
@@ -112,7 +113,7 @@
                     android:labelFor="@+id/notifications_switch" />
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/notifications_switch"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
                     android:text="Notifications"
@@ -122,7 +123,7 @@
 
             <LinearLayout
                 android:id="@+id/notification_options"
-                android:layout_width="220dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:gravity="center_horizontal"
