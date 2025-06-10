@@ -2,6 +2,7 @@ package org.cssnr.tibs3dprints.ui.settings
 
 import android.Manifest
 import android.app.Activity
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -39,7 +40,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.cssnr.tibs3dprints.MainActivity
-import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.FeedbackApi
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
@@ -48,73 +48,51 @@ import java.util.concurrent.TimeUnit
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
+    private var enableNotifications: SwitchPreferenceCompat? = null
+
+    companion object {
+        const val LOG_TAG = "SetupFragment"
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        Log.d("SettingsFragment", "rootKey: $rootKey")
+        Log.d(LOG_TAG, "rootKey: $rootKey")
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
         val ctx = requireContext()
 
         // Enable Notifications
-        val enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
-
-        fun callback(result: Boolean, denied: Boolean = false) {
-            Log.d("callback", "result: $result - denied: $denied")
-            enableNotifications?.isChecked = result
-            if (denied) {
-                Log.d("callback", "Permission Denied - Show notification alert")
-                MaterialAlertDialogBuilder(ctx)
-                    .setTitle("Permission Denied")
-                    .setMessage("The permission was previously denied and must be enabled manually.")
-                    .setPositiveButton("Open Settings") { _, _ ->
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.fromParts("package", ctx.packageName, null)
-                        }
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            } else {
-                Firebase.analytics.logEvent("notifications_enabled", null)
-            }
-        }
-
         val requestPermissionLauncher =
-            registerForActivityResult(RequestPermission()) { result -> callback(result) }
-
+            registerForActivityResult(RequestPermission()) { result ->
+                Log.d(LOG_TAG, "result: $result")
+            }
+        enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d(LOG_TAG, "CHANGE - enable_notifications: newValue: $newValue")
-            if (newValue == true) {
-                ctx.requestPerms(requestPermissionLauncher, ::callback)
-                false
-            } else {
-                true
-            }
-        }
-
-        // Manage Notifications
-        findPreference<Preference>("manage_notifications")?.setOnPreferenceClickListener {
-            Log.d(LOG_TAG, "CLICK - manage_notifications")
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
-                putExtra(Settings.EXTRA_APP_PACKAGE, ctx.packageName)
-                putExtra(Settings.EXTRA_CHANNEL_ID, "default_channel_id")
-            }
-            startActivity(intent)
+            Log.d(LOG_TAG, "enable_notifications: $newValue")
+            ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)
             false
         }
 
+        //// Manage Notifications
+        //findPreference<Preference>("manage_notifications")?.setOnPreferenceClickListener {
+        //    Log.d(LOG_TAG, "CLICK - manage_notifications")
+        //    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+        //        putExtra(Settings.EXTRA_APP_PACKAGE, ctx.packageName)
+        //        putExtra(Settings.EXTRA_CHANNEL_ID, "default_channel_id")
+        //    }
+        //    startActivity(intent)
+        //    false
+        //}
+
         // Send Test Alert
         findPreference<Preference>("send_test_alert")?.setOnPreferenceClickListener {
-            Log.d(LOG_TAG, "CLICK - send_test_alert")
-            //findNavController().navigate(R.id.nav_settings_notifications)
-            if (enableNotifications?.isChecked == true) {
-                val builder = NotificationCompat.Builder(ctx, "default_channel_id")
-                    .setSmallIcon(R.drawable.logo)
-                    .setContentTitle("Test Notification")
-                    .setContentText("This is a test of the alert system.")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setAutoCancel(true)
-                ctx.sendNotification(builder)
-            }
+            Log.d(LOG_TAG, "send_test_alert: setOnPreferenceClickListener")
+            val builder = NotificationCompat.Builder(ctx, "default_channel_id")
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle("Test Notification")
+                .setContentText("This is a test of the alert system.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+            ctx.sendNotification(builder)
             false
         }
 
@@ -122,14 +100,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val workInterval = findPreference<ListPreference>("work_interval")
         workInterval?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         workInterval?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("work_interval", "newValue: $newValue")
+            Log.d(LOG_TAG, "work_interval: $newValue")
             ctx.updateWorkManager(workInterval, newValue)
         }
 
         // Toggle Analytics
         val analyticsEnabled = findPreference<SwitchPreferenceCompat>("analytics_enabled")
         analyticsEnabled?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d("analyticsEnabled", "analytics_enabled: $newValue")
+            Log.d(LOG_TAG, "analytics_enabled: $newValue")
             ctx.toggleAnalytics(analyticsEnabled, newValue)
             false
         }
@@ -137,21 +115,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Send Feedback
         val sendFeedback = findPreference<Preference>("send_feedback")
         sendFeedback?.setOnPreferenceClickListener {
-            Log.d("send_feedback", "setOnPreferenceClickListener")
+            Log.d(LOG_TAG, "send_feedback: setOnPreferenceClickListener")
             ctx.showFeedbackDialog()
             false
         }
 
         // Show App Info
         findPreference<Preference>("app_info")?.setOnPreferenceClickListener {
-            Log.d("app_info", "setOnPreferenceClickListener")
+            Log.d(LOG_TAG, "app_info: setOnPreferenceClickListener")
             ctx.showAppInfoDialog()
             false
         }
 
         // Open App Settings
         findPreference<Preference>("android_settings")?.setOnPreferenceClickListener {
-            Log.d("android_settings", "setOnPreferenceClickListener")
+            Log.d(LOG_TAG, "android_settings: setOnPreferenceClickListener")
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = Uri.fromParts("package", ctx.packageName, null)
             }
@@ -168,7 +146,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //    false
         //}
         //Log.i("RequestPermission", "showButton: $showButton")
+    }
 
+    override fun onResume() {
+        Log.d(LOG_TAG, "ON RESUME")
+        super.onResume()
+        val notificationsEnabled = context?.areNotificationsEnabled() == true
+        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
+        enableNotifications?.isChecked = notificationsEnabled
     }
 
     fun Context.updateWorkManager(listPref: ListPreference, newValue: Any): Boolean {
@@ -325,28 +310,37 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
-    callback: (Boolean, Boolean) -> Unit,
+    newValue: Boolean,
 ) {
+    if (newValue == false) {
+        launchNotificationSettings()
+        return
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val perm = Manifest.permission.POST_NOTIFICATIONS
         when {
             ContextCompat.checkSelfPermission(this, perm) ==
                     PackageManager.PERMISSION_GRANTED -> {
-                Log.d("RequestPermission", "Permission Already Granted")
-                callback(true, false)
+                Log.d("requestPerms", "1 - Permission Already Granted")
+                launchNotificationSettings()
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
-                Log.d("RequestPermission", "Permissions Denied, Show Alert")
-                callback(false, true)
+                Log.d("requestPerms", "2 - Permissions Denied, Show Main Alert Section")
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+                startActivity(intent)
             }
 
             else -> {
+                Log.d("requestPerms", "3 - Else: requestPermissionLauncher")
                 requestPermissionLauncher.launch(perm)
             }
         }
     } else {
-        callback(true, false)
+        Log.i("requestPerms", "4 - PRE API 33, User Managed Only")
+        launchNotificationSettings()
     }
 }
 
@@ -355,6 +349,7 @@ fun Context.sendNotification(builder: NotificationCompat.Builder) {
         action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
+    Log.d("sendNotification", "intent: $intent")
     val pendingIntent = PendingIntent.getActivity(
         this,
         0,
@@ -363,13 +358,32 @@ fun Context.sendNotification(builder: NotificationCompat.Builder) {
     )
     builder.setContentIntent(pendingIntent)
     if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.POST_NOTIFICATIONS
+            this, Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
     ) {
         with(NotificationManagerCompat.from(this)) {
-            Log.d(LOG_TAG, "SEND NOTIFICATION")
+            Log.d("sendNotification", "SEND NOTIFICATION")
             notify(1, builder.build())
         }
     }
+}
+
+fun Context.areNotificationsEnabled(): Boolean {
+    val notificationManager = NotificationManagerCompat.from(this)
+    return when {
+        notificationManager.areNotificationsEnabled().not() -> false
+        else -> {
+            notificationManager.notificationChannels.firstOrNull { channel ->
+                channel.importance == NotificationManager.IMPORTANCE_NONE
+            } == null
+        }
+    }
+}
+
+fun Context.launchNotificationSettings() {
+    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        putExtra(Settings.EXTRA_CHANNEL_ID, "default_channel_id")
+    }
+    startActivity(intent)
 }
