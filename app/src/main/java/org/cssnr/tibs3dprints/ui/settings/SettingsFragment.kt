@@ -25,10 +25,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -69,7 +71,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
             Log.d(LOG_TAG, "enable_notifications: $newValue")
-            ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)
+            if (ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)) onResume()
             false
         }
 
@@ -86,7 +88,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Send Test Alert
         sendTestAlert = findPreference<Preference>("send_test_alert")
-        sendTestAlert?.isEnabled = enableNotifications?.isChecked == true
         sendTestAlert?.setOnPreferenceClickListener {
             Log.d(LOG_TAG, "send_test_alert: setOnPreferenceClickListener")
             val builder = NotificationCompat.Builder(ctx, "default_channel_id")
@@ -336,7 +337,7 @@ fun Context.sendNotification(builder: NotificationCompat.Builder) {
     }
 }
 
-fun Context.launchNotificationSettings(channelId: String = "default_channel_id") {
+internal fun Context.launchNotificationSettings(channelId: String = "default_channel_id") {
     val notificationManager = NotificationManagerCompat.from(this)
     val globalEnabled = notificationManager.areNotificationsEnabled()
     Log.i("areNotificationsEnabled", "globalEnabled: $globalEnabled")
@@ -356,10 +357,10 @@ fun Context.launchNotificationSettings(channelId: String = "default_channel_id")
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
     newValue: Boolean,
-) {
+): Boolean {
     if (newValue == false) {
         launchNotificationSettings()
-        return
+        return false
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val perm = Manifest.permission.POST_NOTIFICATIONS
@@ -371,21 +372,37 @@ fun Context.requestPerms(
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
+                Log.d("requestPerms", "2 - shouldShowRequestPermissionRationale")
                 launchNotificationSettings()
             }
 
             else -> {
-                Log.d("requestPerms", "3 - Else: requestPermissionLauncher")
+                Log.d("requestPerms", "3 - requestPermissionLauncher")
                 requestPermissionLauncher.launch(perm)
             }
         }
     } else {
-        Log.i("requestPerms", "4 - PRE API 33, User Managed Only")
+        Log.d("requestPerms", "4 - PRE TIRAMISU")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hasUserEnabled = preferences.getBoolean("user_enabled_notify", false)
+        Log.d("requestPerms", "hasUserEnabled: $hasUserEnabled")
+        if (!hasUserEnabled) {
+            preferences.edit { putBoolean("user_enabled_notify", true) }
+            if (areNotificationsEnabled()) return true
+        }
         launchNotificationSettings()
     }
+    return false
 }
 
 fun Context.areNotificationsEnabled(): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hasUserEnabled = preferences.getBoolean("user_enabled_notify", false)
+        Log.d("areNotificationsEnabled", "hasUserEnabled: $hasUserEnabled")
+        if (!hasUserEnabled) return false
+    }
+
     val notificationManager = NotificationManagerCompat.from(this)
     return when {
         notificationManager.areNotificationsEnabled().not() -> false
