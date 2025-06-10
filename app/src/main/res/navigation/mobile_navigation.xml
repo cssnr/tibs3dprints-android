@@ -8,14 +8,13 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="org.cssnr.tibs3dprints.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_item_setup"
+        android:id="@+id/nav_setup"
         android:name="org.cssnr.tibs3dprints.ui.setup.SetupFragment"
         android:label="Setup">
-        <!-- Home -->
         <action
             android:id="@+id/nav_action_setup_home"
             app:destination="@id/nav_home"
@@ -28,7 +27,7 @@
     <fragment
         android:id="@+id/nav_news"
         android:name="org.cssnr.tibs3dprints.ui.news.NewsFragment"
-        android:label="News"
+        android:label="@string/news"
         tools:layout="@layout/fragment_news">
         <action
             android:id="@+id/nav_news_item_action"
@@ -48,6 +47,6 @@
     <fragment
         android:id="@+id/nav_settings"
         android:name="org.cssnr.tibs3dprints.ui.settings.SettingsFragment"
-        android:label="Settings"
+        android:label="@string/settings"
         tools:layout="@xml/preferences" />
 </navigation>

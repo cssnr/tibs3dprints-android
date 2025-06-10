@@ -2,20 +2,40 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/app_navigation"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/md_dashboard_24px"
-            android:title="@string/title_home" />
+            android:title="@string/home" />
 
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/md_rss_feed_24px"
-            android:title="News" />
+            android:title="@string/news" />
 
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/md_settings_24px"
-            android:title="Settings" />
+            android:title="@string/settings" />
+    </group>
+    <group
+        android:id="@+id/external_navigation"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_item_tiktok"
+            android:icon="@drawable/fa_tiktok"
+            android:title="TikTok" />
+
+        <item
+            android:id="@+id/nav_itewm_youtube"
+            android:icon="@drawable/fa_youtube"
+            android:title="YouTube" />
+
+        <item
+            android:id="@+id/nav_item_website"
+            android:icon="@drawable/logo"
+            android:title="Website" />
     </group>
 </menu>
