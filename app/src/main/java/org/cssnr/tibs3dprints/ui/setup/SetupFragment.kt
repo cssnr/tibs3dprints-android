@@ -26,7 +26,6 @@ import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentSetupBinding
 import org.cssnr.tibs3dprints.ui.settings.SettingsFragment
 import org.cssnr.tibs3dprints.ui.settings.areNotificationsEnabled
-import org.cssnr.tibs3dprints.ui.settings.launchNotificationSettings
 import org.cssnr.tibs3dprints.ui.settings.requestPerms
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
 import org.cssnr.tibs3dprints.work.AppWorker

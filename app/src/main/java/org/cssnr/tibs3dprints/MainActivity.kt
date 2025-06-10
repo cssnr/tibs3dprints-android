@@ -45,6 +45,22 @@ class MainActivity : AppCompatActivity() {
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
 
+    //private val changeListener = SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+    //    Log.d("changeListener", "OnSharedPreferenceChangeListener: $key")
+    //    if (key == "enable_notifications") {
+    //        val value = prefs.getBoolean(key, false)
+    //        Log.i("changeListener", "enable_notifications: $value")
+    //        val workInterval = preferences.getString("work_interval", null) ?: "0"
+    //        if (workInterval != "0") {
+    //            if (value) {
+    //                Log.i("changeListener", "TODO: RE-ENABLE WORK")
+    //            } else {
+    //                Log.i("changeListener", "TODO: DISABLE WORK")
+    //            }
+    //        }
+    //    }
+    //}
+
     companion object {
         const val LOG_TAG = "Tibs3DPrints"
     }
@@ -115,6 +131,14 @@ class MainActivity : AppCompatActivity() {
                 handled
             }
         }
+
+        // Set Default Preferences
+        Log.d(LOG_TAG, "Set Default Preferences")
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+
+        //// Initialize Shared Preferences Listener
+        //Log.d(LOG_TAG, "Initialize Shared Preferences Listener")
+        //preferences.registerOnSharedPreferenceChangeListener(changeListener)
 
         val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
         val versionName = packageInfo.versionName
