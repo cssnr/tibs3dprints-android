@@ -68,11 +68,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
             Log.d(LOG_TAG, "enable_notifications: $newValue")
-            if (newValue == true) {
-                ctx.requestPerms(requestPermissionLauncher)
-            } else {
-                ctx.launchNotificationSettings()
-            }
+            ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)
             false
         }
 
@@ -314,7 +310,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
+    newValue: Boolean,
 ) {
+    if (newValue == false) {
+        launchNotificationSettings()
+        return
+    }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         val perm = Manifest.permission.POST_NOTIFICATIONS
         when {
