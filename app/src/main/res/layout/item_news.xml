@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:baselineAligned="false"
-    android:paddingVertical="1dp"
-    android:paddingHorizontal="2dp"
+    android:paddingVertical="3dp"
+    android:paddingHorizontal="6dp"
     android:background="?attr/selectableItemBackground">
     <LinearLayout
         android:id="@+id/item_wrapper"
