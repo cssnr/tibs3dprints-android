@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -70,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
         setupWithNavController(bottomNav, navController)
+
+        // Force White Status Bar Text in for Light Mode
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
+            false
 
         // TODO: Navigation...
         navController.addOnDestinationChangedListener { _, destination, _ ->
