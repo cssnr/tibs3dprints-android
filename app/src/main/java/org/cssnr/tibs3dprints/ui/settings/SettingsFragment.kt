@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private var enableNotifications: SwitchPreferenceCompat? = null
+    private var sendTestAlert: Preference? = null
 
     companion object {
         const val LOG_TAG = "SetupFragment"
@@ -84,7 +85,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //}
 
         // Send Test Alert
-        findPreference<Preference>("send_test_alert")?.setOnPreferenceClickListener {
+        sendTestAlert = findPreference<Preference>("send_test_alert")
+        sendTestAlert?.isEnabled = enableNotifications?.isChecked == true
+        sendTestAlert?.setOnPreferenceClickListener {
             Log.d(LOG_TAG, "send_test_alert: setOnPreferenceClickListener")
             val builder = NotificationCompat.Builder(ctx, "default_channel_id")
                 .setSmallIcon(R.drawable.logo)
@@ -154,6 +157,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val notificationsEnabled = context?.areNotificationsEnabled() == true
         Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
         enableNotifications?.isChecked = notificationsEnabled
+        sendTestAlert?.isEnabled = notificationsEnabled
     }
 
     fun Context.updateWorkManager(listPref: ListPreference, newValue: Any): Boolean {
