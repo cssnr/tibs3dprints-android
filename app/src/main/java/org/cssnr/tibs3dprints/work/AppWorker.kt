@@ -24,7 +24,7 @@ class AppWorker(val appContext: Context, workerParams: WorkerParameters) :
         val workInterval = preferences.getString("work_interval", null) ?: "0"
         Log.d("AppWorker", "workInterval: $workInterval")
         if (workInterval == "0") {
-            Log.i("AppWorker", "Work is Disabled.")
+            Log.w("AppWorker", "Work is Disabled.")
             return Result.success()
         }
 

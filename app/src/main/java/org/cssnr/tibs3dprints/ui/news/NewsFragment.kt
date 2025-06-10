@@ -90,6 +90,12 @@ suspend fun Context.getRss(): RssChannel {
     val cacheSize = 10L * 1024 * 1024 // 10 MiB
     val cache = Cache(File(this.cacheDir, "http_cache"), cacheSize)
     val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+                .header("User-Agent", getUserAgent())
+                .build()
+            chain.proceed(request)
+        }
         .cache(cache)
         .build()
     val builder = RssParserBuilder(
@@ -110,6 +116,15 @@ suspend fun Context.getRss(): RssChannel {
         }
     }
     return rssChannel
+}
+
+fun Context.getUserAgent(): String {
+    val versionName = this.packageManager.getPackageInfo(this.packageName, 0).versionName
+    val appName = this.getString(R.string.app_name)
+    val githubUrl = this.getString(R.string.website_url)
+    val userAgent = "${appName}/${versionName} - $githubUrl"
+    Log.d("getUserAgent", "userAgent: $userAgent")
+    return userAgent
 }
 
 fun formatDate(dateString: String?): String {
