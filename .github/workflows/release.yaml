@@ -51,6 +51,8 @@ jobs:
           echo "${{ env.tools_path }}" >> "$GITHUB_PATH"
           echo "${{ env.cmdline_tools }}" >> "$GITHUB_PATH"
 
+      - name: "Verify Tools"
+        run: |
           which keytool
           which zipalign
           which apksigner
@@ -59,7 +61,6 @@ jobs:
           echo "::group::PATH"
           echo "${PATH}"
           echo "::endgroup::"
-
           echo "::group::ls tools_path"
           ls -lAh "${{ env.tools_path }}"
           echo "::endgroup::"
