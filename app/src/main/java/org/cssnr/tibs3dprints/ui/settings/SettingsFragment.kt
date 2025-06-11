@@ -70,8 +70,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         enableNotifications = findPreference<SwitchPreferenceCompat>("default_channel_id")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d(LOG_TAG, "default_channel_id: $newValue")
-            if (ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)) onResume()
+            Log.d(LOG_TAG, "default_channel_id: ${newValue as Boolean}")
+            if (ctx.requestPerms(requestPermissionLauncher, newValue, "default_channel_id")) {
+                onResume()
+            }
             false
         }
 
@@ -406,9 +408,10 @@ internal fun Context.launchNotificationSettings(channelId: String = "default_cha
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
     newValue: Boolean,
+    channelId: String = "default_channel_id",
 ): Boolean {
     if (newValue == false) {
-        launchNotificationSettings()
+        launchNotificationSettings(channelId)
         return false
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -417,12 +420,12 @@ fun Context.requestPerms(
             ContextCompat.checkSelfPermission(this, perm) ==
                     PackageManager.PERMISSION_GRANTED -> {
                 Log.d("requestPerms", "1 - Permission Already Granted")
-                launchNotificationSettings()
+                launchNotificationSettings(channelId)
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
                 Log.d("requestPerms", "2 - shouldShowRequestPermissionRationale")
-                launchNotificationSettings()
+                launchNotificationSettings(channelId)
             }
 
             else -> {
@@ -437,14 +440,14 @@ fun Context.requestPerms(
         Log.d("requestPerms", "hasUserEnabled: $hasUserEnabled")
         if (!hasUserEnabled) {
             preferences.edit { putBoolean("user_enabled_notify", true) }
-            if (areNotificationsEnabled()) return true
+            if (isChannelEnabled(channelId)) return true
         }
-        launchNotificationSettings()
+        launchNotificationSettings(channelId)
     }
     return false
 }
 
-fun Context.areNotificationsEnabled(): Boolean {
+fun Context.isChannelEnabled(channelId: String = "default_channel_id"): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val hasUserEnabled = preferences.getBoolean("user_enabled_notify", false)
@@ -456,9 +459,8 @@ fun Context.areNotificationsEnabled(): Boolean {
     return when {
         notificationManager.areNotificationsEnabled().not() -> false
         else -> {
-            notificationManager.notificationChannels.firstOrNull { channel ->
-                channel.importance == NotificationManager.IMPORTANCE_NONE
-            } == null
+            val channel = notificationManager.getNotificationChannel(channelId)
+            channel != null && channel.importance != NotificationManager.IMPORTANCE_NONE
         }
     }
 }
