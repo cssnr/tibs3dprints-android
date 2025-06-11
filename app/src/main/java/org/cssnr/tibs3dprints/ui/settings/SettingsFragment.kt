@@ -254,8 +254,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             switchPreference.isChecked = true
         } else {
             MaterialAlertDialogBuilder(this)
-                .setTitle("Please Reconsider")
-                .setMessage("Analytics are only used to fix bugs and make improvements.")
+                .setTitle(getString(R.string.analytics_title))
+                .setMessage(getString(R.string.analytics_notice))
                 .setPositiveButton("Disable Anyway") { _, _ ->
                     Log.d("toggleAnalytics", "DISABLE Analytics")
                     Firebase.analytics.logEvent("disable_analytics", null)
@@ -364,30 +364,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 }
 
-fun Context.sendNotification(builder: NotificationCompat.Builder) {
-    val intent = Intent(this, MainActivity::class.java).apply {
-        action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    }
-    Log.d("sendNotification", "intent: $intent")
-    val pendingIntent = PendingIntent.getActivity(
-        this,
-        0,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-    builder.setContentIntent(pendingIntent)
-    if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
-            this, Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        with(NotificationManagerCompat.from(this)) {
-            Log.d("sendNotification", "SEND NOTIFICATION")
-            notify(1, builder.build())
-        }
-    }
-}
-
 internal fun Context.launchNotificationSettings(channelId: String = "default_channel_id") {
     val notificationManager = NotificationManagerCompat.from(this)
     val globalEnabled = notificationManager.areNotificationsEnabled()
@@ -461,6 +437,30 @@ fun Context.isChannelEnabled(channelId: String = "default_channel_id"): Boolean 
         else -> {
             val channel = notificationManager.getNotificationChannel(channelId)
             channel != null && channel.importance != NotificationManager.IMPORTANCE_NONE
+        }
+    }
+}
+
+fun Context.sendNotification(builder: NotificationCompat.Builder) {
+    val intent = Intent(this, MainActivity::class.java).apply {
+        action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    Log.d("sendNotification", "intent: $intent")
+    val pendingIntent = PendingIntent.getActivity(
+        this,
+        0,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    builder.setContentIntent(pendingIntent)
+    if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
+            this, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        with(NotificationManagerCompat.from(this)) {
+            Log.d("sendNotification", "SEND NOTIFICATION")
+            notify(1, builder.build())
         }
     }
 }

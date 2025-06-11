@@ -12,6 +12,9 @@
     <string name="youtube_url">https://www.youtube.com/@Tibs3DPrints</string>
     <string name="github_link"><![CDATA[<a href="https://github.com/cssnr/tibs3dprints-android">%s</a>]]></string>
 
+    <string name="analytics_title">Please Reconsider</string>
+    <string name="analytics_notice">Analytics are only used to fix bugs and make improvements.\nNo personal information of any kind is collected.</string>
+
     <string-array name="work_interval_entries">
         <item>Never</item>
         <item>6 Hours</item>
