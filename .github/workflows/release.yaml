@@ -188,7 +188,7 @@ jobs:
           name: bundle
           path: ${{ env.aab_path }}
 
-      - name: "Generate Release Notes"
+      - name: "Generate Whats New"
         if: ${{ !github.event.release.prerelease }}
         run: |
           mkdir -p whatsNew
