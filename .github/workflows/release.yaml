@@ -177,9 +177,10 @@ jobs:
         run: |
           echo "env.aab_path: ${{ env.aab_path }}"
           ls -lAh ${{ env.aab_path }} ||:
-          ls -lAh app/build/outputs/mapping/release ||:
-          ls -lAh app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib ||:
-          stat app/build/outputs/mapping/release/mapping.txt
+          echo "env.debug_symbols: ${{ env.debug_symbols }}"
+          ls -lAh ${{ env.debug_symbols }} ||:
+          echo "env.mapping_file: ${{ env.mapping_file }}"
+          ls -lAh $(dirname ${{ env.debug_symbols }}) ||:
 
       - name: "Sign Bundle"
         if: ${{ !github.event.release.prerelease }}
@@ -213,8 +214,8 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.package_name }}
           releaseFiles: ${{ env.aab_path }}/${{ env.aab_file }}
-          mappingFile: ${{ env.mapping_file }}
           debugSymbols: ${{ env.debug_symbols }}
+          mappingFile: ${{ env.mapping_file }}
           whatsNewDirectory: whatsNew
           releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
           track: qa
