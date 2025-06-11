@@ -68,10 +68,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             registerForActivityResult(RequestPermission()) { result ->
                 Log.d(LOG_TAG, "result: $result")
             }
-        enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
+        enableNotifications = findPreference<SwitchPreferenceCompat>("default_channel_id")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d(LOG_TAG, "enable_notifications: $newValue")
-            if (ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)) onResume()
+            Log.d(LOG_TAG, "default_channel_id: ${newValue as Boolean}")
+            if (ctx.requestPerms(requestPermissionLauncher, newValue, "default_channel_id")) {
+                onResume()
+            }
             false
         }
 
@@ -96,7 +98,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .setContentText("This is a test of the alert system.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
-            ctx.sendNotification(builder)
+            ctx.sendNotification(builder, "default_channel_id")
             false
         }
 
@@ -155,10 +157,59 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         Log.d(LOG_TAG, "ON RESUME")
         super.onResume()
-        val notificationsEnabled = context?.areNotificationsEnabled() == true
-        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
-        enableNotifications?.isChecked = notificationsEnabled
-        sendTestAlert?.isEnabled = notificationsEnabled
+        context?.updateNotificationStatus()
+        sendTestAlert?.isEnabled = enableNotifications?.isChecked == true
+    }
+
+    private fun Context.updateNotificationStatus() {
+        val notificationManager = NotificationManagerCompat.from(this)
+        val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
+        Log.i(LOG_TAG, "areNotificationsEnabled: $areNotificationsEnabled")
+        for (channel in notificationManager.notificationChannels) {
+            Log.d(LOG_TAG, "pref key: ${channel.id}")
+            val pref = findPreference<SwitchPreferenceCompat>("${channel.id}")
+            Log.d(LOG_TAG, "pref: $pref")
+            if (pref == null) continue
+
+            val alertsEnabled = isChannelEnabled()
+            //    channel.importance != NotificationManager.IMPORTANCE_NONE && areNotificationsEnabled
+            Log.i(LOG_TAG, "alertsEnabled: $alertsEnabled")
+
+            val playsSound =
+                channel.sound != null && channel.importance >= NotificationManager.IMPORTANCE_DEFAULT
+            Log.i(LOG_TAG, "playsSound: $playsSound")
+
+            val hasVibration =
+                channel.shouldVibrate() && channel.importance >= NotificationManager.IMPORTANCE_DEFAULT
+            Log.i(LOG_TAG, "hasVibration: $hasVibration")
+
+            val isSilent = channel.importance <= NotificationManager.IMPORTANCE_LOW &&
+                    !playsSound &&
+                    !hasVibration
+            Log.i(LOG_TAG, "isSilent: $isSilent")
+
+            if (!alertsEnabled) {
+                pref.summary = "Status: Disabled"
+                pref.isChecked = false
+            } else {
+                val statuses = mutableSetOf<String>()
+                if (isSilent) {
+                    statuses.add("Silent")
+                }
+                if (playsSound) {
+                    statuses.add("Sound")
+                }
+                if (hasVibration) {
+                    statuses.add("Vibrate")
+                }
+                if (statuses.isEmpty()) {
+                    statuses.add("No Sound or Vibration")
+                }
+                val result = statuses.joinToString(", ")
+                pref.summary = "Status: $result"
+                pref.isChecked = true
+            }
+        }
     }
 
     fun Context.updateWorkManager(listPref: ListPreference, newValue: Any): Boolean {
@@ -203,8 +254,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             switchPreference.isChecked = true
         } else {
             MaterialAlertDialogBuilder(this)
-                .setTitle("Please Reconsider")
-                .setMessage("Analytics are only used to fix bugs and make improvements.")
+                .setTitle(getString(R.string.analytics_title))
+                .setMessage(getString(R.string.analytics_notice))
                 .setPositiveButton("Disable Anyway") { _, _ ->
                     Log.d("toggleAnalytics", "DISABLE Analytics")
                     Firebase.analytics.logEvent("disable_analytics", null)
@@ -313,30 +364,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 }
 
-fun Context.sendNotification(builder: NotificationCompat.Builder) {
-    val intent = Intent(this, MainActivity::class.java).apply {
-        action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    }
-    Log.d("sendNotification", "intent: $intent")
-    val pendingIntent = PendingIntent.getActivity(
-        this,
-        0,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-    builder.setContentIntent(pendingIntent)
-    if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
-            this, Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        with(NotificationManagerCompat.from(this)) {
-            Log.d("sendNotification", "SEND NOTIFICATION")
-            notify(1, builder.build())
-        }
-    }
-}
-
 internal fun Context.launchNotificationSettings(channelId: String = "default_channel_id") {
     val notificationManager = NotificationManagerCompat.from(this)
     val globalEnabled = notificationManager.areNotificationsEnabled()
@@ -357,9 +384,10 @@ internal fun Context.launchNotificationSettings(channelId: String = "default_cha
 fun Context.requestPerms(
     requestPermissionLauncher: ActivityResultLauncher<String>,
     newValue: Boolean,
+    channelId: String = "default_channel_id",
 ): Boolean {
     if (newValue == false) {
-        launchNotificationSettings()
+        launchNotificationSettings(channelId)
         return false
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -368,12 +396,12 @@ fun Context.requestPerms(
             ContextCompat.checkSelfPermission(this, perm) ==
                     PackageManager.PERMISSION_GRANTED -> {
                 Log.d("requestPerms", "1 - Permission Already Granted")
-                launchNotificationSettings()
+                launchNotificationSettings(channelId)
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(this as Activity, perm) -> {
                 Log.d("requestPerms", "2 - shouldShowRequestPermissionRationale")
-                launchNotificationSettings()
+                launchNotificationSettings(channelId)
             }
 
             else -> {
@@ -384,22 +412,23 @@ fun Context.requestPerms(
     } else {
         Log.d("requestPerms", "4 - PRE TIRAMISU")
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val hasUserEnabled = preferences.getBoolean("user_enabled_notify", false)
+        val hasUserEnabled = preferences.getBoolean("${channelId}_was_enabled", false)
         Log.d("requestPerms", "hasUserEnabled: $hasUserEnabled")
         if (!hasUserEnabled) {
-            preferences.edit { putBoolean("user_enabled_notify", true) }
-            if (areNotificationsEnabled()) return true
+            preferences.edit { putBoolean("${channelId}_was_enabled", true) }
+            if (isChannelEnabled(channelId)) return true
         }
-        launchNotificationSettings()
+        launchNotificationSettings(channelId)
     }
     return false
 }
 
-fun Context.areNotificationsEnabled(): Boolean {
+fun Context.isChannelEnabled(channelId: String = "default_channel_id"): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Log.d("isChannelEnabled", "PRE TIRAMISU")
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val hasUserEnabled = preferences.getBoolean("user_enabled_notify", false)
-        Log.d("areNotificationsEnabled", "hasUserEnabled: $hasUserEnabled")
+        val hasUserEnabled = preferences.getBoolean("${channelId}_was_enabled", false)
+        Log.d("isChannelEnabled", "hasUserEnabled: $hasUserEnabled")
         if (!hasUserEnabled) return false
     }
 
@@ -407,9 +436,33 @@ fun Context.areNotificationsEnabled(): Boolean {
     return when {
         notificationManager.areNotificationsEnabled().not() -> false
         else -> {
-            notificationManager.notificationChannels.firstOrNull { channel ->
-                channel.importance == NotificationManager.IMPORTANCE_NONE
-            } == null
+            val channel = notificationManager.getNotificationChannel(channelId)
+            channel != null && channel.importance != NotificationManager.IMPORTANCE_NONE
+        }
+    }
+}
+
+fun Context.sendNotification(builder: NotificationCompat.Builder, channelId: String) {
+    if (!isChannelEnabled(channelId)) return
+    val intent = Intent(this, MainActivity::class.java).apply {
+        action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    Log.d("sendNotification", "intent: $intent")
+    val pendingIntent = PendingIntent.getActivity(
+        this,
+        0,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    builder.setContentIntent(pendingIntent)
+    if (Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(
+            this, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        with(NotificationManagerCompat.from(this)) {
+            Log.d("sendNotification", "SEND NOTIFICATION")
+            notify(1, builder.build())
         }
     }
 }

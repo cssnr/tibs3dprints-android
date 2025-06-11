@@ -25,7 +25,7 @@ import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentSetupBinding
 import org.cssnr.tibs3dprints.ui.settings.SettingsFragment
-import org.cssnr.tibs3dprints.ui.settings.areNotificationsEnabled
+import org.cssnr.tibs3dprints.ui.settings.isChannelEnabled
 import org.cssnr.tibs3dprints.ui.settings.requestPerms
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
 import org.cssnr.tibs3dprints.work.AppWorker
@@ -73,10 +73,12 @@ class SetupFragment : Fragment() {
             val newValue = binding.notificationsSwitch.isChecked
             binding.notificationsSwitch.isChecked = !newValue
             Log.d(LOG_TAG, "notificationsSwitch.setOnClickListener: $newValue")
-            if (ctx.requestPerms(requestPermissionLauncher, newValue)) onResume()
+            if (ctx.requestPerms(requestPermissionLauncher, newValue, "default_channel_id")) {
+                onResume()
+            }
         }
 
-        val notificationsEnabled = ctx.areNotificationsEnabled()
+        val notificationsEnabled = ctx.isChannelEnabled()
         Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
         binding.notificationsSwitch.isChecked = notificationsEnabled
 
@@ -151,13 +153,10 @@ class SetupFragment : Fragment() {
     override fun onResume() {
         Log.d(LOG_TAG, "ON RESUME")
         super.onResume()
-        val notificationsEnabled = context?.areNotificationsEnabled() == true
-        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
-        binding.notificationsSwitch.isChecked = notificationsEnabled
-        // TODO: Set Initial Preference for: enable_notifications
-        //  Currently this is set on first visit to settings page but not yet used...
-        binding.notificationOptions.visibility =
-            if (notificationsEnabled) View.VISIBLE else View.GONE
+        val channelEnabled = context?.isChannelEnabled("default_channel_id") == true
+        Log.i(LOG_TAG, "channelEnabled: $channelEnabled")
+        binding.notificationsSwitch.isChecked = channelEnabled
+        binding.notificationOptions.visibility = if (channelEnabled) View.VISIBLE else View.GONE
     }
 
     override fun onStart() {

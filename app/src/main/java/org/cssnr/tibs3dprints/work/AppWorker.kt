@@ -50,7 +50,7 @@ class AppWorker(val appContext: Context, workerParams: WorkerParameters) :
                     .setContentText(first.title)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
-                appContext.sendNotification(builder)
+                appContext.sendNotification(builder, "default_channel_id")
             }
         }
 
