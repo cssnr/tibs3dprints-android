@@ -68,9 +68,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
             registerForActivityResult(RequestPermission()) { result ->
                 Log.d(LOG_TAG, "result: $result")
             }
-        enableNotifications = findPreference<SwitchPreferenceCompat>("enable_notifications")
+        enableNotifications = findPreference<SwitchPreferenceCompat>("default_channel_id")
         enableNotifications?.setOnPreferenceChangeListener { _, newValue ->
-            Log.d(LOG_TAG, "enable_notifications: $newValue")
+            Log.d(LOG_TAG, "default_channel_id: $newValue")
             if (ctx.requestPerms(requestPermissionLauncher, newValue as Boolean)) onResume()
             false
         }
@@ -155,10 +155,59 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         Log.d(LOG_TAG, "ON RESUME")
         super.onResume()
-        val notificationsEnabled = context?.areNotificationsEnabled() == true
-        Log.i(LOG_TAG, "notificationsEnabled: $notificationsEnabled")
-        enableNotifications?.isChecked = notificationsEnabled
-        sendTestAlert?.isEnabled = notificationsEnabled
+        requireContext().updateNotificationStatus()
+        sendTestAlert?.isEnabled = enableNotifications?.isChecked == true
+    }
+
+    private fun Context.updateNotificationStatus() {
+        val notificationManager = NotificationManagerCompat.from(this)
+        val areNotificationsEnabled = notificationManager.areNotificationsEnabled()
+        Log.i(LOG_TAG, "areNotificationsEnabled: $areNotificationsEnabled")
+        for (channel in notificationManager.notificationChannels) {
+            Log.d(LOG_TAG, "pref key: ${channel.id}")
+            val pref = findPreference<SwitchPreferenceCompat>("${channel.id}")
+            Log.d(LOG_TAG, "pref: $pref")
+            if (pref == null) continue
+
+            val alertsEnabled =
+                channel.importance != NotificationManager.IMPORTANCE_NONE && areNotificationsEnabled
+            Log.i(LOG_TAG, "alertsEnabled: $alertsEnabled")
+
+            val playsSound =
+                channel.sound != null && channel.importance >= NotificationManager.IMPORTANCE_DEFAULT
+            Log.i(LOG_TAG, "playsSound: $playsSound")
+
+            val hasVibration =
+                channel.shouldVibrate() && channel.importance >= NotificationManager.IMPORTANCE_DEFAULT
+            Log.i(LOG_TAG, "hasVibration: $hasVibration")
+
+            val isSilent = channel.importance <= NotificationManager.IMPORTANCE_LOW &&
+                    !playsSound &&
+                    !hasVibration
+            Log.i(LOG_TAG, "isSilent: $isSilent")
+
+            if (!alertsEnabled) {
+                pref.summary = "Status: Disabled"
+                pref.isChecked = false
+            } else {
+                val statuses = mutableSetOf<String>()
+                if (isSilent) {
+                    statuses.add("Silent")
+                }
+                if (playsSound) {
+                    statuses.add("Sound")
+                }
+                if (hasVibration) {
+                    statuses.add("Vibrate")
+                }
+                if (statuses.isEmpty()) {
+                    statuses.add("No Sound or Vibration")
+                }
+                val result = statuses.joinToString(", ")
+                pref.summary = "Status: $result"
+                pref.isChecked = true
+            }
+        }
     }
 
     fun Context.updateWorkManager(listPref: ListPreference, newValue: Any): Boolean {
