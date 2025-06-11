@@ -11,13 +11,13 @@ concurrency:
 
 env:
   key_name: tibs-release
-  package_name: "org.cssnr.tibs3dprints"
+  package_name: org.cssnr.tibs3dprints
 
 jobs:
   release:
     name: "Release"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       contents: write
     env:
@@ -30,6 +30,7 @@ jobs:
       tools_path: /usr/local/lib/android/sdk/build-tools/36.0.0
       cmdline_tools: /usr/local/lib/android/sdk/cmdline-tools/latest/bin
       key_file: release.keystore
+      gradle_file: app/build.gradle.kts
 
     steps:
       - name: "Checkout"
@@ -69,7 +70,7 @@ jobs:
         uses: chkfung/android-version-actions@v1.2.2
         id: version
         with:
-          gradlePath: app/build.gradle.kts
+          gradlePath: ${{ env.gradle_file }}
           versionCode: ${{ github.run_number }}
           versionName: ${{ github.ref_name }}
 
@@ -79,8 +80,8 @@ jobs:
           echo "versionCode: ${{ github.run_number }}"
           echo "versionName: ${{ github.ref_name }}"
 
-          echo "::group::cat app/build.gradle.kts"
-          cat app/build.gradle.kts
+          echo "::group::cat ${{ env.gradle_file }}"
+          cat ${{ env.gradle_file }}
           echo "::endgroup::"
 
       - name: "Write Google Services File"
@@ -138,6 +139,7 @@ jobs:
             "${{ env.apk_path }}/source.apk" \
             "${{ env.apk_path }}/${{ env.apk_file }}"
           zipalign -c -P 16 -v 4 "${{ env.apk_path }}/${{ env.apk_file }}"
+          rm -f "${{ env.apk_path }}/source.apk"
 
       - name: "Sign APK"
         run: |
@@ -201,12 +203,12 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.package_name }}
-          track: qa
-          releaseFiles: "${{ env.aab_path }}/${{ env.aab_file }}"
+          releaseFiles: ${{ env.aab_path }}/${{ env.aab_file }}
           mappingFile: ${{ env.mapping_file }}
           debugSymbols: ${{ env.debug_symbols }}
           whatsNewDirectory: whatsNew
           releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
+          track: qa
 
       - name: "Upload to Release"
         if: ${{ github.event_name == 'release' }}
