@@ -155,7 +155,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         Log.d(LOG_TAG, "ON RESUME")
         super.onResume()
-        requireContext().updateNotificationStatus()
+        context?.updateNotificationStatus()
         sendTestAlert?.isEnabled = enableNotifications?.isChecked == true
     }
 
