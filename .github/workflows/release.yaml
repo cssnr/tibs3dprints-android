@@ -51,8 +51,6 @@ jobs:
           echo "${{ env.tools_path }}" >> "$GITHUB_PATH"
           echo "${{ env.cmdline_tools }}" >> "$GITHUB_PATH"
 
-      - name: "Verify Tools"
-        run: |
           which keytool
           which zipalign
           which apksigner
@@ -106,7 +104,7 @@ jobs:
       #  run: |
       #    bash prepare.sh
       #
-      #- name: "Debug App Directory"
+      #- name: "Debug Prepare"
       #  continue-on-error: true
       #  run: |
       #    ls .
@@ -119,12 +117,12 @@ jobs:
           java-version: "17"
           #cache: "gradle"
 
-      - name: "Gradle Assemble"
+      - name: "Gradle Assemble APK"
         run: |
           chmod +x ./gradlew
           ./gradlew assembleRelease
 
-      - name: "Verify Build"
+      - name: "Verify APK"
         run: |
           apkanalyzer -h apk summary "${{ env.apk_path }}/${{ env.apk_file }}"
 
@@ -134,10 +132,10 @@ jobs:
 
       - name: "Align APK"
         run: |
-          zipalign -P 16 -f -v 4 "${{ env.apk_path }}/${{ env.apk_file }}"
-
-      - name: "Verify Alignment"
-        run: |
+          mv "${{ env.apk_path }}/${{ env.apk_file }}" "${{ env.apk_path }}/source.apk"
+          zipalign -P 16 -f -v 4 \
+            "${{ env.apk_path }}/source.apk" \
+            "${{ env.apk_path }}/${{ env.apk_file }}"
           zipalign -c -P 16 -v 4 "${{ env.apk_path }}/${{ env.apk_file }}"
 
       - name: "Sign APK"
@@ -146,19 +144,16 @@ jobs:
             --ks-pass pass:${{ secrets.ANDROID_KEYSTORE_PASS }} \
             --ks-key-alias ${{ env.key_name }} \
             "${{ env.apk_path }}/${{ env.apk_file }}"
-
-      - name: "Verify Signature"
-        run: |
           apksigner verify --verbose "${{ env.apk_path }}/${{ env.apk_file }}"
 
       - name: "Upload APK Artifacts"
         if: ${{ !github.event.act }}
         uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: release
           path: ${{ env.apk_path }}
 
-      - name: "Gradle Bundle"
+      - name: "Gradle Bundle AAB"
         if: ${{ !github.event.release.prerelease }}
         run: |
           chmod +x ./gradlew
@@ -174,7 +169,7 @@ jobs:
           ls -lAh app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib ||:
           stat app/build/outputs/mapping/release/mapping.txt
 
-      - name: "Sign AAB"
+      - name: "Sign Bundle"
         if: ${{ !github.event.release.prerelease }}
         run: |
           apksigner sign --ks ${{ env.key_file }} \
@@ -185,23 +180,22 @@ jobs:
             --ks-key-alias ${{ env.key_name }} \
             "${{ env.aab_path }}/${{ env.aab_file }}"
 
-      - name: "Upload AAB Artifacts"
+      - name: "Upload Bundle Artifacts"
         if: ${{ !github.event.release.prerelease }}
         uses: actions/upload-artifact@v4
         with:
-          name: aab
+          name: bundle
           path: ${{ env.aab_path }}
 
       - name: "Generate Release Notes"
         if: ${{ !github.event.release.prerelease }}
-        continue-on-error: true
         run: |
           mkdir -p whatsNew
           echo "GitHub Actions Build" > whatsNew/whatsnew-en-US
           cat whatsNew/whatsnew-en-US
 
       - name: "Upload Google Play"
-        if: ${{ !github.event.release.prerelease }}
+        if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
