@@ -149,12 +149,21 @@ jobs:
             "${{ env.apk_path }}/${{ env.apk_file }}"
           apksigner verify --verbose "${{ env.apk_path }}/${{ env.apk_file }}"
 
-      - name: "Upload APK Artifacts"
+      - name: "Upload APK to Artifacts"
         if: ${{ !github.event.act }}
         uses: actions/upload-artifact@v4
         with:
           name: release
           path: ${{ env.apk_path }}
+
+      - name: "Upload APK to Release"
+        if: ${{ github.event_name == 'release' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ${{ env.apk_path }}/${{ env.apk_file }}
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
 
       - name: "Gradle Bundle AAB"
         if: ${{ !github.event.release.prerelease }}
@@ -183,7 +192,7 @@ jobs:
             --ks-key-alias ${{ env.key_name }} \
             "${{ env.aab_path }}/${{ env.aab_file }}"
 
-      - name: "Upload Bundle Artifacts"
+      - name: "Upload Bundle to Artifacts"
         if: ${{ !github.event.release.prerelease }}
         uses: actions/upload-artifact@v4
         with:
@@ -201,7 +210,7 @@ jobs:
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           packageName: ${{ env.package_name }}
           releaseFiles: ${{ env.aab_path }}/${{ env.aab_file }}
           mappingFile: ${{ env.mapping_file }}
@@ -209,15 +218,6 @@ jobs:
           whatsNewDirectory: whatsNew
           releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
           track: qa
-
-      - name: "Upload to Release"
-        if: ${{ github.event_name == 'release' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: ${{ env.apk_path }}/${{ env.apk_file }}
-          tag: ${{ github.ref }}
-          overwrite: true
-          file_glob: true
 
       - name: "VirusTotal"
         if: ${{ github.event_name == 'release' }}
