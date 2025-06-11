@@ -98,7 +98,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .setContentText("This is a test of the alert system.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
-            ctx.sendNotification(builder)
+            ctx.sendNotification(builder, "default_channel_id")
             false
         }
 
@@ -442,7 +442,8 @@ fun Context.isChannelEnabled(channelId: String = "default_channel_id"): Boolean 
     }
 }
 
-fun Context.sendNotification(builder: NotificationCompat.Builder) {
+fun Context.sendNotification(builder: NotificationCompat.Builder, channelId: String) {
+    if (!isChannelEnabled(channelId)) return
     val intent = Intent(this, MainActivity::class.java).apply {
         action = "org.cssnr.tibs3dprints.ACTION_NOTIFICATION"
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
