@@ -171,8 +171,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Log.d(LOG_TAG, "pref: $pref")
             if (pref == null) continue
 
-            val alertsEnabled =
-                channel.importance != NotificationManager.IMPORTANCE_NONE && areNotificationsEnabled
+            val alertsEnabled = isChannelEnabled()
+            //    channel.importance != NotificationManager.IMPORTANCE_NONE && areNotificationsEnabled
             Log.i(LOG_TAG, "alertsEnabled: $alertsEnabled")
 
             val playsSound =
@@ -418,7 +418,6 @@ fun Context.requestPerms(
             preferences.edit { putBoolean("${channelId}_was_enabled", true) }
             if (isChannelEnabled(channelId)) return true
         }
-
         launchNotificationSettings(channelId)
     }
     return false
@@ -426,9 +425,10 @@ fun Context.requestPerms(
 
 fun Context.isChannelEnabled(channelId: String = "default_channel_id"): Boolean {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Log.d("isChannelEnabled", "PRE TIRAMISU")
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val hasUserEnabled = preferences.getBoolean("${channelId}_was_enabled", false)
-        Log.d("areNotificationsEnabled", "hasUserEnabled: $hasUserEnabled")
+        Log.d("isChannelEnabled", "hasUserEnabled: $hasUserEnabled")
         if (!hasUserEnabled) return false
     }
 
