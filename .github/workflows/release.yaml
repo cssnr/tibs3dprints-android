@@ -33,7 +33,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Debug Event"
-        if: ${{ !github.event.act }}
         continue-on-error: true
         run: |
           echo "ref: ${{ github.ref }}"
@@ -45,13 +44,11 @@ jobs:
           echo "::endgroup::"
 
       - name: "Set Tools Path"
-        if: ${{ !github.event.act }}
         run: |
           echo "${{ env.tools_path }}" >> "$GITHUB_PATH"
           echo "${{ env.cmdline_tools }}" >> "$GITHUB_PATH"
 
       - name: "Verify Tools"
-        if: ${{ !github.event.act }}
         run: |
           which keytool
           which zipalign
@@ -67,13 +64,13 @@ jobs:
 
       - name: "Update Version"
         uses: chkfung/android-version-actions@v1.2.2
+        id: version
         with:
           gradlePath: app/build.gradle.kts
           versionCode: ${{ github.run_number }}
           versionName: ${{ github.ref_name }}
 
       - name: "Debug Version"
-        if: ${{ !github.event.act }}
         continue-on-error: true
         run: |
           echo "versionCode: ${{ github.run_number }}"
@@ -83,28 +80,36 @@ jobs:
           cat app/build.gradle.kts
           echo "::endgroup::"
 
-      #- name: "Setup Node 22"
-      #  uses: actions/setup-node@v4
-      #  with:
-      #    node-version: 22
-
-      #- name: "Prepare Build"
-      #  working-directory: ".github/scripts"
-      #  run: |
-      #    bash prepare.sh
-
       - name: "Write Google Services File"
         if: ${{ !github.event.act }}
         run: |
           echo "${{ secrets.GOOGLE_SERVICES }}" | base64 --decode > app/google-services.json
 
-      - name: "Debug App Directory"
-        if: ${{ !github.event.act }}
+      - name: "Write Keystore File"
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}
+
+      - name: "Debug Keystore"
         continue-on-error: true
         run: |
-          ls .
-          ls -lAh app
-          stat app/google-services.json
+          echo ${{ secrets.ANDROID_KEYSTORE_PASS }} | keytool -list -keystore ${{ env.key_file }}
+
+#      - name: "Setup Node 22"
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 22
+#
+#      - name: "Prepare Build"
+#        working-directory: ".github/scripts"
+#        run: |
+#          bash prepare.sh
+#
+#      - name: "Debug App Directory"
+#        continue-on-error: true
+#        run: |
+#          ls .
+#          ls -lAh app
+#          stat app/google-services.json
 
       - name: "Setup Java"
         uses: actions/setup-java@v4
@@ -133,16 +138,7 @@ jobs:
 #      - name: "Verify Alignment"
 #        run: |
 #          zipalign -c -P 16 -v 4 "${{ env.apk_path }}/${{ env.apk_file }}"
-
-      - name: "Decode Keystore"
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.key_file }}
-
-      - name: "Debug Keystore"
-        continue-on-error: true
-        run: |
-          echo ${{ secrets.ANDROID_KEYSTORE_PASS }} | keytool -list -keystore ${{ env.key_file }}
-
+#
 #      - name: "Sign APK"
 #        run: |
 #          apksigner sign --ks ${{ env.key_file }} \
@@ -167,15 +163,13 @@ jobs:
           ./gradlew bundleRelease
 
       - name: "Debug Bundle"
-        if: ${{ !github.event.act }}
         continue-on-error: true
         run: |
           echo "env.aab_path: ${{ env.aab_path }}"
           ls -lAh ${{ env.aab_path }} ||:
-          ls -lAh app/release ||:
-          #echo "::group::cat app/build.gradle.kts"
-          #cat app/build.gradle.kts
-          #echo "::endgroup::"
+          ls -lAh app/build/outputs/mapping/release ||:
+          ls -lAh app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib ||:
+          stat app/build/outputs/mapping/release/mapping.txt
 
       - name: "Sign AAB"
         run: |
@@ -187,12 +181,30 @@ jobs:
             --ks-key-alias ${{ env.key_name }} \
             "${{ env.aab_path }}/${{ env.aab_file }}"
 
-      - name: "Upload AAB Artifacts - TODO DEBUG ONLY"
-        if: ${{ !github.event.act }}
+      - name: "Upload AAB Artifacts - DEBUG"
         uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: aab
           path: ${{ env.aab_path }}
+
+      - name: "Generate Release Notes"
+        continue-on-error: true
+        run: |
+          mkdir -p whatsNew
+          echo "GitHub Actions Build" > whatsNew/whatsnew-en-US
+          cat whatsNew/whatsnew-en-US
+
+      #- name: "Upload Google Play"
+      #  uses: r0adkll/upload-google-play@v1
+      #  with:
+      #    serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+      #    packageName: "org.cssnr.tibs3dprints" # TODO: Remove HARD Coding
+      #    track: internal
+      #    releaseFiles: "${{ env.aab_path }}/${{ env.aab_file }}"
+      #    mappingFile: app/build/outputs/mapping/release/mapping.txt
+      #    debugSymbols: app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib
+      #    whatsNewDirectory: whatsNew
+      #    releaseName: "${{ github.run_number }} (${{ github.ref_name }})"
 
 #      - name: "Upload to Release"
 #        if: ${{ github.event_name == 'release' }}
