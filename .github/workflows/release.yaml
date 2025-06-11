@@ -23,7 +23,7 @@ jobs:
       apk_path: app/build/outputs/apk/release
       apk_file: app-release-unsigned.apk
       aab_path: app/build/outputs/bundle/release
-      aab_file: app-release-unsigned.aab
+      aab_file: app-release.aab
       key_file: release.keystore
       tools_path: /usr/local/lib/android/sdk/build-tools/36.0.0
       cmdline_tools: /usr/local/lib/android/sdk/cmdline-tools/latest/bin
