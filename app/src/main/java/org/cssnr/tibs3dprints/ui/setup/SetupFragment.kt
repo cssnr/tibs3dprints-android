@@ -24,7 +24,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentSetupBinding
-import org.cssnr.tibs3dprints.ui.settings.SettingsFragment
 import org.cssnr.tibs3dprints.ui.settings.isChannelEnabled
 import org.cssnr.tibs3dprints.ui.settings.requestPerms
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
@@ -61,13 +60,13 @@ class SetupFragment : Fragment() {
         // Version
         val packageInfo = ctx.packageManager.getPackageInfo(ctx.packageName, 0)
         val versionName = packageInfo.versionName
-        Log.d(MainActivity.Companion.LOG_TAG, "versionName: $versionName")
+        Log.d(LOG_TAG, "versionName: $versionName")
         binding.appVersion.text = getString(R.string.version_string, versionName)
 
         // Notifications
         val requestPermissionLauncher =
             registerForActivityResult(RequestPermission()) { result ->
-                Log.d(SettingsFragment.Companion.LOG_TAG, "result: $result")
+                Log.d(LOG_TAG, "result: $result")
             }
         binding.notificationsSwitch.setOnClickListener {
             val newValue = binding.notificationsSwitch.isChecked

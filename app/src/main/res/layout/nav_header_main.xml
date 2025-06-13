@@ -12,29 +12,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables,UselessParent">
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:id="@+id/header_image"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
             android:contentDescription="@string/app_name"
             app:srcCompat="@drawable/logo" />
         <TextView
+            android:id="@+id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/header_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="1dp"
-        tools:text="v0.0.1-dev" />
+    <!--<TextView-->
+    <!--    android:id="@+id/header_version"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_gravity="bottom"-->
+    <!--    android:layout_marginStart="12dp"-->
+    <!--    android:layout_marginBottom="1dp"-->
+    <!--    tools:text="v0.0.1-dev" />-->
 
 </LinearLayout>

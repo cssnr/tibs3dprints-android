@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_browser"
+        android:id="@+id/action_tiktok"
         android:orderInCategory="100"
+        android:icon="@drawable/fa_tiktok"
+        android:title="Login with TikTok"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_browser"
+        android:orderInCategory="101"
         android:icon="@drawable/md_captive_portal_24px"
         android:title="Open in Browser"
         app:showAsAction="never" />

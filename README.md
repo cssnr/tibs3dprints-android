@@ -39,6 +39,12 @@ Android Application for Tibs3DPrints: https://tibs3dprints.com/
 
 </details>
 
+> [!WARNING]  
+> Google Play is currently in Closed Testing.  
+> To be included contact us on [Discord](https://discord.gg/wXy6m2X8wY).
+
+[![Google Play](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/google/get-on-play-400.webp)](https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints)
+
 _Note: Until published on the play store, you may need to allow installation of apps from unknown sources._
 
 Downloading and Installing the [apk](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
