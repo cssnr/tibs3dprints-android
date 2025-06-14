@@ -55,9 +55,9 @@ class ServerApi(val context: Context) {
         val displayName: String,
         @Json(name = "avatar_url")
         val avatarUrl: String,
-        @Json(name = "open_id")
-        val authorization: String,
         @Json(name = "authorization")
+        val authorization: String,
+        @Json(name = "open_id")
         val openId: String,
         @Json(name = "union_id")
         val unionId: String,

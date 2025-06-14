@@ -311,6 +311,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateHeader() {
+        Log.i(LOG_TAG, "authorization: ${preferences.getString("authorization", null)}")
         val displayName = preferences.getString("displayName", null)
         Log.i(LOG_TAG, "updateHeader: displayName: $displayName")
         val avatarUrl = preferences.getString("avatarUrl", null)
