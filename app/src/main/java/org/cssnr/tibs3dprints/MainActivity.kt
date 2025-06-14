@@ -356,10 +356,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processOauth(intent: Intent) {
-        val authApi = AuthApi(this)
         Log.d("processOauth", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
         Log.d("processOauth", "BuildConfig.TIKTOK_CLIENT_KEY: ${BuildConfig.TIKTOK_CLIENT_KEY}")
         Log.d("processOauth", "BuildConfig.TIKTOK_REDIRECT_URI: ${BuildConfig.TIKTOK_REDIRECT_URI}")
+        val authApi = AuthApi(this)
         val response = authApi.getAuthResponseFromIntent(intent, BuildConfig.TIKTOK_REDIRECT_URI)
         Log.d("processOauth", "response: $response")
 
