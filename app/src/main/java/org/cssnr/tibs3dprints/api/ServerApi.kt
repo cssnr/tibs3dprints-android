@@ -8,6 +8,7 @@ import com.squareup.moshi.Moshi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.cssnr.tibs3dprints.BuildConfig
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -30,8 +31,8 @@ class ServerApi(val context: Context) {
     //    Log.d("loginUser", "code: $code")
     //    Log.d("loginUser", "codeVerifier: $codeVerifier")
     //    val authRequest = AuthRequest(code = code, codeVerifier = codeVerifier)
-    suspend fun loginUser(authRequest: ServerAuthRequest): Response<LoginResponse> {
-        Log.d("loginUser", "authRequest: $authRequest")
+    suspend fun serverLogin(authRequest: ServerAuthRequest): Response<LoginResponse> {
+        Log.d("serverLogin", "authRequest: $authRequest")
         return try {
             api.login(authRequest)
         } catch (e: Exception) {
@@ -79,7 +80,7 @@ class ServerApi(val context: Context) {
             .build()
         val moshi = Moshi.Builder().build()
         return Retrofit.Builder()
-            .baseUrl("https://intranet.cssnr.com/api/")
+            .baseUrl(BuildConfig.APP_API_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()

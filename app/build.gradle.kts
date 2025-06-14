@@ -32,12 +32,24 @@ android {
                 "proguard-rules.pro"
             )
             ndk { debugSymbolLevel = "FULL" }
+
+            buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com/api/\"")
+            buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"awhseqa5vj6r4ik4\"")
+            buildConfigField(
+                "String", "TIKTOK_REDIRECT_URI", "\"https://app.tibs3dprints.com/app/auth/\""
+            )
         }
         debug {
             //applicationIdSuffix = ".dev"
             //versionNameSuffix = "-dev"
             manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
             manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
+
+            buildConfigField("String", "APP_API_URL", "\"https://app-dev.tibs3dprints.com/api/\"")
+            buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"sbawf21x3esblmuew7\"")
+            buildConfigField(
+                "String", "TIKTOK_REDIRECT_URI", "\"https://app-dev.tibs3dprints.com/app/auth/\""
+            )
         }
     }
 
@@ -49,6 +61,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
