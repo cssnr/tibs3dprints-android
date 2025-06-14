@@ -19,8 +19,16 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         manifestPlaceholders["firebaseAnalyticsDeactivated"] = false // enabled
         manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
+        manifestPlaceholders["deepLinkHost"] = "app.tibs3dprints.com"
+
+        buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com/api/\"")
+        buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"awhseqa5vj6r4ik4\"")
+        buildConfigField(
+            "String", "TIKTOK_REDIRECT_URI", "\"https://app.tibs3dprints.com/app/auth/\""
+        )
     }
 
     buildTypes {
@@ -32,18 +40,13 @@ android {
                 "proguard-rules.pro"
             )
             ndk { debugSymbolLevel = "FULL" }
-
-            buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com/api/\"")
-            buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"awhseqa5vj6r4ik4\"")
-            buildConfigField(
-                "String", "TIKTOK_REDIRECT_URI", "\"https://app.tibs3dprints.com/app/auth/\""
-            )
         }
         debug {
             //applicationIdSuffix = ".dev"
             //versionNameSuffix = "-dev"
             manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
             manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
+            manifestPlaceholders["deepLinkHost"] = "app-dev.tibs3dprints.com"
 
             buildConfigField("String", "APP_API_URL", "\"https://app-dev.tibs3dprints.com/api/\"")
             buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"sbawf21x3esblmuew7\"")
