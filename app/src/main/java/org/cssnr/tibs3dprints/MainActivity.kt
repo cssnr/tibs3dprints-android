@@ -336,6 +336,7 @@ class MainActivity : AppCompatActivity() {
         preferences.edit {
             putString("displayName", "")
             putString("avatarUrl", "")
+            putString("authorization", "")
         }
         updateHeader()
         invalidateOptionsMenu()
@@ -346,6 +347,7 @@ class MainActivity : AppCompatActivity() {
         preferences.edit {
             putString("displayName", userData.displayName)
             putString("avatarUrl", userData.avatarUrl)
+            putString("authorization", userData.authorization)
         }
         updateHeader()
         invalidateOptionsMenu()
@@ -355,11 +357,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun processOauth(intent: Intent) {
         val authApi = AuthApi(this)
+        Log.d("processOauth", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
+        Log.d("processOauth", "BuildConfig.TIKTOK_CLIENT_KEY: ${BuildConfig.TIKTOK_CLIENT_KEY}")
+        Log.d("processOauth", "BuildConfig.TIKTOK_REDIRECT_URI: ${BuildConfig.TIKTOK_REDIRECT_URI}")
         val response = authApi.getAuthResponseFromIntent(intent, BuildConfig.TIKTOK_REDIRECT_URI)
-        Log.d("handleIntent", "response: $response")
+        Log.d("processOauth", "response: $response")
 
         val codeVerifier = preferences.getString("codeVerifier", null)
-        Log.d("handleIntent", "codeVerifier: $codeVerifier")
+        Log.d("processOauth", "codeVerifier: $codeVerifier")
 
         if (response == null || codeVerifier == null) {
             Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show()
@@ -368,16 +373,17 @@ class MainActivity : AppCompatActivity() {
 
         val authRequest =
             ServerAuthRequest(code = response.authCode, codeVerifier = codeVerifier)
+        Log.d("processOauth", "authRequest: $authRequest")
         val api = ServerApi(this)
         lifecycleScope.launch {
             val userDataResponse = withContext(Dispatchers.IO) { api.serverLogin(authRequest) }
-            Log.d("handleIntent", "userDataResponse: $userDataResponse")
+            Log.d("processOauth", "userDataResponse: $userDataResponse")
             if (!userDataResponse.isSuccessful) {
                 Toast.makeText(this@MainActivity, "Response Failure!", Toast.LENGTH_LONG).show()
                 return@launch
             }
             val userData = userDataResponse.body()
-            Log.d("handleIntent", "userData: $userData")
+            Log.d("processOauth", "userData: $userData")
             if (userData == null) {
                 Toast.makeText(this@MainActivity, "Data Failure!", Toast.LENGTH_LONG).show()
                 return@launch
