@@ -53,14 +53,15 @@ class ServerApi(val context: Context) {
     data class LoginResponse(
         @Json(name = "display_name")
         val displayName: String,
+        @Json(name = "avatar_url")
+        val avatarUrl: String,
+        @Json(name = "authorization")
+        val authorization: String,
         @Json(name = "open_id")
         val openId: String,
         @Json(name = "union_id")
         val unionId: String,
-        @Json(name = "avatar_url")
-        val avatarUrl: String
     )
-
 
     interface ApiService {
         @POST(("auth/"))
@@ -79,6 +80,7 @@ class ServerApi(val context: Context) {
             }
             .build()
         val moshi = Moshi.Builder().build()
+        Log.d("createRetrofit", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
         return Retrofit.Builder()
             .baseUrl(BuildConfig.APP_API_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
