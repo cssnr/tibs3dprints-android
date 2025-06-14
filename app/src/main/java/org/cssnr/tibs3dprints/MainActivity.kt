@@ -3,11 +3,16 @@ package org.cssnr.tibs3dprints
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -17,6 +22,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -30,14 +36,27 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.tiktok.open.sdk.auth.AuthApi
+import com.tiktok.open.sdk.auth.AuthApi.AuthMethod
+import com.tiktok.open.sdk.auth.AuthRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.cssnr.tibs3dprints.api.ServerApi
+import org.cssnr.tibs3dprints.api.ServerApi.LoginResponse
+import org.cssnr.tibs3dprints.api.ServerApi.ServerAuthRequest
 import org.cssnr.tibs3dprints.databinding.ActivityMainBinding
 import org.cssnr.tibs3dprints.work.APP_WORKER_CONSTRAINTS
 import org.cssnr.tibs3dprints.work.AppWorker
+import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var headerView: View
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -144,11 +163,12 @@ class MainActivity : AppCompatActivity() {
         val versionName = packageInfo.versionName
         Log.d(LOG_TAG, "versionName: $versionName")
 
-        val headerView = binding.navView.getHeaderView(0)
-        val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
-        val formattedVersion = getString(R.string.version_string, versionName)
-        Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
-        versionTextView.text = formattedVersion
+        headerView = binding.navView.getHeaderView(0)
+        //val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
+        //val formattedVersion = getString(R.string.version_string, versionName)
+        //Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
+        //versionTextView.text = formattedVersion
+        updateHeader()
 
         // TODO: This should be done after enabling alerts for better control...
         Log.d("SettingsFragment", "REGISTER - notification channel")
@@ -208,6 +228,18 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_tiktok -> {
+                Log.d(LOG_TAG, "onOptionsItemSelected: action_tiktok")
+                Log.d(LOG_TAG, "action_tiktok: ${item.title}")
+                if (item.title == "Logout") {
+                    Log.d(LOG_TAG, "LOGOUT")
+                    logoutLocalUser()
+                    return true
+                }
+                startOauth()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -252,7 +284,21 @@ class MainActivity : AppCompatActivity() {
                     .setPopUpTo(navController.currentDestination?.id!!, true)
                     .build()
             )
+        } else if (Intent.ACTION_VIEW == action) {
+            Log.i("handleIntent", "ACTION_VIEW: path: ${intent.data?.path}")
+            if (intent.data?.path?.startsWith("/app/auth") == true) {
+                processOauth(intent)
+            } else {
+                Toast.makeText(this@MainActivity, "Unknown Intent!", Toast.LENGTH_LONG).show()
+            }
         }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val displayName = preferences.getString("displayName", null)
+        val item = menu.findItem(R.id.action_tiktok)
+        item.title = if (displayName.isNullOrEmpty()) "Login with TikTok" else "Logout"
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -262,6 +308,120 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun updateHeader() {
+        val displayName = preferences.getString("displayName", null)
+        Log.i(LOG_TAG, "updateHeader: displayName: $displayName")
+        val avatarUrl = preferences.getString("avatarUrl", null)
+
+        val headerText = headerView.findViewById<TextView>(R.id.header_text)
+        val headerImage = headerView.findViewById<ImageView>(R.id.header_image)
+
+        if (displayName.isNullOrEmpty()) {
+            Log.d(LOG_TAG, "updateHeader: log OUT")
+            headerText.text = getString(R.string.app_name)
+            headerImage.setImageResource(R.drawable.logo)
+        } else {
+            Log.d(LOG_TAG, "updateHeader: log IN")
+            headerText.text = displayName
+            if (!avatarUrl.isNullOrEmpty()) {
+                Glide.with(headerImage).load(avatarUrl).into(headerImage)
+            }
+        }
+    }
+
+    private fun logoutLocalUser() {
+        Log.d(LOG_TAG, "preferences.edit: CLEAR USER CREDENTIALS")
+        preferences.edit {
+            putString("displayName", "")
+            putString("avatarUrl", "")
+        }
+        updateHeader()
+        invalidateOptionsMenu()
+        Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show()
+    }
+
+    private fun loginLocalUser(userData: LoginResponse) {
+        preferences.edit {
+            putString("displayName", userData.displayName)
+            putString("avatarUrl", userData.avatarUrl)
+        }
+        updateHeader()
+        invalidateOptionsMenu()
+        val msg = "Welcome ${userData.displayName}"
+        Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun processOauth(intent: Intent) {
+        val authApi = AuthApi(this)
+        val response = authApi.getAuthResponseFromIntent(intent, BuildConfig.TIKTOK_REDIRECT_URI)
+        Log.d("handleIntent", "response: $response")
+
+        val codeVerifier = preferences.getString("codeVerifier", null)
+        Log.d("handleIntent", "codeVerifier: $codeVerifier")
+
+        if (response == null || codeVerifier == null) {
+            Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val authRequest =
+            ServerAuthRequest(code = response.authCode, codeVerifier = codeVerifier)
+        val api = ServerApi(this)
+        lifecycleScope.launch {
+            val userDataResponse = withContext(Dispatchers.IO) { api.serverLogin(authRequest) }
+            Log.d("handleIntent", "userDataResponse: $userDataResponse")
+            if (!userDataResponse.isSuccessful) {
+                Toast.makeText(this@MainActivity, "Response Failure!", Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            val userData = userDataResponse.body()
+            Log.d("handleIntent", "userData: $userData")
+            if (userData == null) {
+                Toast.makeText(this@MainActivity, "Data Failure!", Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            loginLocalUser(userData) // NOTE: This is only used here right now...
+        }
+    }
+
+    private fun startOauth() {
+        val scope = "user.info.basic"
+
+        val codeVerifier = generateCodeVerifier()
+        Log.d(LOG_TAG, "codeVerifier: $codeVerifier")
+        preferences.edit {
+            putString("codeVerifier", codeVerifier)
+        }
+
+        val authMethod = if (isTikTokInstalled()) AuthMethod.TikTokApp else AuthMethod.ChromeTab
+        Log.d(LOG_TAG, "authMethod: $authMethod")
+
+        val authApi = AuthApi(this)
+        val request = AuthRequest(
+            BuildConfig.TIKTOK_CLIENT_KEY, scope, BuildConfig.TIKTOK_REDIRECT_URI, codeVerifier
+        )
+        Log.d(LOG_TAG, "request: $request")
+        authApi.authorize(request, authMethod)
+    }
+
+    private fun isTikTokInstalled(): Boolean {
+        return try {
+            packageManager.getPackageInfo("com.zhiliaoapp.musically", 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    private fun generateCodeVerifier(): String {
+        val secureRandom = SecureRandom()
+        val code = ByteArray(32)
+        secureRandom.nextBytes(code)
+        return Base64.encodeToString(
+            code, Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
+        )
     }
 
     fun setDrawerLockMode(enabled: Boolean) {

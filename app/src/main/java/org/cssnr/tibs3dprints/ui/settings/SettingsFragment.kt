@@ -53,6 +53,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var enableNotifications: SwitchPreferenceCompat? = null
     private var sendTestAlert: Preference? = null
 
+    //private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
+
     companion object {
         const val LOG_TAG = "SetupFragment"
     }
@@ -88,19 +90,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         //    false
         //}
 
-        // Send Test Alert
-        sendTestAlert = findPreference<Preference>("send_test_alert")
-        sendTestAlert?.setOnPreferenceClickListener {
-            Log.d(LOG_TAG, "send_test_alert: setOnPreferenceClickListener")
-            val builder = NotificationCompat.Builder(ctx, "default_channel_id")
-                .setSmallIcon(R.drawable.logo)
-                .setContentTitle("Test Notification")
-                .setContentText("This is a test of the alert system.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
-            ctx.sendNotification(builder, "default_channel_id")
-            false
-        }
+        //// Send Test Alert
+        //sendTestAlert = findPreference<Preference>("send_test_alert")
+        //sendTestAlert?.setOnPreferenceClickListener {
+        //    Log.d(LOG_TAG, "send_test_alert: setOnPreferenceClickListener")
+        //    val builder = NotificationCompat.Builder(ctx, "default_channel_id")
+        //        .setSmallIcon(R.drawable.logo)
+        //        .setContentTitle("Test Notification")
+        //        .setContentText("This is a test of the alert system.")
+        //        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        //        .setAutoCancel(true)
+        //    ctx.sendNotification(builder, "default_channel_id")
+        //    false
+        //}
 
         // Background Update Interval
         val workInterval = findPreference<ListPreference>("work_interval")

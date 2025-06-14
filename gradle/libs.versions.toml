@@ -18,16 +18,18 @@ preferenceKtx = "1.2.1"
 recyclerview = "1.4.0"
 viewpager2 = "1.1.0"
 workRuntimeKtx = "2.10.1"
+browser = "1.9.0-alpha04"
+
+googleServices = "4.4.2"
+firebaseBom = "33.15.0"
+crashlyticsPlugin = "3.0.4"
 
 okhttp = "4.12.0"
 retrofit = "3.0.0"
 moshiKotlinCodegen = "1.15.2"
 glide = "5.0.0-rc01"
 rssparser = "6.0.11"
-
-googleServices = "4.4.2"
-firebaseBom = "33.15.0"
-crashlyticsPlugin = "3.0.4"
+tiktokOpenSdkCore = "latest.release"
 
 #androidyoutubeplayer = "12.1.1"
 
@@ -48,6 +50,12 @@ androidx-preference-ktx = { group = "androidx.preference", name = "preference-kt
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -57,11 +65,9 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 okhttp-integration = { group = "com.github.bumptech.glide", name = "okhttp3-integration", version.ref = "glide" }
 rssparser = { group = "com.prof18.rssparser", name = "rssparser", version.ref = "rssparser" }
-
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+tiktok-open-sdk-core = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-core", version.ref = "tiktokOpenSdkCore" }
+tiktok-open-sdk-auth = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-auth", version.ref = "tiktokOpenSdkCore" }
+tiktok-open-sdk-share = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-share", version.ref = "tiktokOpenSdkCore" }
 
 #androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 

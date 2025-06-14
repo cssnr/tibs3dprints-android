@@ -19,8 +19,16 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         manifestPlaceholders["firebaseAnalyticsDeactivated"] = false // enabled
         manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
+        manifestPlaceholders["deepLinkHost"] = "app.tibs3dprints.com"
+
+        buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com/api/\"")
+        buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"awhseqa5vj6r4ik4\"")
+        buildConfigField(
+            "String", "TIKTOK_REDIRECT_URI", "\"https://app.tibs3dprints.com/app/auth/\""
+        )
     }
 
     buildTypes {
@@ -38,6 +46,13 @@ android {
             //versionNameSuffix = "-dev"
             manifestPlaceholders["firebaseAnalyticsDeactivated"] = true // disabled
             manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
+            manifestPlaceholders["deepLinkHost"] = "app-dev.tibs3dprints.com"
+
+            buildConfigField("String", "APP_API_URL", "\"https://app-dev.tibs3dprints.com/api/\"")
+            buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"sbawf21x3esblmuew7\"")
+            buildConfigField(
+                "String", "TIKTOK_REDIRECT_URI", "\"https://app-dev.tibs3dprints.com/app/auth/\""
+            )
         }
     }
 
@@ -49,6 +64,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -66,6 +82,7 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.browser)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
@@ -76,6 +93,9 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.okhttp.integration)
     implementation(libs.rssparser)
+    implementation(libs.tiktok.open.sdk.core)
+    implementation(libs.tiktok.open.sdk.auth)
+    implementation(libs.tiktok.open.sdk.share)
     //implementation(libs.androidyoutubeplayer)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)

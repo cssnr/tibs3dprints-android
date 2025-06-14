@@ -23,12 +23,18 @@
         <!--    android:summary="Configure Notification Settings"-->
         <!--    android:icon="@drawable/md_notification_settings_24px" />-->
 
-        <Preference
-            android:key="send_test_alert"
-            android:title="Send Test Alert"
-            android:summary="Based on Above Settings"
-            android:icon="@drawable/md_mark_unread_chat_alt_24px"
-            android:enabled="false" />
+        <!--<Preference-->
+        <!--    android:key="send_test_alert"-->
+        <!--    android:title="Send Test Alert"-->
+        <!--    android:summary="Based on Above Settings"-->
+        <!--    android:icon="@drawable/md_mark_unread_chat_alt_24px"-->
+        <!--    android:enabled="false" />-->
+
+        <!--<Preference-->
+        <!--    android:key="tik_to_tok"-->
+        <!--    android:title="Tick to Tock"-->
+        <!--    android:summary="DONT DO IT!"-->
+        <!--    android:icon="@drawable/md_mark_unread_chat_alt_24px" />-->
 
         <ListPreference
             android:key="work_interval"
