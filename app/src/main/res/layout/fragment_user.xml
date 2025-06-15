@@ -7,13 +7,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.news.NewsFragment">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,9 +48,30 @@
                     tools:text="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"/>
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:text="Poll Available"/>
+            <TextView
+                android:id="@+id/poll_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="Loading..."/>
+
+            <Button
+                android:id="@+id/poll_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:height="56dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="View Poll" />
+
+
         </LinearLayout>
     </ScrollView>
-
     <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
     <!--    android:id="@+id/add_station"-->
     <!--    android:layout_width="wrap_content"-->

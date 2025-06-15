@@ -13,6 +13,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 
@@ -41,6 +42,59 @@ class ServerApi(val context: Context) {
         }
     }
 
+    suspend fun getCurrentPoll(): PollResponse {
+        return api.getPollCurrent()
+    }
+
+    @JsonClass(generateAdapter = true)
+    data class PollResponse(
+        @Json(name = "poll")
+        val poll: Poll,
+
+        @Json(name = "choices")
+        val choices: List<Choice>
+    ) {
+        @JsonClass(generateAdapter = true)
+        data class Poll(
+            @Json(name = "id")
+            val id: Int,
+
+            @Json(name = "title")
+            val title: String,
+
+            @Json(name = "question")
+            val question: String,
+
+            @Json(name = "start_at")
+            val startAt: String,
+
+            @Json(name = "end_at")
+            val endAt: String,
+
+            @Json(name = "duration")
+            val duration: Int
+        )
+
+        @JsonClass(generateAdapter = true)
+        data class Choice(
+            @Json(name = "id")
+            val id: Int,
+
+            @Json(name = "poll")
+            val poll: Int,
+
+            @Json(name = "name")
+            val name: String,
+
+            @Json(name = "file")
+            val file: String?,
+
+            @Json(name = "votes")
+            val votes: Int
+        )
+    }
+
+
     @JsonClass(generateAdapter = true)
     data class ServerAuthRequest(
         @Json(name = "code")
@@ -68,6 +122,9 @@ class ServerApi(val context: Context) {
         suspend fun login(
             @Body authRequest: ServerAuthRequest
         ): Response<LoginResponse>
+
+        @GET("poll/current/")
+        suspend fun getPollCurrent(): PollResponse
     }
 
     private fun createRetrofit(): Retrofit {
@@ -80,9 +137,10 @@ class ServerApi(val context: Context) {
             }
             .build()
         val moshi = Moshi.Builder().build()
-        Log.d("createRetrofit", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
+        val url = "${BuildConfig.APP_API_URL}/api"
+        Log.d("createRetrofit", "url: $url")
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.APP_API_URL)
+            .baseUrl(url)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()

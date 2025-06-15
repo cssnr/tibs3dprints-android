@@ -11,14 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
+import org.cssnr.tibs3dprints.BuildConfig
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
-import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
-import org.cssnr.tibs3dprints.databinding.FragmentUserBinding
+import org.cssnr.tibs3dprints.databinding.FragmentPollBinding
 
-class UserFragment : Fragment() {
+class PollFragment : Fragment() {
 
-    private var _binding: FragmentUserBinding? = null
+    private var _binding: FragmentPollBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -26,7 +26,7 @@ class UserFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentUserBinding.inflate(inflater, container, false)
+        _binding = FragmentPollBinding.inflate(inflater, container, false)
         val root: View = binding.root
         return root
     }
@@ -43,25 +43,33 @@ class UserFragment : Fragment() {
         val ctx = requireContext()
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
-        val displayName = preferences.getString("displayName", null)
-        val avatarUrl = preferences.getString("avatarUrl", null)
+        val authorization = preferences.getString("authorization", null)
 
-        Log.i(LOG_TAG, "displayName: $displayName")
-
-        binding.headerText.text = displayName
-        if (!avatarUrl.isNullOrEmpty()) {
-            Glide.with(binding.headerImage).load(avatarUrl).into(binding.headerImage)
-        }
-
-        binding.pollBtn.setOnClickListener {
-            findNavController().navigate(R.id.nav_action_user_poll)
+        binding.goBackBtn.setOnClickListener {
+            findNavController().navigateUp()
         }
 
         val api = ServerApi(ctx)
         lifecycleScope.launch {
             val poll = api.getCurrentPoll()
             Log.i(LOG_TAG, "poll: $poll")
+            Log.d(LOG_TAG, "choices: ${poll.choices}")
             binding.pollTitle.text = poll.poll.title
+            poll.choices.forEachIndexed { index, choice ->
+                Log.d(LOG_TAG, "choice: $choice")
+                val url = "${BuildConfig.APP_API_URL}/${choice.file}"
+                Log.d(LOG_TAG, "url: $url")
+                when (index) {
+                    0 -> {
+                        Glide.with(ctx).load(url).into(binding.image1)
+                        binding.text1.text = choice.name
+                    }
+                    1 -> {
+                        Glide.with(ctx).load(url).into(binding.image2)
+                        binding.text2.text = choice.name
+                    }
+                }
+            }
         }
     }
 }

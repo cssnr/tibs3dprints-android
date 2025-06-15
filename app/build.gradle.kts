@@ -24,7 +24,7 @@ android {
         manifestPlaceholders["firebaseCrashlyticsEnabled"] = true // enabled
         manifestPlaceholders["deepLinkHost"] = "app.tibs3dprints.com"
 
-        buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com/api/\"")
+        buildConfigField("String", "APP_API_URL", "\"https://app.tibs3dprints.com\"")
         buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"awhseqa5vj6r4ik4\"")
         buildConfigField(
             "String", "TIKTOK_REDIRECT_URI", "\"https://app.tibs3dprints.com/app/auth/\""
@@ -48,7 +48,7 @@ android {
             manifestPlaceholders["firebaseCrashlyticsEnabled"] = false // disabled
             manifestPlaceholders["deepLinkHost"] = "app-dev.tibs3dprints.com"
 
-            buildConfigField("String", "APP_API_URL", "\"https://app-dev.tibs3dprints.com/api/\"")
+            buildConfigField("String", "APP_API_URL", "\"https://app-dev.tibs3dprints.com\"")
             buildConfigField("String", "TIKTOK_CLIENT_KEY", "\"sbawf21x3esblmuew7\"")
             buildConfigField(
                 "String", "TIKTOK_REDIRECT_URI", "\"https://app-dev.tibs3dprints.com/app/auth/\""
