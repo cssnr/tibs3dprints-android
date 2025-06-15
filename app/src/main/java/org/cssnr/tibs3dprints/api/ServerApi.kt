@@ -137,7 +137,7 @@ class ServerApi(val context: Context) {
             }
             .build()
         val moshi = Moshi.Builder().build()
-        val url = "${BuildConfig.APP_API_URL}/api"
+        val url = "${BuildConfig.APP_API_URL}/api/"
         Log.d("createRetrofit", "url: $url")
         return Retrofit.Builder()
             .baseUrl(url)
