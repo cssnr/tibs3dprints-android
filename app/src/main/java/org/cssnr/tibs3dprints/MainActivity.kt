@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var headerView: View
 
+    private lateinit var navView: NavigationView
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -94,18 +96,20 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
         val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
+        navView = binding.navView
         val navHostFragment =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
         navController = navHostFragment.navController
 
         val topLevelItems =
-            setOf(R.id.nav_home, R.id.nav_news, R.id.nav_settings)
+            setOf(R.id.nav_home, R.id.nav_user, R.id.nav_news, R.id.nav_settings)
         appBarConfiguration = AppBarConfiguration(topLevelItems, drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
         setupWithNavController(bottomNav, navController)
+
+        navView.menu.findItem(R.id.nav_user).isVisible = false
 
         // Force White Status Bar Text in for Light Mode
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
@@ -125,6 +129,11 @@ class MainActivity : AppCompatActivity() {
                         val item = menu[i]
                         item.isChecked = item.itemId == R.id.nav_news
                     }
+                }
+
+                R.id.nav_user -> {
+                    Log.d(LOG_TAG, "nav_user")
+                    bottomNav.menu.findItem(R.id.nav_wtf).isChecked = true
                 }
             }
         }
@@ -233,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(LOG_TAG, "action_tiktok: ${item.title}")
                 if (item.title == "Logout") {
                     Log.d(LOG_TAG, "LOGOUT")
-                    logoutLocalUser()
+                    logoutLocalUser() // NOTE: This is only used here right now...
                     return true
                 }
                 startOauth()
@@ -321,10 +330,12 @@ class MainActivity : AppCompatActivity() {
 
         if (displayName.isNullOrEmpty()) {
             Log.d(LOG_TAG, "updateHeader: log OUT")
+            navView.menu.findItem(R.id.nav_user).isVisible = false
             headerText.text = getString(R.string.app_name)
             headerImage.setImageResource(R.drawable.logo)
         } else {
             Log.d(LOG_TAG, "updateHeader: log IN")
+            navView.menu.findItem(R.id.nav_user).isVisible = true
             headerText.text = displayName
             if (!avatarUrl.isNullOrEmpty()) {
                 Glide.with(headerImage).load(avatarUrl).into(headerImage)
@@ -341,6 +352,18 @@ class MainActivity : AppCompatActivity() {
         }
         updateHeader()
         invalidateOptionsMenu()
+
+        if (navController.currentDestination?.id == R.id.nav_user) {
+            Log.i(LOG_TAG, "Navigating User to Home on Logout")
+            //navController.navigate(R.id.nav_home)
+            navController.navigate(
+                R.id.nav_home, null, NavOptions.Builder()
+                    .setPopUpTo(R.id.nav_user, true)
+                    .build()
+            )
+        }
+        navView.menu.findItem(R.id.nav_user).isVisible = false
+
         Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show()
     }
 
@@ -357,6 +380,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun processOauth(intent: Intent) {
+        binding.appBarMain.mainLoadingLayout.visibility = View.VISIBLE
+
         Log.d("processOauth", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
         Log.d("processOauth", "BuildConfig.TIKTOK_CLIENT_KEY: ${BuildConfig.TIKTOK_CLIENT_KEY}")
         Log.d("processOauth", "BuildConfig.TIKTOK_REDIRECT_URI: ${BuildConfig.TIKTOK_REDIRECT_URI}")
@@ -369,6 +394,7 @@ class MainActivity : AppCompatActivity() {
 
         if (response == null || codeVerifier == null) {
             Toast.makeText(this, "Login Failed", Toast.LENGTH_LONG).show()
+            binding.appBarMain.mainLoadingLayout.visibility = View.GONE
             return
         }
 
@@ -381,15 +407,19 @@ class MainActivity : AppCompatActivity() {
             Log.d("processOauth", "userDataResponse: $userDataResponse")
             if (!userDataResponse.isSuccessful) {
                 Toast.makeText(this@MainActivity, "Response Failure!", Toast.LENGTH_LONG).show()
+                binding.appBarMain.mainLoadingLayout.visibility = View.GONE
                 return@launch
             }
             val userData = userDataResponse.body()
             Log.d("processOauth", "userData: $userData")
             if (userData == null) {
                 Toast.makeText(this@MainActivity, "Data Failure!", Toast.LENGTH_LONG).show()
+                binding.appBarMain.mainLoadingLayout.visibility = View.GONE
                 return@launch
             }
             loginLocalUser(userData) // NOTE: This is only used here right now...
+            binding.appBarMain.mainLoadingLayout.visibility = View.GONE
+            navController.navigate(R.id.nav_user)
         }
     }
 
