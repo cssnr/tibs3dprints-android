@@ -31,6 +31,7 @@ glide = "5.0.0-rc01"
 rssparser = "6.0.11"
 tiktokOpenSdkCore = "latest.release"
 photoview = "1.0.3"
+mpandroidchart = "v3.1.0"
 
 #androidyoutubeplayer = "12.1.1"
 
@@ -70,6 +71,7 @@ tiktok-open-sdk-core = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-
 tiktok-open-sdk-auth = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-auth", version.ref = "tiktokOpenSdkCore" }
 tiktok-open-sdk-share = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk-share", version.ref = "tiktokOpenSdkCore" }
 photoview = { group = "io.getstream", name = "photoview", version.ref = "photoview" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 #androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 
 [plugins]

@@ -1,28 +1,32 @@
 package org.cssnr.tibs3dprints.ui.user
 
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.github.mikephil.charting.charts.HorizontalBarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import kotlinx.coroutines.launch
 import org.cssnr.tibs3dprints.BuildConfig
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
-import org.cssnr.tibs3dprints.api.ServerApi.Choice
-import org.cssnr.tibs3dprints.api.ServerApi.Vote
 import org.cssnr.tibs3dprints.databinding.FragmentPollBinding
+
 
 class PollFragment : Fragment() {
 
@@ -56,7 +60,7 @@ class PollFragment : Fragment() {
 
         userViewModel.poll.observe(viewLifecycleOwner) { poll ->
             Log.i(LOG_TAG, "userViewModel.poll.observe: poll: $poll")
-            updatePoll()
+            ctx.updatePoll()
         }
 
         val api = ServerApi(ctx)
@@ -65,6 +69,7 @@ class PollFragment : Fragment() {
             binding.vote1.isEnabled = false
             binding.vote2.isEnabled = false
             Log.d("voteListener", "view: $view")
+            Log.d("voteListener", "view.tag: ${view.tag}")
             if (view.tag == null) return@voteListener
             val tag = view.tag as Int
             Log.d("voteListener", "tag: $tag")
@@ -87,7 +92,7 @@ class PollFragment : Fragment() {
         binding.vote2.setOnClickListener(voteListener)
     }
 
-    fun updatePoll() {
+    fun Context.updatePoll() {
         val poll = userViewModel.poll.value
         Log.d(LOG_TAG, "poll: $poll")
         if (poll == null) {
@@ -101,48 +106,84 @@ class PollFragment : Fragment() {
         val timer = createCountDownTimer(binding.timerText, poll.poll.endAt)
         timer?.start()
 
+        if (poll.vote != null) {
+            Log.d(LOG_TAG, "Setup Bar Chart: ${poll.vote}")
+            val votes1 = poll.choices[0].votes
+            val votes2 = poll.choices[1].votes
+            Log.d(LOG_TAG, "votes1: $votes1 - votes2: $votes2")
+            setupBarChart(binding.barChart, votes1, votes2)
+            binding.voteCount1.text = votes1.toString()
+            binding.voteCount2.text = votes2.toString()
+            binding.buttonLayout.visibility = View.GONE
+            binding.barChartLayout.visibility = View.VISIBLE
+        }
+
         poll.choices.forEachIndexed { index, choice ->
             Log.d(LOG_TAG, "choice: $choice")
             val url = "${BuildConfig.APP_API_URL}/${choice.file}"
             Log.d(LOG_TAG, "url: $url")
+            val voted = poll.vote?.choiceId == choice.id
+            Log.d(LOG_TAG, "voted: $voted")
             when (index) {
                 0 -> {
                     binding.text1.text = choice.name
-                    updateButton(binding.vote1, choice, poll.vote)
-                    updateImage(binding.image1, url)
+                    binding.vote1.tag = choice.id
+                    updateImage(binding.image1, binding.border1, voted, url)
                 }
 
                 1 -> {
                     binding.text2.text = choice.name
-                    updateButton(binding.vote2, choice, poll.vote)
-                    updateImage(binding.image2, url)
+                    binding.vote2.tag = choice.id
+                    updateImage(binding.image2, binding.border2, voted, url)
                 }
             }
         }
     }
 
-    fun updateImage(image: ImageView, url: String) {
+    fun updateImage(image: ImageView, border: FrameLayout, voted: Boolean, url: String) {
         Log.d(LOG_TAG, "updateImage: url: $url")
         Glide.with(this).load(url).into(image)
         val bundle = bundleOf("image_url" to url)
         image.setOnClickListener {
             findNavController().navigate(R.id.nav_preview, bundle)
         }
+        if (voted) {
+            border.setBackgroundResource(R.drawable.image_border_voted)
+        }
+    }
+}
+
+fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) {
+    val votes = floatArrayOf(vote1.toFloat(), vote2.toFloat())
+    val entry = BarEntry(0f, votes)
+
+    val dataSet = BarDataSet(listOf(entry), "").apply {
+        setColors(Color.BLUE, Color.RED)
+        setDrawValues(false)  // Disable numbers on bars
     }
 
-    fun updateButton(button: TextView, choice: Choice, vote: Vote?) {
-        if (vote == null) {
-            button.tag = choice.id
-            return
-        }
-        button.isEnabled = false
-        if (choice.id == vote.choiceId) {
-            button.text = "Voted"
-            val drawable =
-                AppCompatResources.getDrawable(button.context, R.drawable.md_task_alt_24px)
-            button.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
-        } else {
-            button.visibility = View.INVISIBLE
-        }
+    val data = BarData(dataSet).apply {
+        barWidth = 0.9f
+    }
+
+    barChart.apply {
+        this.data = data
+        description.isEnabled = false
+        legend.isEnabled = false
+        setPinchZoom(false)
+        setScaleEnabled(false)
+        setFitBars(false)
+        setDrawBarShadow(false)
+        setBackgroundColor(Color.TRANSPARENT)
+        setTouchEnabled(false)
+        setViewPortOffsets(0f, 0f, 0f, 0f)
+
+        setDrawGridBackground(false)
+
+        xAxis.isEnabled = false
+        axisLeft.isEnabled = false
+        axisRight.isEnabled = false
+
+        invalidate()
     }
 }

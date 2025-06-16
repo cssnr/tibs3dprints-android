@@ -17,6 +17,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://artifact.bytedance.com/repository/AwemeOpenSDK")
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
