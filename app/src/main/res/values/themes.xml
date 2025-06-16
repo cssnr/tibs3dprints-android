@@ -8,6 +8,7 @@
 
     <style name="Tibs3DPrints.Button" parent="Widget.Material3.Button">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:drawableTint">@android:color/white</item>
         <item name="iconTint">@android:color/white</item>
     </style>
 

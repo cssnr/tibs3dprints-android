@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.news.NewsFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="24dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables,UselessParent">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:padding="12dp"
+                    android:background="@drawable/image_border">
+                    <ImageView
+                        android:id="@+id/header_image"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:contentDescription="@string/app_name"
+                        app:srcCompat="@drawable/logo" />
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/header_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    tools:text="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/poll_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                    android:text="Poll Available" />
+
+                <TextView
+                    android:id="@+id/poll_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="Loading..." />
+
+                <TextView
+                    android:id="@+id/timer_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="Remaining 120:49:30 hours." />
+
+                <Button
+                    android:id="@+id/poll_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:height="56dp"
+                    android:drawableEnd="@drawable/md_ballot_24px"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="View Poll" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--    android:id="@+id/add_station"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginBottom="@dimen/fab_padding"-->
+    <!--    android:layout_marginEnd="@dimen/fab_padding"-->
+    <!--    android:contentDescription="Add Station"-->
+    <!--    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--    app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--    app:srcCompat="@drawable/md_add_circle_24px"-->
+    <!--    app:backgroundTint="@color/secondary_color"-->
+    <!--    app:tint="@android:color/white"-->
+    <!--    app:fabSize="mini"/>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

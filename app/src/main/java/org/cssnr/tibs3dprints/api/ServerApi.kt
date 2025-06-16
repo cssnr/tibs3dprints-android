@@ -2,6 +2,7 @@ package org.cssnr.tibs3dprints.api
 
 import android.content.Context
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
@@ -13,6 +14,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 
@@ -22,6 +24,9 @@ class ServerApi(val context: Context) {
 
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
     val userAgent = "${context.packageName}/${versionName}"
+    val authToken =
+        PreferenceManager.getDefaultSharedPreferences(context).getString("authorization", null)
+            ?: ""
 
     init {
         api = createRetrofit().create(ApiService::class.java)
@@ -40,6 +45,62 @@ class ServerApi(val context: Context) {
             Response.error(520, errorBody)
         }
     }
+
+    suspend fun getCurrentPoll(): PollResponse? {
+        return api.getPollCurrent().takeIf { it.isSuccessful }?.body()
+    }
+
+    suspend fun submitVote(poll: Int, choice: Int): Vote? {
+        val voteRequest = VoteRequest(poll = poll, choice = choice)
+        return api.postVote(voteRequest).takeIf { it.isSuccessful }?.body()
+    }
+
+    @JsonClass(generateAdapter = true)
+    data class PollResponse(
+        @Json(name = "poll") val poll: Poll,
+        @Json(name = "choices") val choices: List<Choice>,
+        @Json(name = "vote") var vote: Vote? = null
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class Poll(
+        @Json(name = "id") val id: Int,
+        @Json(name = "title") val title: String,
+        @Json(name = "question") val question: String,
+        @Json(name = "start_at") val startAt: String,
+        @Json(name = "end_at") val endAt: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class Choice(
+        @Json(name = "id") val id: Int,
+        @Json(name = "poll") val poll: Int,
+        @Json(name = "name") val name: String,
+        @Json(name = "file") val file: String?,
+        @Json(name = "votes") val votes: Int,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class Vote(
+        @Json(name = "id") val id: Int,
+        @Json(name = "user_id") val userId: Int,
+        @Json(name = "poll_id") val pollId: Int,
+        @Json(name = "choice_id") val choiceId: Int,
+        @Json(name = "notify_on_result") val notifyOnResult: Boolean,
+        @Json(name = "voted_at") val votedAt: String?,
+    )
+
+
+    @JsonClass(generateAdapter = true)
+    data class VoteRequest(
+        @Json(name = "poll") val poll: Int,
+        @Json(name = "choice") val choice: Int,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class MessageResponse(
+        @Json(name = "message") val message: String,
+    )
 
     @JsonClass(generateAdapter = true)
     data class ServerAuthRequest(
@@ -68,6 +129,12 @@ class ServerApi(val context: Context) {
         suspend fun login(
             @Body authRequest: ServerAuthRequest
         ): Response<LoginResponse>
+
+        @GET("poll/current/")
+        suspend fun getPollCurrent(): Response<PollResponse?>
+
+        @POST("poll/vote/")
+        suspend fun postVote(@Body voteRequest: VoteRequest): Response<Vote>
     }
 
     private fun createRetrofit(): Retrofit {
@@ -75,14 +142,16 @@ class ServerApi(val context: Context) {
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .header("User-Agent", userAgent)
+                    .header("Authorization", authToken)
                     .build()
                 chain.proceed(request)
             }
             .build()
         val moshi = Moshi.Builder().build()
-        Log.d("createRetrofit", "BuildConfig.APP_API_URL: ${BuildConfig.APP_API_URL}")
+        val url = "${BuildConfig.APP_API_URL}/api/"
+        Log.d("createRetrofit", "url: $url")
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.APP_API_URL)
+            .baseUrl(url)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
