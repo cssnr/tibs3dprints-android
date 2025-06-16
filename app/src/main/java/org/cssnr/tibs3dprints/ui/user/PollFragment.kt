@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -72,6 +73,10 @@ class PollFragment : Fragment() {
             lifecycleScope.launch {
                 val vote = api.submitVote(pollId, tag)
                 Log.d("voteListener", "vote: $vote")
+                if (vote == null) {
+                    Toast.makeText(ctx, "Error Processing Vote", Toast.LENGTH_LONG).show()
+                    return@launch
+                }
                 val updatedPoll = userViewModel.poll.value?.copy(vote = vote)
                 Log.d("voteListener", "updatedPoll: $updatedPoll")
                 userViewModel.poll.value = updatedPoll
