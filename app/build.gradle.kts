@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.tiktok.open.sdk.core)
     implementation(libs.tiktok.open.sdk.auth)
     implementation(libs.tiktok.open.sdk.share)
+    implementation(libs.photoview)
     //implementation(libs.androidyoutubeplayer)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)

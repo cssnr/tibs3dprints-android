@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -50,9 +52,7 @@ class PollFragment : Fragment() {
 
         val ctx = requireContext()
 
-        binding.goBackBtn.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        binding.goBackBtn.setOnClickListener { findNavController().navigateUp() }
 
         userViewModel.poll.observe(viewLifecycleOwner) { poll ->
             Log.i(LOG_TAG, "userViewModel.poll.observe: poll: $poll")
@@ -94,8 +94,6 @@ class PollFragment : Fragment() {
             Log.w(LOG_TAG, "TODO: Show Poll Ended Screen...")
             return
         }
-        Log.i(LOG_TAG, "vote: ${poll.vote}")
-        Log.d(LOG_TAG, "choices: ${poll.choices}")
         binding.pollTitle.text = poll.poll.title
         binding.pollQuestion.text = poll.poll.question
         poll.choices.forEachIndexed { index, choice ->
@@ -104,17 +102,26 @@ class PollFragment : Fragment() {
             Log.d(LOG_TAG, "url: $url")
             when (index) {
                 0 -> {
-                    Glide.with(binding.image1).load(url).into(binding.image1)
                     binding.text1.text = choice.name
                     updateButton(binding.vote1, choice, poll.vote)
+                    updateImage(binding.image1, url)
                 }
 
                 1 -> {
-                    Glide.with(binding.image2).load(url).into(binding.image2)
                     binding.text2.text = choice.name
                     updateButton(binding.vote2, choice, poll.vote)
+                    updateImage(binding.image2, url)
                 }
             }
+        }
+    }
+
+    fun updateImage(image: ImageView, url: String) {
+        Log.d(LOG_TAG, "updateImage: url: $url")
+        Glide.with(this).load(url).into(image)
+        val bundle = bundleOf("image_url" to url)
+        image.setOnClickListener {
+            findNavController().navigate(R.id.nav_preview, bundle)
         }
     }
 

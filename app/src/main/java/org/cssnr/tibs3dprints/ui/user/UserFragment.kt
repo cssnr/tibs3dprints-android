@@ -53,7 +53,7 @@ class UserFragment : Fragment() {
 
         binding.headerText.text = displayName
         if (!avatarUrl.isNullOrEmpty()) {
-            Glide.with(binding.headerImage).load(avatarUrl).into(binding.headerImage)
+            Glide.with(this).load(avatarUrl).into(binding.headerImage)
         }
 
         binding.pollBtn.setOnClickListener {

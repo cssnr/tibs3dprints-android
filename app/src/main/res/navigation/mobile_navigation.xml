@@ -41,7 +41,16 @@
         android:id="@+id/nav_poll"
         android:name="org.cssnr.tibs3dprints.ui.user.PollFragment"
         android:label="Poll"
-        tools:layout="@layout/fragment_poll" />
+        tools:layout="@layout/fragment_poll" >
+        <action
+            android:id="@+id/nav_action_poll_preview"
+            app:destination="@id/nav_preview" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_preview"
+        android:name="org.cssnr.tibs3dprints.ui.user.PreviewFragment"
+        android:label="Preview"
+        tools:layout="@layout/fragment_preview" />
 
     <fragment
         android:id="@+id/nav_news"

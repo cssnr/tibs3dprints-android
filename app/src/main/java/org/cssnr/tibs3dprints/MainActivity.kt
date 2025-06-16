@@ -130,8 +130,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                R.id.nav_user -> {
-                    Log.d(LOG_TAG, "nav_user")
+                R.id.nav_user,
+                R.id.nav_poll,
+                R.id.nav_preview -> {
+                    Log.d(LOG_TAG, "nav_user/nav_poll/nav_preview")
                     bottomNav.menu.findItem(R.id.nav_wtf).isChecked = true
                 }
             }
