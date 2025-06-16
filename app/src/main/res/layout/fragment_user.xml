@@ -48,27 +48,37 @@
                     tools:text="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"/>
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/poll_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                android:text="Poll Available"/>
-            <TextView
-                android:id="@+id/poll_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="Loading..."/>
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                    android:text="Poll Available" />
 
-            <Button
-                android:id="@+id/poll_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:height="56dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="View Poll" />
+                <TextView
+                    android:id="@+id/poll_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="Loading..." />
 
+                <Button
+                    android:id="@+id/poll_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:height="56dp"
+                    android:drawableEnd="@drawable/md_ballot_24px"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="View Poll" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

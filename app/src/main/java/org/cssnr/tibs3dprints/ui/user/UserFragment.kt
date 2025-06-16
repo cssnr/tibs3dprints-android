@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -20,6 +21,8 @@ class UserFragment : Fragment() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,11 +60,23 @@ class UserFragment : Fragment() {
             findNavController().navigate(R.id.nav_action_user_poll)
         }
 
+        userViewModel.poll.observe(viewLifecycleOwner) { poll ->
+            Log.d(LOG_TAG, "userViewModel.poll.observe: poll: $poll")
+            if (poll == null) {
+                binding.pollLayout.visibility = View.GONE
+                return@observe
+            }
+            binding.pollTitle.text = poll.poll.title
+            binding.pollLayout.visibility = View.VISIBLE
+        }
+
         val api = ServerApi(ctx)
         lifecycleScope.launch {
             val poll = api.getCurrentPoll()
-            Log.i(LOG_TAG, "poll: $poll")
-            binding.pollTitle.text = poll.poll.title
+            Log.d(LOG_TAG, "lifecycleScope.launch: poll: $poll")
+            if (poll != null) {
+                userViewModel.poll.value = poll
+            }
         }
     }
 }

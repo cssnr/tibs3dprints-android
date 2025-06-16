@@ -21,9 +21,20 @@
                 android:id="@+id/poll_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:text="Title" />
+
+
+            <TextView
+                android:id="@+id/poll_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="Poll Active for 1 Day 1 Hour 1 Second 1 Minute." />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,19 +55,21 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_1"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
+                            android:layout_width="128dp"
+                            android:layout_height="128dp"
                             android:contentDescription="Item 1" />
                     </FrameLayout>
                     <TextView
                         android:id="@+id/text_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Loading..."
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:maxLines="1"
                         android:ellipsize="end" />
                     <Button
+                        android:id="@+id/vote_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vote"
@@ -79,19 +92,21 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_2"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
+                            android:layout_width="128dp"
+                            android:layout_height="128dp"
                             android:contentDescription="Item 2" />
                     </FrameLayout>
                     <TextView
                         android:id="@+id/text_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Loading..."
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:maxLines="1"
                         android:ellipsize="end" />
                     <Button
+                        android:id="@+id/vote_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vote"
@@ -99,12 +114,6 @@
                         app:backgroundTint="@android:color/holo_green_light" />
                 </LinearLayout>
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Poll Active for 1 Day 1 Hour 1 Second 1 Minute." />
 
             <Button
                 android:id="@+id/go_back_btn"
