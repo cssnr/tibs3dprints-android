@@ -70,6 +70,13 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:text="Loading..." />
 
+                <TextView
+                    android:id="@+id/timer_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="Remaining 120:49:30 hours." />
+
                 <Button
                     android:id="@+id/poll_btn"
                     android:layout_width="wrap_content"

@@ -31,7 +31,7 @@
                 android:id="@+id/poll_question"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="12dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:text="Poll Active for 1 Day 1 Hour 1 Second 1 Minute." />
 
@@ -115,11 +115,18 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/timer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Remaining 120:49:30 hours." />
+
             <Button
                 android:id="@+id/go_back_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="12dp"
                 android:drawableLeft="@drawable/md_arrow_back_24px"
                 android:text="Go Back"
                 tools:ignore="RtlHardcoded" />

@@ -1,10 +1,12 @@
 package org.cssnr.tibs3dprints.ui.user
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,11 +18,17 @@ import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
 import org.cssnr.tibs3dprints.databinding.FragmentUserBinding
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class UserFragment : Fragment() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+
+    private var countDownTimer: CountDownTimer? = null
 
     private val userViewModel: UserViewModel by activityViewModels()
 
@@ -36,6 +44,8 @@ class UserFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        countDownTimer?.cancel()
+        countDownTimer = null
         _binding = null
     }
 
@@ -68,6 +78,8 @@ class UserFragment : Fragment() {
             }
             binding.pollTitle.text = poll.poll.title
             binding.pollLayout.visibility = View.VISIBLE
+            val timer = createCountDownTimer(binding.timerText, poll.poll.endAt)
+            timer?.start()
         }
 
         val api = ServerApi(ctx)
@@ -77,6 +89,40 @@ class UserFragment : Fragment() {
             if (poll != null) {
                 userViewModel.poll.value = poll
             }
+        }
+    }
+
+
+}
+
+fun createCountDownTimer(
+    textView: TextView,
+    endAtIsoString: String,
+): CountDownTimer? {
+    val endAtUtc = Instant.parse(endAtIsoString)
+    val endAtLocal = endAtUtc.atZone(ZoneId.systemDefault())
+    val nowLocal = ZonedDateTime.now(ZoneId.systemDefault())
+    val millisUntilEnd = Duration.between(nowLocal, endAtLocal).toMillis()
+    Log.d(LOG_TAG, "millisUntilEnd: $millisUntilEnd")
+
+    if (millisUntilEnd <= 0) {
+        textView.text = "00:00:00"
+        return null
+    }
+
+    return object : CountDownTimer(millisUntilEnd, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            Log.i(LOG_TAG, "DEBUG 2")
+            val duration = Duration.ofMillis(millisUntilFinished)
+            val hours = duration.toHours()
+            val minutes = duration.toMinutes() % 60
+            val seconds = duration.seconds % 60
+            val timestamp = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            textView.text = "Remaining $timestamp hours."
+        }
+
+        override fun onFinish() {
+            textView.text = "00:00:00"
         }
     }
 }

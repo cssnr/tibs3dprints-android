@@ -94,8 +94,13 @@ class PollFragment : Fragment() {
             Log.w(LOG_TAG, "TODO: Show Poll Ended Screen...")
             return
         }
+
         binding.pollTitle.text = poll.poll.title
         binding.pollQuestion.text = poll.poll.question
+
+        val timer = createCountDownTimer(binding.timerText, poll.poll.endAt)
+        timer?.start()
+
         poll.choices.forEachIndexed { index, choice ->
             Log.d(LOG_TAG, "choice: $choice")
             val url = "${BuildConfig.APP_API_URL}/${choice.file}"
