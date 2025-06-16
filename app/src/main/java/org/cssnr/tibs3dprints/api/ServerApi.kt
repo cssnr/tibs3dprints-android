@@ -47,19 +47,12 @@ class ServerApi(val context: Context) {
     }
 
     suspend fun getCurrentPoll(): PollResponse? {
-        return api.getPollCurrent()
+        return api.getPollCurrent().takeIf { it.isSuccessful }?.body()
     }
 
     suspend fun submitVote(poll: Int, choice: Int): Vote? {
         val voteRequest = VoteRequest(poll = poll, choice = choice)
-        val response = api.postVote(voteRequest)
-        if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null) {
-                return body
-            }
-        }
-        return null
+        return api.postVote(voteRequest).takeIf { it.isSuccessful }?.body()
     }
 
     @JsonClass(generateAdapter = true)
@@ -138,7 +131,7 @@ class ServerApi(val context: Context) {
         ): Response<LoginResponse>
 
         @GET("poll/current/")
-        suspend fun getPollCurrent(): PollResponse?
+        suspend fun getPollCurrent(): Response<PollResponse?>
 
         @POST("poll/vote/")
         suspend fun postVote(@Body voteRequest: VoteRequest): Response<Vote>
