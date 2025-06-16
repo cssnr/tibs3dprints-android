@@ -103,7 +103,7 @@ fun createCountDownTimer(
     val endAtLocal = endAtUtc.atZone(ZoneId.systemDefault())
     val nowLocal = ZonedDateTime.now(ZoneId.systemDefault())
     val millisUntilEnd = Duration.between(nowLocal, endAtLocal).toMillis()
-    Log.d(LOG_TAG, "millisUntilEnd: $millisUntilEnd")
+    Log.d(LOG_TAG, "createCountDownTimer: millisUntilEnd: $millisUntilEnd")
 
     if (millisUntilEnd <= 0) {
         textView.text = "00:00:00"
@@ -112,7 +112,6 @@ fun createCountDownTimer(
 
     return object : CountDownTimer(millisUntilEnd, 1000) {
         override fun onTick(millisUntilFinished: Long) {
-            Log.i(LOG_TAG, "DEBUG 2")
             val duration = Duration.ofMillis(millisUntilFinished)
             val hours = duration.toHours()
             val minutes = duration.toMinutes() % 60
