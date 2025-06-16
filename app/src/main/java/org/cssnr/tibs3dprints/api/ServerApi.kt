@@ -76,7 +76,6 @@ class ServerApi(val context: Context) {
         @Json(name = "question") val question: String,
         @Json(name = "start_at") val startAt: String,
         @Json(name = "end_at") val endAt: String,
-        @Json(name = "duration") val duration: Int
     )
 
     @JsonClass(generateAdapter = true)
@@ -85,7 +84,7 @@ class ServerApi(val context: Context) {
         @Json(name = "poll") val poll: Int,
         @Json(name = "name") val name: String,
         @Json(name = "file") val file: String?,
-        @Json(name = "votes") val votes: Int
+        @Json(name = "votes") val votes: Int,
     )
 
     @JsonClass(generateAdapter = true)
@@ -95,19 +94,19 @@ class ServerApi(val context: Context) {
         @Json(name = "poll_id") val pollId: Int,
         @Json(name = "choice_id") val choiceId: Int,
         @Json(name = "notify_on_result") val notifyOnResult: Boolean,
-        @Json(name = "voted_at") val votedAt: String?
+        @Json(name = "voted_at") val votedAt: String?,
     )
 
 
     @JsonClass(generateAdapter = true)
     data class VoteRequest(
         @Json(name = "poll") val poll: Int,
-        @Json(name = "choice") val choice: Int
+        @Json(name = "choice") val choice: Int,
     )
 
     @JsonClass(generateAdapter = true)
     data class MessageResponse(
-        @Json(name = "message") val message: String
+        @Json(name = "message") val message: String,
     )
 
     @JsonClass(generateAdapter = true)
