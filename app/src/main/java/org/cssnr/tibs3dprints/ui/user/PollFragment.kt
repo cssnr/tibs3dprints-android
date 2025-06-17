@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.graphics.toColorInt
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -158,7 +159,7 @@ fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) 
     val entry = BarEntry(0f, votes)
 
     val dataSet = BarDataSet(listOf(entry), "").apply {
-        setColors(Color.BLUE, Color.RED)
+        setColors("#FF9016".toColorInt(), "#00AE42".toColorInt())
         setDrawValues(false)  // Disable numbers on bars
     }
 
