@@ -180,23 +180,25 @@ fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) 
     }
 
     barChart.apply {
+        setViewPortOffsets(0f, 0f, 0f, 0f)
         this.data = data
         description.isEnabled = false
         legend.isEnabled = false
+
         setPinchZoom(false)
         setScaleEnabled(false)
-        setFitBars(true)
+        setFitBars(false)
         setDrawBarShadow(false)
         setBackgroundColor(Color.TRANSPARENT)
         setTouchEnabled(false)
-        setViewPortOffsets(0f, 0f, 0f, 0f)
-
         setDrawGridBackground(false)
 
         xAxis.isEnabled = false
         axisLeft.isEnabled = false
         axisRight.isEnabled = false
 
+        moveViewToX(0f)
         invalidate()
     }
+
 }

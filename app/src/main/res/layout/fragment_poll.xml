@@ -149,10 +149,12 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/bar_chart_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:visibility="invisible"
                     tools:visibility="visible">
 
@@ -169,10 +171,10 @@
 
                     <com.github.mikephil.charting.charts.HorizontalBarChart
                         android:id="@+id/barChart"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginHorizontal="16dp" />
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical" />
 
                     <TextView
                         android:id="@+id/vote_count_2"
@@ -181,11 +183,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
                         android:layout_gravity="center_vertical|end"
-                        android:gravity="start"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:text="99" />
 
-                </FrameLayout>
+                </LinearLayout>
 
             </FrameLayout>
 
