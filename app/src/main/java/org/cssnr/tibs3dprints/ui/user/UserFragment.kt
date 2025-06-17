@@ -61,7 +61,7 @@ class UserFragment : Fragment() {
 
         Log.i(LOG_TAG, "displayName: $displayName")
 
-        binding.headerText.text = displayName
+        binding.displayName.text = getString(R.string.greeting_user, displayName)
         if (!avatarUrl.isNullOrEmpty()) {
             Glide.with(this).load(avatarUrl).into(binding.headerImage)
         }

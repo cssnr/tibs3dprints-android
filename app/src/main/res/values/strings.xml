@@ -15,6 +15,8 @@
     <string name="analytics_title">Please Reconsider</string>
     <string name="analytics_notice">Analytics are only used to fix bugs and make improvements.\nNo personal information of any kind is collected.</string>
 
+    <string name="greeting_user">Hello, %s</string>
+
     <string-array name="work_interval_entries">
         <item>Never</item>
         <item>6 Hours</item>

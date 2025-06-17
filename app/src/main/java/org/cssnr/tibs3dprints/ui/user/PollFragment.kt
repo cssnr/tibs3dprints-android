@@ -185,7 +185,7 @@ fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) 
         legend.isEnabled = false
         setPinchZoom(false)
         setScaleEnabled(false)
-        setFitBars(false)
+        setFitBars(true)
         setDrawBarShadow(false)
         setBackgroundColor(Color.TRANSPARENT)
         setTouchEnabled(false)
