@@ -192,7 +192,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Remaining 120:49:30 hours." />
+                android:text="Time remaining, 120:49:30 hours." />
 
             <Button
                 android:id="@+id/go_back_btn"

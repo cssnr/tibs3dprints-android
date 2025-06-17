@@ -117,7 +117,7 @@ fun createCountDownTimer(
             val minutes = duration.toMinutes() % 60
             val seconds = duration.seconds % 60
             val timestamp = String.format("%02d:%02d:%02d", hours, minutes, seconds)
-            textView.text = "Remaining $timestamp hours."
+            textView.text = "Time remaining, $timestamp hours."
         }
 
         override fun onFinish() {

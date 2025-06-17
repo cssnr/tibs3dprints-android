@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:text="Remaining 120:49:30 hours." />
+                    android:text="Time remaining, 120:49:30 hours." />
 
                 <Button
                     android:id="@+id/poll_btn"
