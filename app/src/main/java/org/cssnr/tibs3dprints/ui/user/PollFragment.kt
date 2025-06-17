@@ -83,7 +83,19 @@ class PollFragment : Fragment() {
                     Toast.makeText(ctx, "Error Processing Vote", Toast.LENGTH_LONG).show()
                     return@launch
                 }
-                val updatedPoll = userViewModel.poll.value?.copy(vote = vote)
+                val updatedPoll = userViewModel.poll.value?.let { pollResponse ->
+                    val updatedChoices = pollResponse.choices.map { choice ->
+                        if (choice.id == vote.choiceId) {
+                            choice.copy(votes = choice.votes + 1)
+                        } else {
+                            choice
+                        }
+                    }
+                    pollResponse.copy(
+                        vote = vote,
+                        choices = updatedChoices
+                    )
+                }
                 Log.d("voteListener", "updatedPoll: $updatedPoll")
                 userViewModel.poll.value = updatedPoll
             }
