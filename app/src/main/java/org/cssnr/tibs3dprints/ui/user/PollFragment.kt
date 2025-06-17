@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.graphics.toColorInt
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -82,7 +83,19 @@ class PollFragment : Fragment() {
                     Toast.makeText(ctx, "Error Processing Vote", Toast.LENGTH_LONG).show()
                     return@launch
                 }
-                val updatedPoll = userViewModel.poll.value?.copy(vote = vote)
+                val updatedPoll = userViewModel.poll.value?.let { pollResponse ->
+                    val updatedChoices = pollResponse.choices.map { choice ->
+                        if (choice.id == vote.choiceId) {
+                            choice.copy(votes = choice.votes + 1)
+                        } else {
+                            choice
+                        }
+                    }
+                    pollResponse.copy(
+                        vote = vote,
+                        choices = updatedChoices
+                    )
+                }
                 Log.d("voteListener", "updatedPoll: $updatedPoll")
                 userViewModel.poll.value = updatedPoll
             }
@@ -158,7 +171,7 @@ fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) 
     val entry = BarEntry(0f, votes)
 
     val dataSet = BarDataSet(listOf(entry), "").apply {
-        setColors(Color.BLUE, Color.RED)
+        setColors("#FF9016".toColorInt(), "#00AE42".toColorInt())
         setDrawValues(false)  // Disable numbers on bars
     }
 
@@ -167,23 +180,25 @@ fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) 
     }
 
     barChart.apply {
+        setViewPortOffsets(0f, 0f, 0f, 0f)
         this.data = data
         description.isEnabled = false
         legend.isEnabled = false
+
         setPinchZoom(false)
         setScaleEnabled(false)
         setFitBars(false)
         setDrawBarShadow(false)
         setBackgroundColor(Color.TRANSPARENT)
         setTouchEnabled(false)
-        setViewPortOffsets(0f, 0f, 0f, 0f)
-
         setDrawGridBackground(false)
 
         xAxis.isEnabled = false
         axisLeft.isEnabled = false
         axisRight.isEnabled = false
 
+        moveViewToX(0f)
         invalidate()
     }
+
 }

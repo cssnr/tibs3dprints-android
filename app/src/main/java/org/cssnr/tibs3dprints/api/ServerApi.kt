@@ -41,6 +41,7 @@ class ServerApi(val context: Context) {
         return try {
             api.login(authRequest)
         } catch (e: Exception) {
+            Log.e("serverLogin", e.stackTraceToString())
             val errorBody = e.toString().toResponseBody("text/plain".toMediaTypeOrNull())
             Response.error(520, errorBody)
         }

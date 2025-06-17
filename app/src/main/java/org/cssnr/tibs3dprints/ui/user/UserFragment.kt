@@ -61,7 +61,7 @@ class UserFragment : Fragment() {
 
         Log.i(LOG_TAG, "displayName: $displayName")
 
-        binding.headerText.text = displayName
+        binding.displayName.text = getString(R.string.greeting_user, displayName)
         if (!avatarUrl.isNullOrEmpty()) {
             Glide.with(this).load(avatarUrl).into(binding.headerImage)
         }
@@ -88,11 +88,11 @@ class UserFragment : Fragment() {
             Log.d(LOG_TAG, "lifecycleScope.launch: poll: $poll")
             if (poll != null) {
                 userViewModel.poll.value = poll
+            } else {
+                binding.emptyLayout.visibility = View.VISIBLE
             }
         }
     }
-
-
 }
 
 fun createCountDownTimer(
@@ -117,7 +117,7 @@ fun createCountDownTimer(
             val minutes = duration.toMinutes() % 60
             val seconds = duration.seconds % 60
             val timestamp = String.format("%02d:%02d:%02d", hours, minutes, seconds)
-            textView.text = "Remaining $timestamp hours."
+            textView.text = "Time remaining, $timestamp hours."
         }
 
         override fun onFinish() {

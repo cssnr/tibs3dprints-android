@@ -95,6 +95,13 @@
                     android:text="Get Notified about Specials"
                     android:drawablePadding="6dp"
                     app:drawableStartCompat="@drawable/md_task_alt_24px" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:text="Join Giveaways and Polls"
+                    android:drawablePadding="6dp"
+                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
             </LinearLayout>
 
             <LinearLayout

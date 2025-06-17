@@ -13,6 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -26,15 +27,14 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:text="Title" />
 
-
             <TextView
                 android:id="@+id/poll_question"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="Poll Active for 1 Day 1 Hour 1 Second 1 Minute." />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,8 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables,UselessParent">
+                    android:orientation="vertical">
                     <FrameLayout
                         android:id="@+id/border_1"
                         android:layout_width="wrap_content"
@@ -56,8 +55,8 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_1"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="136dp"
+                            android:layout_height="136dp"
                             android:contentDescription="Item 1"
                             tools:src="@tools:sample/avatars" />
                     </FrameLayout>
@@ -88,8 +87,8 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_2"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="136dp"
+                            android:layout_height="136dp"
                             android:contentDescription="Item 2"
                             tools:src="@tools:sample/avatars" />
                     </FrameLayout>
@@ -118,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:baselineAligned="false"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -147,10 +146,13 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/bar_chart_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="12dp"
+                    android:orientation="horizontal"
                     android:visibility="invisible"
                     tools:visibility="visible">
 
@@ -159,31 +161,28 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="42dp"
-                        android:layout_marginHorizontal="8dp"
                         android:layout_gravity="center_vertical"
-                        android:gravity="center"
+                        android:gravity="end"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:text="999" />
 
                     <com.github.mikephil.charting.charts.HorizontalBarChart
                         android:id="@+id/barChart"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginHorizontal="12dp" />
+                        android:layout_width="0dp"
+                        android:layout_height="24dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:id="@+id/vote_count_2"
                         android:layout_width="wrap_content"
                         android:minWidth="42dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
                         android:layout_gravity="center_vertical|end"
-                        android:gravity="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:text="99" />
+                        android:text="9" />
 
-                </FrameLayout>
+                </LinearLayout>
 
             </FrameLayout>
 
@@ -192,7 +191,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Remaining 120:49:30 hours." />
+                android:text="Time remaining, 120:49:30 hours." />
 
             <Button
                 android:id="@+id/go_back_btn"

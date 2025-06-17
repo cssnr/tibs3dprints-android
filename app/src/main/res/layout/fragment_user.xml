@@ -13,6 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
@@ -20,10 +21,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="24dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 tools:ignore="UseCompoundDrawables,UselessParent">
+                <TextView
+                    android:id="@+id/display_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:text="@string/app_name"
+                    tools:text="Hello, ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" />
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -37,16 +47,34 @@
                         android:contentDescription="@string/app_name"
                         app:srcCompat="@drawable/logo" />
                 </FrameLayout>
-                <TextView
-                    android:id="@+id/header_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/app_name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"/>
             </LinearLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="4dp" />
+
+        <LinearLayout
+            android:id="@+id/empty_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:text="No Active Events" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="Check back later for Polls and Giveaways..." />
+        </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/poll_layout"
@@ -75,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:text="Remaining 120:49:30 hours." />
+                    android:text="Time remaining, 120:49:30 hours." />
 
                 <Button
                     android:id="@+id/poll_btn"
