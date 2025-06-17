@@ -88,6 +88,8 @@ class UserFragment : Fragment() {
             Log.d(LOG_TAG, "lifecycleScope.launch: poll: $poll")
             if (poll != null) {
                 userViewModel.poll.value = poll
+            } else {
+                binding.emptyLayout.visibility = View.VISIBLE
             }
         }
     }
