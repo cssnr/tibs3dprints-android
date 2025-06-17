@@ -58,8 +58,8 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_1"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="136dp"
+                            android:layout_height="136dp"
                             android:contentDescription="Item 1"
                             tools:src="@tools:sample/avatars" />
                     </FrameLayout>
@@ -90,8 +90,8 @@
                         android:background="@drawable/image_border">
                         <ImageView
                             android:id="@+id/image_2"
-                            android:layout_width="128dp"
-                            android:layout_height="128dp"
+                            android:layout_width="136dp"
+                            android:layout_height="136dp"
                             android:contentDescription="Item 2"
                             tools:src="@tools:sample/avatars" />
                     </FrameLayout>
@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:baselineAligned="false"
-                    tools:visibility="visible">
+                    tools:visibility="gone">
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -153,7 +153,8 @@
                     android:id="@+id/bar_chart_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="12dp"
                     android:orientation="horizontal"
                     android:visibility="invisible"
                     tools:visibility="visible">
@@ -163,7 +164,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="42dp"
-                        android:layout_marginHorizontal="8dp"
                         android:layout_gravity="center_vertical"
                         android:gravity="end"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -172,19 +172,18 @@
                     <com.github.mikephil.charting.charts.HorizontalBarChart
                         android:id="@+id/barChart"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="24dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center_vertical" />
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:id="@+id/vote_count_2"
                         android:layout_width="wrap_content"
                         android:minWidth="42dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
                         android:layout_gravity="center_vertical|end"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:text="99" />
+                        android:text="9" />
 
                 </LinearLayout>
 
