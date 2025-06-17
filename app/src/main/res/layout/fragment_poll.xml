@@ -27,7 +27,6 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:text="Title" />
 
-
             <TextView
                 android:id="@+id/poll_question"
                 android:layout_width="wrap_content"
@@ -36,7 +35,6 @@
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="Poll Active for 1 Day 1 Hour 1 Second 1 Minute." />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,8 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables,UselessParent">
+                    android:orientation="vertical">
                     <FrameLayout
                         android:id="@+id/border_1"
                         android:layout_width="wrap_content"
