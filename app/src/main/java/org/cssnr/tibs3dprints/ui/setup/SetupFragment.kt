@@ -129,7 +129,7 @@ class SetupFragment : Fragment() {
             }
 
             // Arguments
-            val bundle = bundleOf()
+            val bundle = bundleOf("isFirstRun" to true)
             //when (view.id) {
             //    R.id.btn_download -> {
             //        Log.i(LOG_TAG, "Download Button Pressed: update_wallpaper")

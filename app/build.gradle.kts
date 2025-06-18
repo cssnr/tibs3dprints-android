@@ -98,6 +98,7 @@ dependencies {
     implementation(libs.tiktok.open.sdk.share)
     implementation(libs.photoview)
     implementation(libs.mpandroidchart)
+    implementation(libs.taptargetview)
     //implementation(libs.androidyoutubeplayer)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)
