@@ -183,34 +183,34 @@ class HomeFragment : Fragment() {
             "Login Menu",
             "Use this menu to log in/out."
         )
-            .titleTextSize(28)
+            .titleTextSize(30)
             .descriptionTextSize(18)
             .textTypeface(Typeface.SANS_SERIF)
             .textColorInt(Color.WHITE)
             .dimColorInt(Color.BLACK)
             .outerCircleColor(R.color.android_green)
-            .outerCircleAlpha(0.95f)
+            .outerCircleAlpha(0.96f)
             .drawShadow(true)
             .cancelable(true)
             .transparentTarget(true)
-            .targetRadius(60)
+            .targetRadius(32)
 
         val target2 = TapTarget.forToolbarNavigationIcon(
             toolbar,
             "Main Menu",
             "Access all the menu items here."
         )
-            .titleTextSize(28)
+            .titleTextSize(30)
             .descriptionTextSize(18)
             .textTypeface(Typeface.SANS_SERIF)
             .textColorInt(Color.WHITE)
             .dimColorInt(Color.BLACK)
             .outerCircleColor(R.color.android_green)
-            .outerCircleAlpha(0.95f)
+            .outerCircleAlpha(0.96f)
             .drawShadow(true)
             .cancelable(true)
             .transparentTarget(true)
-            .targetRadius(60)
+            .targetRadius(32)
 
         val myTap = TapTargetSequence(requireActivity())
             .targets(target1, target2)
@@ -225,6 +225,7 @@ class HomeFragment : Fragment() {
 
                 override fun onSequenceCanceled(lastTarget: TapTarget?) {
                     Log.d("onSequenceCanceled", "lastTarget: $lastTarget")
+                    // TODO: Start target2 if target1 is cancelled. Does not re-attach this .listener
                     if (lastTarget == target1) {
                         Log.d("onSequenceCanceled", "First Step Cancelled - Force Second Step...")
                         TapTargetView.showFor(requireActivity(), target2)
