@@ -181,36 +181,34 @@ class HomeFragment : Fragment() {
         val target1 = TapTarget.forToolbarOverflow(
             toolbar,
             "Login Menu",
-            "Use this menu to log in/out."
+            "Use this menu to login or logout."
         )
-            .titleTextSize(30)
+            .titleTextSize(32)
             .descriptionTextSize(18)
             .textTypeface(Typeface.SANS_SERIF)
             .textColorInt(Color.WHITE)
             .dimColorInt(Color.BLACK)
-            .outerCircleColor(R.color.android_green)
+            .outerCircleColor(R.color.tap_target_green)
             .outerCircleAlpha(0.96f)
             .drawShadow(true)
-            .cancelable(true)
             .transparentTarget(true)
-            .targetRadius(32)
+            .targetRadius(36)
 
         val target2 = TapTarget.forToolbarNavigationIcon(
             toolbar,
             "Main Menu",
             "Access all the menu items here."
         )
-            .titleTextSize(30)
+            .titleTextSize(32)
             .descriptionTextSize(18)
             .textTypeface(Typeface.SANS_SERIF)
             .textColorInt(Color.WHITE)
             .dimColorInt(Color.BLACK)
-            .outerCircleColor(R.color.android_green)
+            .outerCircleColor(R.color.tap_target_green)
             .outerCircleAlpha(0.96f)
             .drawShadow(true)
-            .cancelable(true)
             .transparentTarget(true)
-            .targetRadius(32)
+            .targetRadius(36)
 
         val myTap = TapTargetSequence(requireActivity())
             .targets(target1, target2)
