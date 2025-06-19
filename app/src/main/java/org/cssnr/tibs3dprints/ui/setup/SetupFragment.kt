@@ -51,6 +51,12 @@ class SetupFragment : Fragment() {
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(LOG_TAG, "onDestroyView")
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated: ${savedInstanceState?.size()}")
@@ -109,7 +115,7 @@ class SetupFragment : Fragment() {
         val startAppListener: (View) -> Unit = { view ->
             Log.d(LOG_TAG, "startAppListener: view: $view")
 
-            binding.btnFinish.isEnabled = false
+            binding.btnContinue.isEnabled = false
 
             // TODO: Duplication from SettingsFragment and MainActivity...
             val workInterval = preferences.getString("work_interval", null) ?: "0"
@@ -129,13 +135,13 @@ class SetupFragment : Fragment() {
             }
 
             // Arguments
-            val bundle = bundleOf("isFirstRun" to true)
-            //when (view.id) {
-            //    R.id.btn_download -> {
-            //        Log.i(LOG_TAG, "Download Button Pressed: update_wallpaper")
-            //        bundle.putBoolean("update_wallpaper", true)
-            //    }
-            //}
+            val bundle = bundleOf()
+            when (view.id) {
+                R.id.btn_continue -> {
+                    Log.i(LOG_TAG, "Continue Button Pressed. Showing First Run...")
+                    bundle.putBoolean("isFirstRun", true)
+                }
+            }
             Log.d(LOG_TAG, "startAppListener: bundle: $bundle")
 
             // Navigate Home
@@ -145,8 +151,8 @@ class SetupFragment : Fragment() {
                     .build()
             )
         }
-        binding.btnBack.setOnClickListener(startAppListener)
-        binding.btnFinish.setOnClickListener(startAppListener)
+        binding.btnContinue.setOnClickListener(startAppListener)
+        binding.btnSkip.setOnClickListener(startAppListener)
     }
 
     override fun onResume() {
@@ -179,11 +185,5 @@ class SetupFragment : Fragment() {
         act.findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
         act.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
         (activity as? MainActivity)?.setDrawerLockMode(true)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(LOG_TAG, "onDestroyView")
-        _binding = null
     }
 }

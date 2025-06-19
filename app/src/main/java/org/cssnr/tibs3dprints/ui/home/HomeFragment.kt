@@ -171,8 +171,7 @@ class HomeFragment : Fragment() {
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar)
             Log.d("onStart", "toolbar: $toolbar")
             toolbar.post {
-                val overflowButton = showTapTargets(toolbar)
-                Log.d("onStart", "overflowButton = $overflowButton")
+                showTapTargets(toolbar)
             }
         }
     }

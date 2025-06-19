@@ -173,19 +173,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
         <Button
-            android:id="@+id/btn_back"
+            android:id="@+id/btn_continue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Continue to App" />
+        <Button
+            android:id="@+id/btn_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:textColor="?attr/colorPrimary"
             app:strokeColor="?attr/colorPrimary"
             app:backgroundTint="@android:color/transparent"
             app:strokeWidth="2dp"
-            android:text="Skip" />
-        <Button
-            android:id="@+id/btn_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Finish" />
+            android:text="Skip Tutorial" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
