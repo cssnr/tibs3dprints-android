@@ -2,5 +2,6 @@
 <resources>
     <color name="ic_launcher_background">#242833</color>
     <color name="primary_color">#01AAC1</color>
+    <color name="tap_target_green">#3DDC84</color>
     <color name="youtube_red">#CD201F</color>
 </resources>

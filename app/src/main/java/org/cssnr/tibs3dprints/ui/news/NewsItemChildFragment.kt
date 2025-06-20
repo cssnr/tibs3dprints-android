@@ -34,6 +34,11 @@ class NewsItemChildFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //val station = if (Build.VERSION.SDK_INT >= 33) {
         //    arguments?.getParcelable("station", WeatherStation::class.java)
@@ -82,10 +87,5 @@ class NewsItemChildFragment : Fragment() {
         //        youTubePlayer.loadVideo(videoId, 0f)
         //    }
         //})
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

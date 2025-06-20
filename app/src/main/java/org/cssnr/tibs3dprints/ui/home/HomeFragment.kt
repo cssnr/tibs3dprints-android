@@ -2,6 +2,8 @@ package org.cssnr.tibs3dprints.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,8 +20,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.getkeepsafe.taptargetview.TapTargetView
+import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -151,6 +158,80 @@ class HomeFragment : Fragment() {
         Log.d("Home[onResume]", "webView. onResume() / resumeTimers()")
         binding.webView.onResume()
         binding.webView.resumeTimers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("onStart", "onStart")
+
+        val isFirstRun = arguments?.getBoolean("isFirstRun", false) == true
+        Log.d("onStart", "isFirstRun: $isFirstRun")
+        if (isFirstRun) {
+            arguments?.remove("isFirstRun")
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar)
+            Log.d("onStart", "toolbar: $toolbar")
+            toolbar.post {
+                showTapTargets(toolbar)
+            }
+        }
+    }
+
+    private fun showTapTargets(toolbar: Toolbar) {
+        Log.d("showTapTargets", "toolbar: $toolbar")
+        val target1 = TapTarget.forToolbarOverflow(
+            toolbar,
+            "Login Menu",
+            "Use this menu to login or logout."
+        )
+            .titleTextSize(32)
+            .descriptionTextSize(18)
+            .textTypeface(Typeface.SANS_SERIF)
+            .textColorInt(Color.WHITE)
+            .dimColorInt(Color.BLACK)
+            .outerCircleColor(R.color.tap_target_green)
+            .outerCircleAlpha(0.96f)
+            .drawShadow(true)
+            .transparentTarget(true)
+            .targetRadius(36)
+
+        val target2 = TapTarget.forToolbarNavigationIcon(
+            toolbar,
+            "Main Menu",
+            "Access all the menu items here."
+        )
+            .titleTextSize(32)
+            .descriptionTextSize(18)
+            .textTypeface(Typeface.SANS_SERIF)
+            .textColorInt(Color.WHITE)
+            .dimColorInt(Color.BLACK)
+            .outerCircleColor(R.color.tap_target_green)
+            .outerCircleAlpha(0.96f)
+            .drawShadow(true)
+            .transparentTarget(true)
+            .targetRadius(36)
+
+        val myTap = TapTargetSequence(requireActivity())
+            .targets(target1, target2)
+            .listener(object : TapTargetSequence.Listener {
+                override fun onSequenceFinish() {
+                    Log.d("onSequenceFinish", "TapTargetSequence Done.")
+                }
+
+                override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
+                    Log.d("onSequenceStep", "lastTarget: $lastTarget - clicked: $targetClicked")
+                }
+
+                override fun onSequenceCanceled(lastTarget: TapTarget?) {
+                    Log.d("onSequenceCanceled", "lastTarget: $lastTarget")
+                    // TODO: Start target2 if target1 is cancelled. Does not re-attach this .listener
+                    if (lastTarget == target1) {
+                        Log.d("onSequenceCanceled", "First Step Cancelled - Force Second Step...")
+                        TapTargetView.showFor(requireActivity(), target2)
+                    }
+                }
+            })
+
+        myTap.start()
     }
 
     inner class MyWebViewClient : WebViewClient() {
