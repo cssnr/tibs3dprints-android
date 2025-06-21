@@ -17,8 +17,8 @@ navigationUiKtx = "2.9.0"
 preferenceKtx = "1.2.1"
 recyclerview = "1.4.0"
 viewpager2 = "1.1.0"
-workRuntimeKtx = "2.10.1"
-browser = "1.9.0-alpha04"
+workRuntimeKtx = "2.10.2"
+browser = "1.9.0-alpha05"
 
 googleServices = "4.4.2"
 firebaseBom = "33.15.0"
@@ -33,6 +33,7 @@ tiktokOpenSdkCore = "latest.release"
 photoview = "1.0.3"
 mpandroidchart = "v3.1.0"
 taptargetview = "1.15.0"
+konfettiXml = "2.0.5"
 
 #androidyoutubeplayer = "12.1.1"
 
@@ -74,6 +75,7 @@ tiktok-open-sdk-share = { group = "com.tiktok.open.sdk", name = "tiktok-open-sdk
 photoview = { group = "io.getstream", name = "photoview", version.ref = "photoview" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 taptargetview = { group = "com.getkeepsafe.taptargetview", name = "taptargetview", version.ref = "taptargetview" }
+konfetti-xml = { group = "nl.dionsegijn", name = "konfetti-xml", version.ref = "konfettiXml" }
 #androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 
 [plugins]

@@ -99,6 +99,7 @@ dependencies {
     implementation(libs.photoview)
     implementation(libs.mpandroidchart)
     implementation(libs.taptargetview)
+    implementation(libs.konfetti.xml)
     //implementation(libs.androidyoutubeplayer)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)

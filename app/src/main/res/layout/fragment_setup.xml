@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setup.SetupFragment"
-    android:theme="@style/Theme.Tibs3DPrints">
+    android:theme="@style/Theme.Tibs3DPrints"
+    tools:context=".ui.setup.SetupFragment">
+
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="0dp"
@@ -15,153 +17,168 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bottom_layout">
-        <LinearLayout
-            android:id="@+id/linear_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingVertical="12dp"
-            android:orientation="vertical"
-            android:gravity="center">
-
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="ScrollViewSize">
             <LinearLayout
-                android:id="@+id/setup_header"
+                android:id="@+id/linear_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center">
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:contentDescription="@string/app_name"
-                    app:srcCompat="@mipmap/ic_launcher_round" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_gravity="center"
+                tools:ignore="UselessParent">
+
+                <LinearLayout
+                    android:id="@+id/setup_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="@string/app_name"
+                        app:srcCompat="@mipmap/ic_launcher_round" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="UseCompoundDrawables,UselessParent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_name"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                        <TextView
+                            android:id="@+id/app_version"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            tools:text="v0.0.1-dev" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display3"
+                    android:text="Welcome" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:text="to Tibs3DPrints Android Application.\nFrom here you can..." />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables,UselessParent">
+                    android:layout_marginBottom="24dp"
+                    android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/app_name"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="Browse or Order Products"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/md_task_alt_24px" />
                     <TextView
-                        android:id="@+id/app_version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        tools:text="v0.0.1-dev" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="View News and Updates"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/md_task_alt_24px" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="Get Notified about Specials"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/md_task_alt_24px" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:text="Join Giveaways and Polls"
+                        android:drawablePadding="6dp"
+                        app:drawableStartCompat="@drawable/md_task_alt_24px" />
                 </LinearLayout>
-            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Welcome"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:gravity="center"
-                android:text="to Tibs3DPrints Android Application.\nFrom here you can..." />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="Browse or Order Products"
-                    android:drawablePadding="6dp"
-                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="View News and Updates"
-                    android:drawablePadding="6dp"
-                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="Get Notified about Specials"
-                    android:drawablePadding="6dp"
-                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="Join Giveaways and Polls"
-                    android:drawablePadding="6dp"
-                    app:drawableStartCompat="@drawable/md_task_alt_24px" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/notifications_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="?attr/colorPrimary"
-                    android:text="Enable Notifications"
-                    android:labelFor="@+id/notifications_switch" />
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/notifications_switch"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Notifications"
-                    android:drawableStart="@drawable/md_notifications_24px"
-                    android:drawablePadding="12dp"/>
-            </LinearLayout>
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/notifications_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@+id/notifications_switch"
+                        android:textColor="?attr/colorPrimary"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:text="Enable Notifications" />
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/notifications_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Notifications"
+                        android:drawableStart="@drawable/md_notifications_24px"
+                        android:drawablePadding="12dp" />
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/notification_options"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
+                <LinearLayout
+                    android:id="@+id/notification_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+                    <TextView
+                        android:id="@+id/work_interval_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@id/work_interval_spinner"
+                        android:textColor="?attr/colorPrimary"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                        android:text="Background News Update Interval" />
+                    <Spinner
+                        android:id="@+id/work_interval_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:entries="@array/work_interval_entries" />
+                </LinearLayout>
+
                 <TextView
-                    android:id="@+id/work_interval_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="?attr/colorPrimary"
-                    android:text="Background News Update Interval"
-                    android:labelFor="@id/work_interval_spinner"/>
-                <Spinner
-                    android:id="@+id/work_interval_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:padding="8dp"
-                    android:entries="@array/work_interval_entries" />
+                    android:textStyle="italic"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:text="Settings can be changed at any time." />
+
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                android:textStyle="italic"
-                android:text="Settings can be changed at any time."/>
-
-        </LinearLayout>
+        </FrameLayout>
     </ScrollView>
+
+    <!--<nl.dionsegijn.konfetti.xml.KonfettiView-->
+    <!--    android:id="@+id/konfettiView"-->
+    <!--    android:layout_width="0dp"-->
+    <!--    android:layout_height="0dp"-->
+    <!--    app:layout_constraintTop_toTopOf="parent"-->
+    <!--    app:layout_constraintStart_toStartOf="parent"-->
+    <!--    app:layout_constraintEnd_toEndOf="parent"-->
+    <!--    app:layout_constraintBottom_toBottomOf="parent" />-->
+
     <FrameLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
@@ -183,9 +200,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:textColor="?attr/colorPrimary"
+            android:text="Skip Tutorial"
             app:strokeColor="?attr/colorPrimary"
             app:backgroundTint="@android:color/transparent"
-            app:strokeWidth="2dp"
-            android:text="Skip Tutorial" />
+            app:strokeWidth="2dp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
