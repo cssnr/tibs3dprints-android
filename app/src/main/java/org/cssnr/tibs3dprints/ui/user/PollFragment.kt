@@ -22,12 +22,15 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import kotlinx.coroutines.launch
+import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
+import nl.dionsegijn.konfetti.core.emitter.Emitter
 import org.cssnr.tibs3dprints.BuildConfig
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
 import org.cssnr.tibs3dprints.databinding.FragmentPollBinding
-
+import java.util.concurrent.TimeUnit
 
 class PollFragment : Fragment() {
 
@@ -98,6 +101,10 @@ class PollFragment : Fragment() {
                 }
                 Log.d("voteListener", "updatedPoll: $updatedPoll")
                 userViewModel.poll.value = updatedPoll
+                when (view.id) {
+                    R.id.vote_1 -> hitEmWithConfetti(binding.image1)
+                    R.id.vote_2 -> hitEmWithConfetti(binding.image2)
+                }
             }
         }
 
@@ -164,41 +171,72 @@ class PollFragment : Fragment() {
             border.setBackgroundResource(R.drawable.image_border_voted)
         }
     }
-}
 
-fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) {
-    val votes = floatArrayOf(vote1.toFloat(), vote2.toFloat())
-    val entry = BarEntry(0f, votes)
+    fun Context.setupBarChart(barChart: HorizontalBarChart, vote1: Int, vote2: Int) {
+        val votes = floatArrayOf(vote1.toFloat(), vote2.toFloat())
+        val entry = BarEntry(0f, votes)
 
-    val dataSet = BarDataSet(listOf(entry), "").apply {
-        setColors("#FF9016".toColorInt(), "#00AE42".toColorInt())
-        setDrawValues(false)  // Disable numbers on bars
+        val dataSet = BarDataSet(listOf(entry), "").apply {
+            setColors("#FF9016".toColorInt(), "#00AE42".toColorInt())
+            setDrawValues(false)  // Disable numbers on bars
+        }
+
+        val data = BarData(dataSet).apply {
+            barWidth = 0.9f
+        }
+
+        barChart.apply {
+            setViewPortOffsets(0f, 0f, 0f, 0f)
+            this.data = data
+            description.isEnabled = false
+            legend.isEnabled = false
+
+            setPinchZoom(false)
+            setScaleEnabled(false)
+            setFitBars(false)
+            setDrawBarShadow(false)
+            setBackgroundColor(Color.TRANSPARENT)
+            setTouchEnabled(false)
+            setDrawGridBackground(false)
+
+            xAxis.isEnabled = false
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+
+            moveViewToX(0f)
+            invalidate()
+        }
     }
 
-    val data = BarData(dataSet).apply {
-        barWidth = 0.9f
+    fun hitEmWithConfetti(view: View) {
+        val location = IntArray(2)
+        view.getLocationInWindow(location)
+
+        val konfettiLocation = IntArray(2)
+        binding.konfettiView.getLocationInWindow(konfettiLocation)
+        Log.d(LOG_TAG, "konfettiLocation: $konfettiLocation")
+
+        val imageCenterX = location[0] + view.width / 2f
+        val imageCenterY = location[1] + view.height / 2f
+        Log.d(LOG_TAG, "imageCenter: ${imageCenterX}/${imageCenterY}")
+
+        val konfettiX = konfettiLocation[0]
+        val konfettiY = konfettiLocation[1]
+        Log.d(LOG_TAG, "konfetti: ${konfettiX}/${konfettiY}")
+
+        val relativeX = (imageCenterX - konfettiX) / binding.konfettiView.width.toFloat()
+        val relativeY = (imageCenterY - konfettiY) / binding.konfettiView.height.toFloat()
+        Log.d(LOG_TAG, "relative: ${relativeY}/${relativeY}")
+
+        val party = Party(
+            speed = 0f,
+            maxSpeed = 30f,
+            damping = 0.9f,
+            spread = 360,
+            colors = listOf(0xfce18a, 0xff726d, 0xf4306d, 0xb48def),
+            position = Position.Relative(relativeX.toDouble(), relativeY.toDouble()),
+            emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(80)
+        )
+        binding.konfettiView.start(party)
     }
-
-    barChart.apply {
-        setViewPortOffsets(0f, 0f, 0f, 0f)
-        this.data = data
-        description.isEnabled = false
-        legend.isEnabled = false
-
-        setPinchZoom(false)
-        setScaleEnabled(false)
-        setFitBars(false)
-        setDrawBarShadow(false)
-        setBackgroundColor(Color.TRANSPARENT)
-        setTouchEnabled(false)
-        setDrawGridBackground(false)
-
-        xAxis.isEnabled = false
-        axisLeft.isEnabled = false
-        axisRight.isEnabled = false
-
-        moveViewToX(0f)
-        invalidate()
-    }
-
 }
