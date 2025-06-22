@@ -23,6 +23,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.Toolbar
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import org.cssnr.tibs3dprints.R
@@ -34,8 +35,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var webViewState: Bundle = Bundle()
-
     private val webUrl = "https://tibs3dprints.com/"
+
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,9 +70,14 @@ class HomeFragment : Fragment() {
         // TODO: Not sure when this method is triggered...
         if (savedInstanceState != null) {
             Log.i("Home[onViewCreated]", "SETTING webViewState FROM savedInstanceState")
-            webViewState =
-                savedInstanceState.getBundle("webViewState") ?: Bundle()  // Ensure non-null
+            webViewState = savedInstanceState.getBundle("webViewState") ?: Bundle()
             Log.d("Home[onViewCreated]", "webViewState: ${webViewState.size()}")
+        }
+
+        if (arguments?.getBoolean("isFirstRun", false) == true) {
+            Log.i("onStart", "FIRST RUN ARGUMENT DETECTED")
+            arguments?.remove("isFirstRun")
+            viewModel.tapTargetActive.value = 1
         }
 
         val loadUrl = arguments?.getString("loadUrl")
@@ -162,20 +169,14 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Log.d("onStart", "onStart")
-
-        val isFirstRun = arguments?.getBoolean("isFirstRun", false) == true
-        Log.d("onStart", "isFirstRun: $isFirstRun")
-        if (isFirstRun) {
-            arguments?.remove("isFirstRun")
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar)
-            Log.d("onStart", "toolbar: $toolbar")
-            toolbar.post {
-                showTapTargets(toolbar)
-            }
+        if (viewModel.tapTargetActive.value != 0) {
+            showTapTargets(viewModel.tapTargetActive.value!!)
         }
     }
 
-    private fun showTapTargets(toolbar: Toolbar) {
+    private fun showTapTargets(currentStep: Int) {
+        Log.d("showTapTargets", "currentStep: $currentStep")
+        val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar)
         Log.d("showTapTargets", "toolbar: $toolbar")
         val target1 = TapTarget.forToolbarOverflow(
             toolbar,
@@ -212,14 +213,23 @@ class HomeFragment : Fragment() {
         val sequenceListener = object : TapTargetSequence.Listener {
             override fun onSequenceFinish() {
                 Log.d("onSequenceFinish", "TapTargetSequence Done.")
+                viewModel.tapTargetActive.value = 0
             }
 
             override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
                 Log.d("onSequenceStep", "lastTarget: $lastTarget - clicked: $targetClicked")
+                when (lastTarget) {
+                    target1 -> viewModel.tapTargetActive.value = 2
+                    target2 -> viewModel.tapTargetActive.value = 0
+                }
             }
 
             override fun onSequenceCanceled(lastTarget: TapTarget?) {
                 Log.d("onSequenceCanceled", "lastTarget: $lastTarget")
+                when (lastTarget) {
+                    target1 -> viewModel.tapTargetActive.value = 2
+                    target2 -> viewModel.tapTargetActive.value = 0
+                }
                 if (lastTarget == target1) {
                     Log.d("onSequenceCanceled", "First Step Cancelled - Force Second Step...")
                     TapTargetSequence(requireActivity())
@@ -230,11 +240,13 @@ class HomeFragment : Fragment() {
             }
         }
 
+        val allTargets = listOf<TapTarget>(target1, target2)
+        val targets = allTargets.drop(currentStep - 1)
+        Log.d("showTapTargets", "targets.size: ${targets.size}")
         TapTargetSequence(requireActivity())
-            .targets(target1, target2)
+            .targets(targets)
             .listener(sequenceListener)
             .start()
-
     }
 
     inner class MyWebViewClient : WebViewClient() {
