@@ -56,7 +56,7 @@ class UserFragment : Fragment() {
         val ctx = requireContext()
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
-        val displayName = preferences.getString("displayName", null)
+        val displayName = preferences.getString("name", null)
         val avatarUrl = preferences.getString("avatarUrl", null)
 
         Log.i(LOG_TAG, "displayName: $displayName")

@@ -36,12 +36,12 @@ class ServerApi(val context: Context) {
     //    Log.d("loginUser", "code: $code")
     //    Log.d("loginUser", "codeVerifier: $codeVerifier")
     //    val authRequest = AuthRequest(code = code, codeVerifier = codeVerifier)
-    suspend fun serverLogin(authRequest: ServerAuthRequest): Response<LoginResponse> {
-        Log.d("serverLogin", "authRequest: $authRequest")
+    suspend fun tikTokLogin(tikTokAuthRequest: TikTokAuthRequest): Response<TikTokLoginResponse> {
+        Log.d("tikTokLogin", "tikTokAuthRequest: $tikTokAuthRequest")
         return try {
-            api.login(authRequest)
+            api.login(tikTokAuthRequest)
         } catch (e: Exception) {
-            Log.e("serverLogin", e.stackTraceToString())
+            Log.e("tikTokLogin", e.stackTraceToString())
             val errorBody = e.toString().toResponseBody("text/plain".toMediaTypeOrNull())
             Response.error(520, errorBody)
         }
@@ -54,6 +54,14 @@ class ServerApi(val context: Context) {
     suspend fun submitVote(poll: Int, choice: Int): Vote? {
         val voteRequest = VoteRequest(poll = poll, choice = choice)
         return api.postVote(voteRequest).takeIf { it.isSuccessful }?.body()
+    }
+
+    suspend fun startLogin(email: String, state: String): Response<Unit> {
+        return api.authStart(StartLoginRequest(email, state))
+    }
+
+    suspend fun verifyLogin(email: String, state: String, code: String): Response<LoginResponse> {
+        return api.authLogin(VerifyLoginRequest(email, state, code))
     }
 
     @JsonClass(generateAdapter = true)
@@ -104,31 +112,55 @@ class ServerApi(val context: Context) {
     )
 
     @JsonClass(generateAdapter = true)
-    data class ServerAuthRequest(
-        @Json(name = "code")
-        val code: String,
-        @Json(name = "codeVerifier")
-        val codeVerifier: String,
+    data class TikTokAuthRequest(
+        @Json(name = "code") val code: String,
+        @Json(name = "codeVerifier") val codeVerifier: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class TikTokLoginResponse(
+        @Json(name = "display_name") val displayName: String,
+        @Json(name = "avatar_url") val avatarUrl: String,
+        @Json(name = "authorization") val authorization: String,
+        @Json(name = "open_id") val openId: String,
+        @Json(name = "union_id") val unionId: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class StartLoginRequest(
+        @Json(name = "email") val email: String,
+        @Json(name = "state") val state: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class VerifyLoginRequest(
+        @Json(name = "email") val email: String,
+        @Json(name = "state") val state: String,
+        @Json(name = "code") val code: String,
     )
 
     @JsonClass(generateAdapter = true)
     data class LoginResponse(
-        @Json(name = "display_name")
-        val displayName: String,
-        @Json(name = "avatar_url")
-        val avatarUrl: String,
-        @Json(name = "authorization")
-        val authorization: String,
-        @Json(name = "open_id")
-        val openId: String,
-        @Json(name = "union_id")
-        val unionId: String,
+        @Json(name = "email") val email: String,
+        @Json(name = "name") val name: String,
+        @Json(name = "authorization") val authorization: String,
+        @Json(name = "verified") val verified: Boolean,
     )
 
     interface ApiService {
         @POST(("auth/"))
         suspend fun login(
-            @Body authRequest: ServerAuthRequest
+            @Body authRequest: TikTokAuthRequest
+        ): Response<TikTokLoginResponse>
+
+        @POST(("auth/start/"))
+        suspend fun authStart(
+            @Body authRequest: StartLoginRequest
+        ): Response<Unit>
+
+        @POST(("auth/login/"))
+        suspend fun authLogin(
+            @Body authRequest: VerifyLoginRequest
         ): Response<LoginResponse>
 
         @GET("poll/current/")
