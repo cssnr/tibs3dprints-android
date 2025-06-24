@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
@@ -55,16 +53,16 @@ class UserFragment : Fragment() {
 
         val ctx = requireContext()
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
-        val displayName = preferences.getString("name", null)
-        val avatarUrl = preferences.getString("avatarUrl", null)
+        //val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
+        //val displayName = preferences.getString("name", null)
+        //Log.i(LOG_TAG, "displayName: $displayName")
+        //val avatarUrl = preferences.getString("avatarUrl", null)
+        //Log.i(LOG_TAG, "avatarUrl: $avatarUrl")
 
-        Log.i(LOG_TAG, "displayName: $displayName")
-
-        binding.displayName.text = getString(R.string.greeting_user, displayName)
-        if (!avatarUrl.isNullOrEmpty()) {
-            Glide.with(this).load(avatarUrl).into(binding.headerImage)
-        }
+        //binding.displayName.text = getString(R.string.greeting_user, displayName)
+        //if (!avatarUrl.isNullOrEmpty()) {
+        //    Glide.with(this).load(avatarUrl).into(binding.headerImage)
+        //}
 
         binding.pollBtn.setOnClickListener {
             findNavController().navigate(R.id.nav_action_user_poll)

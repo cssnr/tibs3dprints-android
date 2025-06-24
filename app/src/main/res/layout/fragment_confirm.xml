@@ -33,22 +33,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:text="Enter the code, click the link, or scan the QR code." />
 
         <EditText
             android:id="@+id/code"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
             android:padding="10dp"
             android:gravity="center"
             android:autofillHints="url"
-            android:hint="Confirmation Code"
+            android:hint="Code"
+            android:maxLength="4"
+            android:maxLines="1"
             android:inputType="text"
+            android:textSize="28sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:drawableEnd="@drawable/md_password_2_24px"
-            android:drawableTint="?android:attr/textColorTertiary" />
+            android:drawableTint="?android:attr/textColorTertiary"
+            tools:text="1234" />
 
         <Button
             android:id="@+id/login_button"
@@ -60,7 +65,6 @@
             android:paddingStart="36dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="Confirm Code"
-            android:backgroundTint="@android:color/holo_green_light"
             app:icon="@drawable/md_task_alt_24px"
             app:iconGravity="end"
             app:iconPadding="-24dp"
@@ -72,7 +76,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/holo_red_light"
-            android:text="Invalid Code"
+            android:text="Invalid or Expired Code"
             android:visibility="invisible"
             tools:visibility="visible" />
 
