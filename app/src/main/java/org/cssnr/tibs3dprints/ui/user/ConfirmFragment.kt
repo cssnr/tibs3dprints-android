@@ -121,7 +121,7 @@ class ConfirmFragment : Fragment() {
                         putString("email", loginResponse.email)
                         putString("name", loginResponse.name)
                     }
-                    Toast.makeText(this@processCode, "SUCCESS", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@processCode, "Login Successful", Toast.LENGTH_LONG).show()
                     val popUpTo = preferences.getInt("popUpTo", 0)
                     Log.d("loginButton", "popUpTo: $popUpTo")
                     requireActivity().recreate()
