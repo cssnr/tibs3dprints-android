@@ -1,6 +1,9 @@
 package org.cssnr.tibs3dprints.ui.user
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +26,9 @@ class ConfirmFragment : Fragment() {
     private val binding get() = _binding!!
 
     //private val userViewModel: UserViewModel by activityViewModels()
+
+    private lateinit var state: String
+    private lateinit var email: String
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
 
@@ -53,69 +59,89 @@ class ConfirmFragment : Fragment() {
 
         binding.code.requestFocus()
 
-        val state = preferences.getString("state", null) ?: ""
-        val userEmail = preferences.getString("email", null) ?: ""
+        state = preferences.getString("state", null) ?: ""
+        email = preferences.getString("email", null) ?: ""
 
-        binding.emailAddress.text = userEmail
+        binding.emailAddress.text = email
 
         binding.goBackBtn.setOnClickListener {
             findNavController().navigateUp()
         }
 
         binding.loginButton.setOnClickListener {
-            it.isEnabled = false
-            binding.loginError.visibility = View.INVISIBLE
-
             val code = binding.code.text.toString().trim()
             Log.d("loginButton", "code: $code")
+            ctx.processCode(code)
+        }
 
-            if (code.isEmpty()) {
-                binding.code.error = "Required"
-                it.isEnabled = true
-                return@setOnClickListener
+        binding.code.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                Log.d("beforeTextChanged", "s: $s - start=$start, count=$count, after=$after")
             }
 
-            Log.d("loginButton", "lifecycleScope.launch")
-            lifecycleScope.launch {
-                val api = ServerApi(ctx)
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.d("onTextChanged", "s: $s - start=$start, before=$before, count=$count")
+            }
 
+            override fun afterTextChanged(s: Editable?) {
+                Log.d("afterTextChanged", "${s?.length} - $s")
+                if (s?.length == 4) {
+                    ctx.processCode(s.toString())
+                }
+            }
+        })
 
-                val response = api.verifyLogin(userEmail, state, code)
-                Log.d("loginButton", "response: $response")
+    }
 
-                if (response.isSuccessful) {
-                    Log.d("loginButton", "LOGIN SUCCESS")
-                    val loginResponse = response.body()
-                    Log.d("loginButton", "loginResponse: $loginResponse")
-                    if (loginResponse != null) {
-                        // TODO: Consider using room data storage...
-                        preferences.edit {
-                            putString("authorization", loginResponse.authorization)
-                            putString("email", loginResponse.email)
-                            putString("name", loginResponse.name)
-                        }
-                        Toast.makeText(ctx, "SUCCESS", Toast.LENGTH_LONG).show()
-                        val popUpTo = preferences.getInt("popUpTo", 0)
-                        Log.d("loginButton", "popUpTo: $popUpTo")
-                        requireActivity().recreate()
-                        findNavController().navigate(
-                            R.id.nav_user, null, NavOptions.Builder()
-                                .setPopUpTo(popUpTo, true)
-                                .build()
-                        )
-                    } else {
-                        Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
-                        Log.w("loginButton", "Invalid Server Response.")
-                        this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
-                        it.isEnabled = true
+    fun Context.processCode(code: String) {
+        binding.loginButton.isEnabled = false
+        binding.loginError.visibility = View.INVISIBLE
+
+        if (code.isEmpty()) {
+            binding.code.error = "Required"
+            binding.loginButton.isEnabled = true
+            return
+        }
+
+        Log.d("loginButton", "lifecycleScope.launch")
+        lifecycleScope.launch {
+            val api = ServerApi(this@processCode)
+
+            val response = api.verifyLogin(email, state, code)
+            Log.d("loginButton", "response: $response")
+
+            if (response.isSuccessful) {
+                Log.d("loginButton", "LOGIN SUCCESS")
+                val loginResponse = response.body()
+                Log.d("loginButton", "loginResponse: $loginResponse")
+                if (loginResponse != null) {
+                    // TODO: Consider using room data storage...
+                    preferences.edit {
+                        putString("authorization", loginResponse.authorization)
+                        putString("email", loginResponse.email)
+                        putString("name", loginResponse.name)
                     }
+                    Toast.makeText(this@processCode, "SUCCESS", Toast.LENGTH_LONG).show()
+                    val popUpTo = preferences.getInt("popUpTo", 0)
+                    Log.d("loginButton", "popUpTo: $popUpTo")
+                    requireActivity().recreate()
+                    findNavController().navigate(
+                        R.id.nav_user, null, NavOptions.Builder()
+                            .setPopUpTo(popUpTo, true)
+                            .build()
+                    )
                 } else {
                     Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
+                    Log.w("loginButton", "Invalid Server Response.")
                     this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
-                    it.isEnabled = true
+                    binding.loginButton.isEnabled = true
                 }
-                Log.d("loginButton", "lifecycleScope: DONE")
+            } else {
+                Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
+                this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
+                binding.loginButton.isEnabled = true
             }
+            Log.d("loginButton", "lifecycleScope: DONE")
         }
     }
 }
