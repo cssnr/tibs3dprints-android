@@ -131,6 +131,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_login,
+                R.id.nav_confirm,
                 R.id.nav_user,
                 R.id.nav_poll,
                 R.id.nav_preview -> {
@@ -247,7 +248,27 @@ class MainActivity : AppCompatActivity() {
                     logoutLocalUser()
                     return true
                 }
-                navController.navigate(R.id.nav_login)
+                //Log.d(LOG_TAG, "currentDestination.id: ${navController.currentDestination?.id}")
+                //val dest = when (navController.currentDestination?.id!!) {
+                //    R.id.nav_news,
+                //    R.id.nav_news_item,
+                //    R.id.nav_news_item_action -> {
+                //        Log.d(LOG_TAG, "dest: nav_news")
+                //        R.id.nav_news
+                //    }
+                //
+                //    else -> navController.currentDestination?.id!!
+                //}
+                //Log.d(LOG_TAG, "dest: $dest")
+                //// Note: Hack to navigate after logging in...
+                preferences.edit {
+                    putInt("popUpTo", navController.currentDestination?.id!!)
+                }
+                navController.navigate(
+                    R.id.nav_login, null, NavOptions.Builder()
+                        .setPopUpTo(navController.currentDestination?.id!!, false)
+                        .build()
+                )
                 true
             }
 

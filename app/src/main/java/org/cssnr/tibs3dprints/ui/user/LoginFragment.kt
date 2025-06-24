@@ -62,6 +62,14 @@ class LoginFragment : Fragment() {
         binding.userEmail.setText(userViewModel.loginEmail.value)
         binding.userEmail.requestFocus()
 
+        if (userViewModel.hasEmailCode.value == true) {
+            binding.enterCode.visibility = View.VISIBLE
+        }
+
+        binding.enterCode.setOnClickListener {
+            findNavController().navigate(R.id.nav_login_confirm_action)
+        }
+
         binding.loginButton.setOnClickListener {
             it.isEnabled = false
             binding.loginError.visibility = View.INVISIBLE
@@ -69,8 +77,8 @@ class LoginFragment : Fragment() {
             val userEmail = binding.userEmail.text.toString().trim()
             Log.d("loginButton", "userEmail: $userEmail")
 
-            if (userEmail.isEmpty()) {
-                binding.userEmail.error = "Required"
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                binding.userEmail.error = "Invalid E-Mail"
                 it.isEnabled = true
                 return@setOnClickListener
             }
@@ -87,8 +95,11 @@ class LoginFragment : Fragment() {
                 val response = api.startLogin(userEmail, state)
                 Log.d("loginButton", "response: $response")
                 if (response.isSuccessful) {
-                    findNavController().navigate(R.id.nav_login_register_action)
+                    userViewModel.loginEmail.value = userEmail
+                    userViewModel.hasEmailCode.value = true
+                    findNavController().navigate(R.id.nav_login_confirm_action)
                 } else {
+                    // TODO: Parse error message from server and display to user here...
                     Log.e("loginButton", "AUTH ERROR - ${response.code()}")
                     this@LoginFragment.loginFailed(binding.loginButton, binding.loginError)
                     it.isEnabled = true
