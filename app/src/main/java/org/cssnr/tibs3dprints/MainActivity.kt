@@ -447,8 +447,8 @@ class MainActivity : AppCompatActivity() {
                     putString("name", loginResponse.name)
                 }
                 Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show()
-                //updateHeader() // TODO: Make a proper login function...
                 Log.i("processDeepAuth", "RECREATE")
+                //updateHeader() // TODO: recreate() runs onCreate() runs updateHeader()
                 recreate()
                 Log.i("processDeepAuth", "NAVIGATE")
 //                navController.navigate(R.id.nav_user)
