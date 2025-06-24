@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
         //val formattedVersion = getString(R.string.version_string, versionName)
         //Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
         //versionTextView.text = formattedVersion
-        updateHeader()
+        updateNavigation()
 
         // TODO: This should be done after enabling alerts for better control...
         Log.d("SettingsFragment", "REGISTER - notification channel")
@@ -356,25 +356,25 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun updateHeader() {
+    private fun updateNavigation() {
         val authorization = preferences.getString("authorization", null)
         Log.i(LOG_TAG, "authorization: $authorization")
         val displayName = preferences.getString("name", null)
-        Log.i(LOG_TAG, "updateHeader: displayName: $displayName")
+        Log.i(LOG_TAG, "updateNavigation: displayName: $displayName")
         //val avatarUrl = preferences.getString("avatarUrl", null)
 
-        val headerText = headerView.findViewById<TextView>(R.id.header_text)
-        val headerImage = headerView.findViewById<ImageView>(R.id.header_image)
+        //val headerText = headerView.findViewById<TextView>(R.id.header_text)
+        //val headerImage = headerView.findViewById<ImageView>(R.id.header_image)
 
         if (authorization.isNullOrEmpty()) {
-            Log.d(LOG_TAG, "updateHeader: log OUT")
+            Log.d(LOG_TAG, "updateNavigation: log OUT")
             navView.menu.findItem(R.id.nav_user).isVisible = false
-            headerText.text = getString(R.string.app_name)
+            //headerText.text = getString(R.string.app_name)
             //headerImage.setImageResource(R.drawable.logo)
         } else {
-            Log.d(LOG_TAG, "updateHeader: log IN")
+            Log.d(LOG_TAG, "updateNavigation: log IN")
             navView.menu.findItem(R.id.nav_user).isVisible = true
-            headerText.text = displayName
+            //headerText.text = displayName
             //if (!avatarUrl.isNullOrEmpty()) {
             //    Glide.with(headerImage).load(avatarUrl).into(headerImage)
             //}
@@ -388,7 +388,8 @@ class MainActivity : AppCompatActivity() {
             putString("avatarUrl", "")
             putString("authorization", "")
         }
-        updateHeader()
+        // TODO: Consider calling recreate() here instead...
+        updateNavigation()
         invalidateOptionsMenu()
 
         when (navController.currentDestination?.id) {
@@ -412,7 +413,8 @@ class MainActivity : AppCompatActivity() {
             putString("avatarUrl", userData.avatarUrl)
             putString("authorization", userData.authorization)
         }
-        updateHeader()
+        // TODO: Consider calling recreate() here instead...
+        updateNavigation()
         invalidateOptionsMenu()
         val msg = "Welcome ${userData.displayName}"
         Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
@@ -448,7 +450,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show()
                 Log.i("processDeepAuth", "RECREATE")
-                //updateHeader() // TODO: recreate() runs onCreate() runs updateHeader()
+                //updateNavigation() // TODO: recreate() runs onCreate() runs updateNavigation()
                 recreate()
                 Log.i("processDeepAuth", "NAVIGATE")
 //                navController.navigate(R.id.nav_user)
