@@ -447,10 +447,14 @@ class MainActivity : AppCompatActivity() {
                     putString("name", loginResponse.name)
                 }
                 Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show()
-                updateHeader() // TODO: Make a proper login function...
+                //updateHeader() // TODO: Make a proper login function...
+                Log.i("processDeepAuth", "RECREATE")
+                recreate()
+                Log.i("processDeepAuth", "NAVIGATE")
+//                navController.navigate(R.id.nav_user)
                 navController.navigate(
                     R.id.nav_user, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_login, true)
+                        .setPopUpTo(R.id.nav_home, true)
                         .build()
                 )
                 return
