@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import org.cssnr.tibs3dprints.MainActivity.Companion.LOG_TAG
 import org.cssnr.tibs3dprints.R
