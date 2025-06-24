@@ -60,7 +60,6 @@
             android:paddingStart="36dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="Confirm Code"
-            android:backgroundTint="@android:color/holo_green_light"
             app:icon="@drawable/md_task_alt_24px"
             app:iconGravity="end"
             app:iconPadding="-24dp"
@@ -72,7 +71,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/holo_red_light"
-            android:text="Invalid Code"
+            android:text="Invalid or Expired Code"
             android:visibility="invisible"
             tools:visibility="visible" />
 
