@@ -107,6 +107,7 @@ class ConfirmFragment : Fragment() {
         lifecycleScope.launch {
             val api = ServerApi(this@processCode)
 
+            // TODO: Update this call to check the response status...
             val response = api.verifyLogin(email, state, code)
             Log.d("loginButton", "response: $response")
 
@@ -133,11 +134,13 @@ class ConfirmFragment : Fragment() {
                 } else {
                     Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
                     Log.w("loginButton", "Invalid Server Response.")
+                    Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
                     this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
                     binding.loginButton.isEnabled = true
                 }
             } else {
                 Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
+                Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
                 this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
                 binding.loginButton.isEnabled = true
             }

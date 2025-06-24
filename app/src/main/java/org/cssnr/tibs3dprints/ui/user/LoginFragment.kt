@@ -101,6 +101,7 @@ class LoginFragment : Fragment() {
                 } else {
                     // TODO: Parse error message from server and display to user here...
                     Log.e("loginButton", "AUTH ERROR - ${response.code()}")
+                    Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
                     this@LoginFragment.loginFailed(binding.loginButton, binding.loginError)
                     it.isEnabled = true
                 }
@@ -120,7 +121,6 @@ class LoginFragment : Fragment() {
 fun Fragment.loginFailed(loginButton: View, loginError: View) {
     Log.d("loginFailed", "Context.loginFailed")
     loginError.visibility = View.VISIBLE
-    Toast.makeText(context, "Login Failed!", Toast.LENGTH_SHORT).show()
     val shake = ObjectAnimator.ofFloat(
         loginButton, "translationX",
         0f, 25f, -25f, 20f, -20f, 15f, -15f, 6f, -6f, 0f
