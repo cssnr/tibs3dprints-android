@@ -2,11 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_tiktok"
+        android:id="@+id/action_login"
         android:orderInCategory="100"
-        android:icon="@drawable/fa_tiktok"
-        android:title="Login with TikTok"
+        android:icon="@drawable/md_login_24px"
+        android:title="Login or Register"
         app:showAsAction="never" />
+    <!--<item-->
+    <!--    android:id="@+id/action_tiktok"-->
+    <!--    android:orderInCategory="100"-->
+    <!--    android:icon="@drawable/fa_tiktok"-->
+    <!--    android:title="Login with TikTok"-->
+    <!--    app:showAsAction="never" />-->
     <item
         android:id="@+id/action_browser"
         android:orderInCategory="101"

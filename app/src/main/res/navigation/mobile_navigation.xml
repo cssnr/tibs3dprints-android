@@ -73,6 +73,26 @@
         tools:layout="@layout/fragment_news_pager" />
 
     <fragment
+        android:id="@+id/nav_login"
+        android:name="org.cssnr.tibs3dprints.ui.user.LoginFragment"
+        android:label="Login or Register"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/nav_login_confirm_action"
+            app:destination="@id/nav_confirm"
+            app:launchSingleTop="true"
+            app:exitAnim="@anim/slide_out_left"
+            app:enterAnim="@anim/slide_in_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_confirm"
+        android:name="org.cssnr.tibs3dprints.ui.user.ConfirmFragment"
+        android:label="Confirmation"
+        tools:layout="@layout/fragment_confirm" />
+
+    <fragment
         android:id="@+id/nav_settings"
         android:name="org.cssnr.tibs3dprints.ui.settings.SettingsFragment"
         android:label="@string/settings"

@@ -203,6 +203,6 @@
             android:text="Skip Tutorial"
             app:strokeColor="?attr/colorPrimary"
             app:backgroundTint="@android:color/transparent"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="3dp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
