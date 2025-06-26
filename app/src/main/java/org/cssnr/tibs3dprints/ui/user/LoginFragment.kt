@@ -22,6 +22,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
+import org.cssnr.tibs3dprints.api.ServerApi.ErrorResponse
+import org.cssnr.tibs3dprints.api.parseErrorBody
 import org.cssnr.tibs3dprints.databinding.FragmentLoginBinding
 import java.security.SecureRandom
 
@@ -99,9 +101,12 @@ class LoginFragment : Fragment() {
                     userViewModel.hasEmailCode.value = true
                     findNavController().navigate(R.id.nav_login_confirm_action)
                 } else {
-                    // TODO: Parse error message from server and display to user here...
                     Log.e("loginButton", "AUTH ERROR - ${response.code()}")
-                    Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
+                    val errorResponse =
+                        response.parseErrorBody(api.retrofit, ErrorResponse::class.java)
+                    val message = errorResponse?.message ?: "Error ${response.code()}"
+                    Log.i("processCode", "message - $message")
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     this@LoginFragment.loginFailed(binding.loginButton, binding.loginError)
                     it.isEnabled = true
                 }

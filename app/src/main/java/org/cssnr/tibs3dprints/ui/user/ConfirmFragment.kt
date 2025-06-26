@@ -18,6 +18,8 @@ import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
+import org.cssnr.tibs3dprints.api.ServerApi.ErrorResponse
+import org.cssnr.tibs3dprints.api.parseErrorBody
 import org.cssnr.tibs3dprints.databinding.FragmentConfirmBinding
 
 class ConfirmFragment : Fragment() {
@@ -103,18 +105,18 @@ class ConfirmFragment : Fragment() {
             return
         }
 
-        Log.d("loginButton", "lifecycleScope.launch")
+        Log.d("processCode", "lifecycleScope.launch")
         lifecycleScope.launch {
             val api = ServerApi(this@processCode)
 
             // TODO: Update this call to check the response status...
             val response = api.verifyLogin(email, state, code)
-            Log.d("loginButton", "response: $response")
+            Log.d("processCode", "response: $response")
 
             if (response.isSuccessful) {
-                Log.d("loginButton", "LOGIN SUCCESS")
+                Log.d("processCode", "LOGIN SUCCESS")
                 val loginResponse = response.body()
-                Log.d("loginButton", "loginResponse: $loginResponse")
+                Log.d("processCode", "loginResponse: $loginResponse")
                 if (loginResponse != null) {
                     // TODO: Consider using room data storage...
                     preferences.edit {
@@ -124,7 +126,7 @@ class ConfirmFragment : Fragment() {
                     }
                     Toast.makeText(this@processCode, "Login Successful", Toast.LENGTH_LONG).show()
                     val popUpTo = preferences.getInt("popUpTo", 0)
-                    Log.d("loginButton", "popUpTo: $popUpTo")
+                    Log.d("processCode", "popUpTo: $popUpTo")
                     requireActivity().recreate()
                     findNavController().navigate(
                         R.id.nav_user, null, NavOptions.Builder()
@@ -132,19 +134,21 @@ class ConfirmFragment : Fragment() {
                             .build()
                     )
                 } else {
-                    Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
-                    Log.w("loginButton", "Invalid Server Response.")
-                    Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
+                    Log.d("processCode", "LOGIN FAILED 1 - ${response.code()}")
+                    Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_SHORT).show()
                     this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
                     binding.loginButton.isEnabled = true
                 }
             } else {
-                Log.d("loginButton", "LOGIN FAILED - ${response.code()}")
-                Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_LONG).show()
+                Log.d("processCode", "LOGIN FAILED 2 - ${response.code()}")
+                val errorResponse = response.parseErrorBody(api.retrofit, ErrorResponse::class.java)
+                val message = errorResponse?.message ?: "Error ${response.code()}"
+                Log.i("processCode", "message - $message")
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
                 binding.loginButton.isEnabled = true
             }
-            Log.d("loginButton", "lifecycleScope: DONE")
+            Log.d("processCode", "lifecycleScope: DONE")
         }
     }
 }

@@ -52,6 +52,12 @@
             android:drawableEnd="@drawable/md_alternate_email_24px"
             android:drawableTint="?android:attr/textColorTertiary" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="The E-Mail address is only used for logging in." />
+
         <Button
             android:id="@+id/login_button"
             android:layout_width="match_parent"

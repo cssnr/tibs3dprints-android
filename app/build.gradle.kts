@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
@@ -101,6 +103,7 @@ dependencies {
     implementation(libs.taptargetview)
     implementation(libs.konfetti.xml)
     //implementation(libs.androidyoutubeplayer)
+    ksp(libs.androidx.room.compiler)
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.glide.compiler)
     ksp(libs.moshi.kotlin.codegen)
