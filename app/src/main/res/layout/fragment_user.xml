@@ -17,42 +17,101 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables,UselessParent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp">
+                    <FrameLayout
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginHorizontal="12dp"
+                        android:gravity="center"
+                        android:background="@drawable/image_border">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="4dp"
+                            android:text="LVL" />
+                        <TextView
+                            android:id="@+id/user_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_gravity="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:text="0"
+                            tools:text="9999" />
+                    </FrameLayout>
+                    <TextView
+                        android:id="@+id/email_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                        android:text="Loading..."
+                        tools:text="info@cssnr.com" />
+                </LinearLayout>
+                <Button
+                    android:id="@+id/edit_profile_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:drawableEnd="@drawable/md_edit_note_24px"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:text="Edit Profile" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:text="We are currently updating the user area.\nCheck back later for more features..."/>
+                <!--<FrameLayout-->
+                <!--    android:layout_width="wrap_content"-->
+                <!--    android:layout_height="wrap_content"-->
+                <!--    android:layout_marginBottom="8dp"-->
+                <!--    android:padding="12dp"-->
+                <!--    android:background="@drawable/image_border">-->
+                <!--    <ImageView-->
+                <!--        android:id="@+id/header_image"-->
+                <!--        android:layout_width="96dp"-->
+                <!--        android:layout_height="96dp"-->
+                <!--        android:contentDescription="@string/app_name"-->
+                <!--        app:srcCompat="@drawable/logo" />-->
+                <!--</FrameLayout>-->
+            </LinearLayout>
 
             <!--<LinearLayout-->
             <!--    android:layout_width="match_parent"-->
             <!--    android:layout_height="wrap_content"-->
-            <!--    android:gravity="center"-->
-            <!--    android:orientation="vertical"-->
-            <!--    tools:ignore="UseCompoundDrawables,UselessParent">-->
+            <!--    android:paddingHorizontal="24dp"-->
+            <!--    android:orientation="vertical">-->
             <!--    <TextView-->
-            <!--        android:id="@+id/display_name"-->
             <!--        android:layout_width="wrap_content"-->
             <!--        android:layout_height="wrap_content"-->
-            <!--        android:layout_marginBottom="8dp"-->
-            <!--        android:maxLines="1"-->
-            <!--        android:ellipsize="end"-->
-            <!--        android:textAppearance="@style/TextAppearance.AppCompat.Display1"-->
-            <!--        android:text="@string/app_name"-->
-            <!--        tools:text="Hello, ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ" />-->
-            <!--    <FrameLayout-->
+            <!--        android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+            <!--        android:text="Current Points: 1" />-->
+            <!--    <TextView-->
             <!--        android:layout_width="wrap_content"-->
             <!--        android:layout_height="wrap_content"-->
-            <!--        android:layout_marginBottom="8dp"-->
-            <!--        android:padding="12dp"-->
-            <!--        android:background="@drawable/image_border">-->
-            <!--        <ImageView-->
-            <!--            android:id="@+id/header_image"-->
-            <!--            android:layout_width="96dp"-->
-            <!--            android:layout_height="96dp"-->
-            <!--            android:contentDescription="@string/app_name"-->
-            <!--            app:srcCompat="@drawable/logo" />-->
-            <!--    </FrameLayout>-->
+            <!--        android:text="Earn points by voting on polls, entering give aways and more..."/>-->
             <!--</LinearLayout>-->
 
-            <!--<com.google.android.material.divider.MaterialDivider-->
-            <!--    android:layout_width="match_parent"-->
-            <!--    android:layout_height="1dp"-->
-            <!--    android:layout_marginVertical="4dp" />-->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="4dp" />
 
             <LinearLayout
                 android:id="@+id/empty_layout"

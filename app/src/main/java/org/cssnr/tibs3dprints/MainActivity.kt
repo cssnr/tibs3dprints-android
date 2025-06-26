@@ -11,8 +11,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -448,7 +446,7 @@ class MainActivity : AppCompatActivity() {
                     putString("email", loginResponse.email)
                     putString("name", loginResponse.name)
                 }
-                Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show()
                 Log.i("processDeepAuth", "RECREATE")
                 //updateNavigation() // TODO: recreate() runs onCreate() runs updateNavigation()
                 recreate()

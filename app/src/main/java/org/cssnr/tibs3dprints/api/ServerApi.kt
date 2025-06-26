@@ -21,6 +21,7 @@ import retrofit2.http.POST
 class ServerApi(val context: Context) {
 
     val api: ApiService
+    val retrofit: Retrofit = createRetrofit()
 
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
     val userAgent = "${context.packageName}/${versionName}"
@@ -29,7 +30,7 @@ class ServerApi(val context: Context) {
             ?: ""
 
     init {
-        api = createRetrofit().create(ApiService::class.java)
+        api = retrofit.create(ApiService::class.java)
     }
 
     //suspend fun loginUser(code: String, codeVerifier: String): Response<Unit> {
@@ -60,8 +61,17 @@ class ServerApi(val context: Context) {
         return api.authStart(StartLoginRequest(email, state))
     }
 
-    suspend fun verifyLogin(email: String, state: String, code: String): Response<LoginResponse> {
+    suspend fun verifyLogin(email: String, state: String, code: String): Response<UserResponse> {
         return api.authLogin(VerifyLoginRequest(email, state, code))
+    }
+
+    suspend fun getUser(): Response<UserResponse> {
+        return api.userCurrent()
+    }
+
+    suspend fun editUser(editUserRequest: EditUserRequest): UserResponse? {
+        val response = api.userEdit(editUserRequest)
+        return if (response.isSuccessful) response.body() else null
     }
 
     @JsonClass(generateAdapter = true)
@@ -106,10 +116,10 @@ class ServerApi(val context: Context) {
         @Json(name = "choice") val choice: Int,
     )
 
-    @JsonClass(generateAdapter = true)
-    data class MessageResponse(
-        @Json(name = "message") val message: String,
-    )
+    //@JsonClass(generateAdapter = true)
+    //data class MessageResponse(
+    //    @Json(name = "message") val message: String,
+    //)
 
     @JsonClass(generateAdapter = true)
     data class TikTokAuthRequest(
@@ -140,28 +150,46 @@ class ServerApi(val context: Context) {
     )
 
     @JsonClass(generateAdapter = true)
-    data class LoginResponse(
+    data class UserResponse(
         @Json(name = "email") val email: String,
         @Json(name = "name") val name: String,
         @Json(name = "authorization") val authorization: String,
         @Json(name = "verified") val verified: Boolean,
+        @Json(name = "points") val points: Int,
     )
+
+    @JsonClass(generateAdapter = true)
+    data class EditUserRequest(
+        @Json(name = "name") val name: String,
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class ErrorResponse(val message: String)
+
 
     interface ApiService {
         @POST(("auth/"))
         suspend fun login(
-            @Body authRequest: TikTokAuthRequest
+            @Body data: TikTokAuthRequest,
         ): Response<TikTokLoginResponse>
 
         @POST(("auth/start/"))
         suspend fun authStart(
-            @Body authRequest: StartLoginRequest
+            @Body data: StartLoginRequest,
         ): Response<Unit>
 
         @POST(("auth/login/"))
         suspend fun authLogin(
-            @Body authRequest: VerifyLoginRequest
-        ): Response<LoginResponse>
+            @Body data: VerifyLoginRequest,
+        ): Response<UserResponse>
+
+        @GET("user/current/")
+        suspend fun userCurrent(): Response<UserResponse>
+
+        @POST("user/edit/")
+        suspend fun userEdit(
+            @Body data: EditUserRequest,
+        ): Response<UserResponse>
 
         @GET("poll/current/")
         suspend fun getPollCurrent(): Response<PollResponse?>
@@ -188,5 +216,16 @@ class ServerApi(val context: Context) {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
+    }
+}
+
+fun <T> Response<*>.parseErrorBody(retrofit: Retrofit, type: Class<T>): T? {
+    val errorBody = this.errorBody() ?: return null
+    val converter = retrofit.responseBodyConverter<T>(type, emptyArray())
+    return try {
+        converter.convert(errorBody)
+    } catch (e: Exception) {
+        Log.e("parseErrorBody", "Failed to parse error body", e)
+        null
     }
 }

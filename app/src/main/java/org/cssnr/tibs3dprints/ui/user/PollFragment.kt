@@ -94,10 +94,7 @@ class PollFragment : Fragment() {
                             choice
                         }
                     }
-                    pollResponse.copy(
-                        vote = vote,
-                        choices = updatedChoices
-                    )
+                    pollResponse.copy(vote = vote, choices = updatedChoices)
                 }
                 Log.d("voteListener", "updatedPoll: $updatedPoll")
                 userViewModel.poll.value = updatedPoll
@@ -105,6 +102,7 @@ class PollFragment : Fragment() {
                     R.id.vote_1 -> hitEmWithConfetti(binding.image1)
                     R.id.vote_2 -> hitEmWithConfetti(binding.image2)
                 }
+                Toast.makeText(ctx, "Earned 10 Points", Toast.LENGTH_LONG).show()
             }
         }
 
