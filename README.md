@@ -29,26 +29,30 @@ Android Application for Tibs3DPrints: https://tibs3dprints.com/
 ## Install
 
 > [!TIP]  
-> To install, download and open the [latest release](https://github.com/cssnr/tibs3dprints-android/releases/latest).
->
-> [![GitHub Release](https://img.shields.io/github/v/release/cssnr/tibs3dprints-android?style=for-the-badge&logo=android&label=Download%20Android%20APK&color=A4C639)](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
+> Google Play is currently in Closed Testing. To be included contact us on [Discord](https://discord.gg/wXy6m2X8wY).
 
-<details><summary>📸 View QR Code</summary>
+<a title="Get on GitHub" href="https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk">
+    <img alt="GitHub" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/github.png"></a>
+<a title="Get onObtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android">
+    <img alt="Obtainium" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/obtainium.png"></a>
+<a title="Get on Google Play" href="https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints">
+    <img alt="Google Play" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/google-play.png"></a>
 
-[![QR Code](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-download.png)](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
+<details><summary>📲 Click to View QR Codes 📸</summary>
+
+[![QR Code GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-github.png)](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
+
+[![QR Code Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android)
+
+[![QR Code Google Play](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-google.png)](https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints)
 
 </details>
-
-> [!WARNING]  
-> Google Play is currently in Closed Testing.  
-> To be included contact us on [Discord](https://discord.gg/wXy6m2X8wY).
-
-[![Google Play](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/google/get-on-play-400.webp)](https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints)
 
 _Note: Until published on the play store, you may need to allow installation of apps from unknown sources._
 
 Downloading and Installing the [apk](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
 should take you to the settings area to allow installation if not already enabled.
+For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website).
 
 <details><summary>View Manual Steps to Install from Unknown Sources</summary>
 
@@ -180,5 +184,5 @@ You can also support other related projects:
 - [Django Files Android](https://github.com/django-files/android-client?tab=readme-ov-file#readme)
 - [Zipline Android](https://github.com/cssnr/zipline-android?tab=readme-ov-file#readme)
 - [NOAA Weather Android](https://github.com/cssnr/noaa-weather-android?tab=readme-ov-file#readme)
-- [Remote Wallpaper Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
+- [Remote Wallpaper Android](https://github.com/cssnr/remote-wallpaper-android?tab=readme-ov-file#readme)
 - [Tibs3DPrints Android](https://github.com/cssnr/tibs3dprints-android?tab=readme-ov-file#readme)
