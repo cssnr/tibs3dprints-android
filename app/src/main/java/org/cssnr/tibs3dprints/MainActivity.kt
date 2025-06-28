@@ -451,7 +451,7 @@ class MainActivity : AppCompatActivity() {
                 //updateNavigation() // TODO: recreate() runs onCreate() runs updateNavigation()
                 recreate()
                 Log.i("processDeepAuth", "NAVIGATE")
-//                navController.navigate(R.id.nav_user)
+                //navController.navigate(R.id.nav_user)
                 navController.navigate(
                     R.id.nav_user, null, NavOptions.Builder()
                         .setPopUpTo(R.id.nav_home, true)
