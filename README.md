@@ -33,7 +33,7 @@ Android Application for Tibs3DPrints: https://tibs3dprints.com/
 
 <a title="Get on GitHub" href="https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk">
     <img alt="GitHub" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/github.png"></a>
-<a title="Get onObtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android/">
+<a title="Get onObtainium" href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android">
     <img alt="Obtainium" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/obtainium.png"></a>
 <a title="Get on Google Play" href="https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints">
     <img alt="Google Play" height="76" src="https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/android/get/google-play.png"></a>
@@ -42,7 +42,7 @@ Android Application for Tibs3DPrints: https://tibs3dprints.com/
 
 [![QR Code GitHub](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-github.png)](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
 
-[![QR Code Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android/)
+[![QR Code Obtainium](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/cssnr/tibs3dprints-android)
 
 [![QR Code Google Play](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/tibs3dprints/qr-code-google.png)](https://play.google.com/store/apps/details?id=org.cssnr.tibs3dprints)
 
