@@ -1,1 +1,43 @@
-{"props":{"data":"https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk","image":"","width":200,"height":200,"margin":0,"dotsOptions":{"color":"#00e1ff","type":"dots"},"cornersSquareOptions":{"color":"#01aac1","type":"extra-rounded"},"cornersDotOptions":{"color":"#01aac1","type":"dot"},"imageOptions":{"margin":0},"qrOptions":{"errorCorrectionLevel":"Q"}},"style":{"borderRadius":"0px","background":"transparent"},"frame":{"text":"Download Android APK","position":"top","style":{"textColor":"#ffffff","backgroundColor":"#0d1117","borderColor":"#3d444d","borderWidth":"1px","borderRadius":"16px","padding":"16px"}}}
+{
+  "props": {
+    "data": "https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk",
+    "image": "",
+    "width": 200,
+    "height": 200,
+    "margin": 0,
+    "dotsOptions": {
+      "color": "#00e1ff",
+      "type": "dots"
+    },
+    "cornersSquareOptions": {
+      "color": "#01aac1",
+      "type": "extra-rounded"
+    },
+    "cornersDotOptions": {
+      "color": "#01aac1",
+      "type": "dot"
+    },
+    "imageOptions": {
+      "margin": 0
+    },
+    "qrOptions": {
+      "errorCorrectionLevel": "Q"
+    }
+  },
+  "style": {
+    "borderRadius": "0px",
+    "background": "transparent"
+  },
+  "frame": {
+    "text": "Download Android APK",
+    "position": "top",
+    "style": {
+      "textColor": "#ffffff",
+      "backgroundColor": "#0d1117",
+      "borderColor": "#3d444d",
+      "borderWidth": "1px",
+      "borderRadius": "16px",
+      "padding": "16px"
+    }
+  }
+}
