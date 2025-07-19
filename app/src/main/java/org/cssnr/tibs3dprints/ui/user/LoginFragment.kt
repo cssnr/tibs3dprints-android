@@ -107,7 +107,7 @@ class LoginFragment : Fragment() {
                     val message = errorResponse?.message ?: "Error ${response.code()}"
                     Log.i("processCode", "message - $message")
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    this@LoginFragment.loginFailed(binding.loginButton, binding.loginError)
+                    this@LoginFragment.loginFailed(_binding?.loginButton, _binding?.loginError)
                     it.isEnabled = true
                 }
                 Log.d("loginButton", "lifecycleScope: DONE")
@@ -123,9 +123,9 @@ class LoginFragment : Fragment() {
     }
 }
 
-fun Fragment.loginFailed(loginButton: View, loginError: View) {
+fun Fragment.loginFailed(loginButton: View?, loginError: View?) {
     Log.d("loginFailed", "Context.loginFailed")
-    loginError.visibility = View.VISIBLE
+    loginError?.visibility = View.VISIBLE
     val shake = ObjectAnimator.ofFloat(
         loginButton, "translationX",
         0f, 25f, -25f, 20f, -20f, 15f, -15f, 6f, -6f, 0f
@@ -134,16 +134,16 @@ fun Fragment.loginFailed(loginButton: View, loginError: View) {
     shake.start()
     val red = ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
     val original = ContextCompat.getColor(requireContext(), R.color.primary_color)
-    loginButton.setBackgroundColor(red)
+    loginButton?.setBackgroundColor(red)
     lifecycleScope.launch {
         delay(700)
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            loginButton.setBackgroundColor(original)
+            loginButton?.setBackgroundColor(original)
         }
     }
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        loginButton.performHapticFeedback(HapticFeedbackConstants.REJECT)
+        loginButton?.performHapticFeedback(HapticFeedbackConstants.REJECT)
     } else {
-        loginButton.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        loginButton?.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
     }
 }

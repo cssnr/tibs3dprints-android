@@ -144,8 +144,8 @@ class ConfirmFragment : Fragment() {
                 } else {
                     Log.d("processCode", "LOGIN FAILED 1 - ${response.code()}")
                     Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_SHORT).show()
-                    this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
-                    binding.loginButton.isEnabled = true
+                    this@ConfirmFragment.loginFailed(_binding?.loginButton, _binding?.loginError)
+                    _binding?.loginButton?.isEnabled = true
                 }
             } else {
                 Log.d("processCode", "LOGIN FAILED 2 - ${response.code()}")
@@ -153,8 +153,8 @@ class ConfirmFragment : Fragment() {
                 val message = errorResponse?.message ?: "Error ${response.code()}"
                 Log.i("processCode", "message - $message")
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                this@ConfirmFragment.loginFailed(binding.loginButton, binding.loginError)
-                binding.loginButton.isEnabled = true
+                this@ConfirmFragment.loginFailed(_binding?.loginButton, _binding?.loginError)
+                _binding?.loginButton?.isEnabled = true
             }
             Log.d("processCode", "lifecycleScope: DONE")
         }

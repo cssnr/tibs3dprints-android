@@ -126,12 +126,12 @@ class MainActivity : AppCompatActivity() {
         val destinationToBottomNavItem = mapOf(
             R.id.nav_news_item to R.id.nav_news,
             R.id.nav_poll to R.id.nav_user,
+            R.id.nav_preview to R.id.nav_user,
         )
         // Destination w/ No Parent
         val hiddenDestinations = setOf(
             R.id.nav_login,
             R.id.nav_confirm,
-            R.id.nav_preview,
         )
         // Implement Navigation Hacks Because.......Android?
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -424,6 +424,7 @@ class MainActivity : AppCompatActivity() {
                 .setPopUpTo(navController.graph.id, true)
                 .build()
         )
+        // NOTE: If this is used again, use hiddenDestinations instead of re-creating the list
         //when (navController.currentDestination?.id) {
         //    R.id.nav_user, R.id.nav_poll -> {
         //        Log.i(LOG_TAG, "logoutLocalUser: navigate: nav_home")

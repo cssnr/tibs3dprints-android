@@ -58,8 +58,8 @@ class HomeFragment : Fragment() {
             removeAllViews()
             destroy()
         }
-        _binding = null
         super.onDestroyView()
+        _binding = null
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -126,8 +126,8 @@ class HomeFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (binding.webView.canGoBack()) {
-                    binding.webView.goBack()
+                if (_binding?.webView?.canGoBack() == true) {
+                    _binding?.webView?.goBack()
                 } else {
                     isEnabled = false
                     requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -162,8 +162,8 @@ class HomeFragment : Fragment() {
         Log.d("Home[onResume]", "ON RESUME")
         super.onResume()
         Log.d("Home[onResume]", "webView. onResume() / resumeTimers()")
-        binding.webView.onResume()
-        binding.webView.resumeTimers()
+        _binding?.webView?.onResume()
+        _binding?.webView?.resumeTimers()
     }
 
     override fun onStart() {

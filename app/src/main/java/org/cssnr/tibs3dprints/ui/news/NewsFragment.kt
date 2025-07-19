@@ -59,9 +59,7 @@ class NewsFragment : Fragment() {
 
         newsAdapter = NewsAdapter(emptyList()) { position ->
             Log.i(LOG_TAG, "onItemClick: position: $position")
-            val bundle = Bundle().apply {
-                putInt("position", position)
-            }
+            val bundle = Bundle().apply { putInt("position", position) }
             findNavController().navigate(R.id.nav_news_item_action, bundle)
         }
         binding.newsView.layoutManager = LinearLayoutManager(context)

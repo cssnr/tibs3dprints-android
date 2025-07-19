@@ -34,7 +34,7 @@ class PreviewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "savedInstanceState: ${savedInstanceState?.size()}")
 
-        val imageUrl = arguments?.getString("image_url") // or however you pass it
+        val imageUrl = arguments?.getString("image_url")
         Log.d(LOG_TAG, "imageUrl: $imageUrl")
 
         Glide.with(this).load(imageUrl).into(binding.imageView)
