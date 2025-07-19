@@ -325,7 +325,7 @@ class MainActivity : AppCompatActivity() {
                 preferences.edit { putBoolean("first_run_shown", true) }
                 navController.navigate(
                     R.id.nav_setup, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_home, true)
+                        .setPopUpTo(navController.graph.id, true)
                         .build()
                 )
             }
@@ -333,6 +333,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(LOG_TAG, "ACTION_NOTIFICATION")
             //findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
             //navController.navigate(R.id.nav_news)
+            // TODO: Navigation: Verify this navigation call...
             navController.navigate(
                 R.id.nav_news, null, NavOptions.Builder()
                     .setPopUpTo(navController.currentDestination?.id!!, true)
@@ -482,14 +483,15 @@ class MainActivity : AppCompatActivity() {
                     putString("name", loginResponse.name)
                 }
                 Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show()
+
+                // TODO: Navigation: Login: Cleanup this logic...
                 Log.i("processDeepAuth", "RECREATE")
-                //updateNavigation() // TODO: recreate() runs onCreate() runs updateNavigation()
+                updateNavigation()
                 recreate()
-                Log.i("processDeepAuth", "NAVIGATE")
-                //navController.navigate(R.id.nav_user)
+                Log.i("DEBUG", "NAVCONTROLLER NAVIGATE")
                 navController.navigate(
                     R.id.nav_user, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_home, true)
+                        .setPopUpTo(navController.graph.id, true)
                         .build()
                 )
                 return

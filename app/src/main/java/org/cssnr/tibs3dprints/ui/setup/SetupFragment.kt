@@ -135,16 +135,17 @@ class SetupFragment : Fragment() {
             val bundle = bundleOf()
             when (view.id) {
                 R.id.btn_continue -> {
-                    Log.i(LOG_TAG, "Continue Button Pressed. Showing First Run...")
+                    Log.i(LOG_TAG, "Continue Button: Showing Tap Targets...")
                     bundle.putBoolean("isFirstRun", true)
                 }
             }
             Log.d(LOG_TAG, "startAppListener: bundle: $bundle")
 
             // Navigate Home
-            findNavController().navigate(
+            val navController = findNavController()
+            navController.navigate(
                 R.id.nav_action_setup_home, bundle, NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_setup, true)
+                    .setPopUpTo(navController.graph.id, true)
                     .build()
             )
         }
