@@ -27,7 +27,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -35,8 +34,7 @@ import androidx.preference.PreferenceManager
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.tiktok.open.sdk.auth.AuthApi
 import com.tiktok.open.sdk.auth.AuthApi.AuthMethod
 import com.tiktok.open.sdk.auth.AuthRequest
@@ -56,8 +54,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var headerView: View
 
-    private lateinit var navView: NavigationView
     private lateinit var navController: NavController
+    private lateinit var navHostFragment: NavHostFragment
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -85,67 +83,87 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(LOG_TAG, "MainActivity: onCreate: ${savedInstanceState?.size()}")
-
+        Log.d(LOG_TAG, "savedInstanceState: ${savedInstanceState?.size()}")
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        navView = binding.navView
-        val navHostFragment =
-            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment?)!!
+        // NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
 
+        // Start Destination
+        if (savedInstanceState == null) {
+            val authorization = preferences.getString("authorization", null)
+            Log.i(LOG_TAG, "authorization: $authorization")
+
+            val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+            val startPreference = preferences.getString("start_destination", null)
+            Log.d(LOG_TAG, "startPreference: $startPreference")
+            val startDestination =
+                if (authorization.isNullOrEmpty()) R.id.nav_home else R.id.nav_user
+            navGraph.setStartDestination(startDestination)
+            navController.graph = navGraph
+        }
+
+        // Bottom Navigation
+        val bottomNav = binding.appBarMain.contentMain.bottomNav
+        bottomNav.setupWithNavController(navController)
+        bottomNav.labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
+
+        // Navigation Drawer
+        binding.navView.setupWithNavController(navController)
+
+        // App Bar Configuration
+        setSupportActionBar(binding.appBarMain.contentMain.toolbar)
         val topLevelItems =
             setOf(R.id.nav_home, R.id.nav_user, R.id.nav_news, R.id.nav_settings)
-        appBarConfiguration = AppBarConfiguration(topLevelItems, drawerLayout)
+        appBarConfiguration = AppBarConfiguration(topLevelItems, binding.drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        val bottomNav: BottomNavigationView = binding.appBarMain.bottomNav
-        setupWithNavController(bottomNav, navController)
 
-        navView.menu.findItem(R.id.nav_user).isVisible = false
-
-        // Force White Status Bar Text in for Light Mode
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
-            false
-
-        // TODO: Navigation...
+        // Destinations w/ a Parent Item
+        val destinationToBottomNavItem = mapOf(
+            R.id.nav_news_item to R.id.nav_news,
+            R.id.nav_poll to R.id.nav_user,
+        )
+        // Destination w/ No Parent
+        val hiddenDestinations = setOf(
+            R.id.nav_login,
+            R.id.nav_confirm,
+            R.id.nav_preview,
+        )
+        // Implement Navigation Hacks Because.......Android?
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d(LOG_TAG, "NAV CONTROLLER - destination: ${destination.label}")
+            Log.d("addOnDestinationChangedListener", "destination: ${destination.label}")
             binding.drawerLayout.closeDrawer(GravityCompat.START)
-            when (destination.id) {
-                R.id.nav_news_item -> {
-                    Log.d(LOG_TAG, "nav_news_item")
-                    bottomNav.menu.findItem(R.id.nav_news).isChecked = true
-                    //navView.setCheckedItem(R.id.nav_news)
-                    val menu = navView.menu
-                    for (i in 0 until menu.size) {
-                        val item = menu[i]
-                        item.isChecked = item.itemId == R.id.nav_news
-                    }
-                }
 
-                R.id.nav_login,
-                R.id.nav_confirm,
-                R.id.nav_user,
-                R.id.nav_poll,
-                R.id.nav_preview -> {
-                    Log.d(LOG_TAG, "nav_login/nav_user/nav_poll/nav_preview")
-                    bottomNav.menu.findItem(R.id.nav_wtf).isChecked = true
+            val destinationId = destination.id
+
+            if (destinationId in hiddenDestinations) {
+                Log.d("addOnDestinationChangedListener", "Set bottomNav to Hidden Item")
+                bottomNav.menu.findItem(R.id.nav_wtf).isChecked = true
+                return@addOnDestinationChangedListener
+            }
+
+            val matchedItem = destinationToBottomNavItem[destinationId]
+            if (matchedItem != null) {
+                Log.d("addOnDestinationChangedListener", "matched nav item: $matchedItem")
+                bottomNav.menu.findItem(matchedItem).isChecked = true
+                val menu = binding.navView.menu
+                for (i in 0 until menu.size) {
+                    val item = menu[i]
+                    item.isChecked = item.itemId == matchedItem
                 }
             }
         }
 
+        // Handle Custom Navigation Items
         val navLinks = mapOf(
             R.id.nav_item_tiktok to getString(R.string.tiktok_url),
             R.id.nav_itewm_youtube to getString(R.string.youtube_url),
             R.id.nav_item_website to getString(R.string.website_url),
         )
-
-        // Handle Custom Navigation Items
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawers()
             val path = navLinks[menuItem.itemId]
@@ -160,6 +178,13 @@ class MainActivity : AppCompatActivity() {
                 handled
             }
         }
+
+        // TODO: Determine why this is done here and add a NOTE
+        binding.navView.menu.findItem(R.id.nav_user).isVisible = false
+
+        // Force White Status Bar Text in for Light Mode
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
+            false
 
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")
@@ -244,30 +269,17 @@ class MainActivity : AppCompatActivity() {
                 if (item.title == "Logout") {
                     Log.d(LOG_TAG, "LOGOUT")
                     logoutLocalUser()
-                    return true
+                    true
+                } else {
+                    navController.navigate(R.id.nav_login)
+                    //preferences.edit { putInt("popUpTo", navController.currentDestination?.id!!) }
+                    //navController.navigate(
+                    //    R.id.nav_login, null, NavOptions.Builder()
+                    //        .setPopUpTo(navController.currentDestination?.id!!, false)
+                    //        .build()
+                    //)
+                    true
                 }
-                //Log.d(LOG_TAG, "currentDestination.id: ${navController.currentDestination?.id}")
-                //val dest = when (navController.currentDestination?.id!!) {
-                //    R.id.nav_news,
-                //    R.id.nav_news_item,
-                //    R.id.nav_news_item_action -> {
-                //        Log.d(LOG_TAG, "dest: nav_news")
-                //        R.id.nav_news
-                //    }
-                //
-                //    else -> navController.currentDestination?.id!!
-                //}
-                //Log.d(LOG_TAG, "dest: $dest")
-                //// Note: Hack to navigate after logging in...
-                preferences.edit {
-                    putInt("popUpTo", navController.currentDestination?.id!!)
-                }
-                navController.navigate(
-                    R.id.nav_login, null, NavOptions.Builder()
-                        .setPopUpTo(navController.currentDestination?.id!!, false)
-                        .build()
-                )
-                true
             }
 
             //R.id.action_tiktok -> {
@@ -313,7 +325,7 @@ class MainActivity : AppCompatActivity() {
                 preferences.edit { putBoolean("first_run_shown", true) }
                 navController.navigate(
                     R.id.nav_setup, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_home, true)
+                        .setPopUpTo(navController.graph.id, true)
                         .build()
                 )
             }
@@ -321,6 +333,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(LOG_TAG, "ACTION_NOTIFICATION")
             //findNavController(R.id.nav_host_fragment_content_main).navigate(R.id.nav_news)
             //navController.navigate(R.id.nav_news)
+            // TODO: Navigation: Verify this navigation call...
             navController.navigate(
                 R.id.nav_news, null, NavOptions.Builder()
                     .setPopUpTo(navController.currentDestination?.id!!, true)
@@ -354,9 +367,8 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun updateNavigation() {
+    fun updateNavigation() {
         val authorization = preferences.getString("authorization", null)
-        Log.i(LOG_TAG, "authorization: $authorization")
         val displayName = preferences.getString("name", null)
         Log.i(LOG_TAG, "updateNavigation: displayName: $displayName")
         //val avatarUrl = preferences.getString("avatarUrl", null)
@@ -364,14 +376,28 @@ class MainActivity : AppCompatActivity() {
         //val headerText = headerView.findViewById<TextView>(R.id.header_text)
         //val headerImage = headerView.findViewById<ImageView>(R.id.header_image)
 
+        val bottomNav = binding.appBarMain.contentMain.bottomNav
+
+        // TODO: Navigation: Logout/Login: Cleanup this logic...
+
         if (authorization.isNullOrEmpty()) {
-            Log.d(LOG_TAG, "updateNavigation: log OUT")
-            navView.menu.findItem(R.id.nav_user).isVisible = false
+            Log.i(LOG_TAG, "updateNavigation: LOG OUT")
+            binding.navView.menu.findItem(R.id.nav_user).isVisible = false
+            bottomNav.menu.findItem(R.id.nav_user).isVisible = false
+
+            Log.i(LOG_TAG, "navGraph.setStartDestination: R.id.nav_home")
+            navController.graph.setStartDestination(R.id.nav_home)
+
             //headerText.text = getString(R.string.app_name)
             //headerImage.setImageResource(R.drawable.logo)
         } else {
-            Log.d(LOG_TAG, "updateNavigation: log IN")
-            navView.menu.findItem(R.id.nav_user).isVisible = true
+            Log.i(LOG_TAG, "updateNavigation: LOG IN")
+            binding.navView.menu.findItem(R.id.nav_user).isVisible = true
+            bottomNav.menu.findItem(R.id.nav_user).isVisible = true
+
+            Log.i(LOG_TAG, "navGraph.setStartDestination: R.id.nav_user")
+            navController.graph.setStartDestination(R.id.nav_user)
+
             //headerText.text = displayName
             //if (!avatarUrl.isNullOrEmpty()) {
             //    Glide.with(headerImage).load(avatarUrl).into(headerImage)
@@ -380,28 +406,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun logoutLocalUser() {
-        Log.d(LOG_TAG, "preferences.edit: CLEAR USER CREDENTIALS")
+        Log.d(LOG_TAG, "logoutLocalUser: Reset Preferences")
         preferences.edit {
+            putString("authorization", "")
+            putString("email", "")
+            putString("name", "")
             putString("displayName", "")
             putString("avatarUrl", "")
-            putString("authorization", "")
         }
-        // TODO: Consider calling recreate() here instead...
+
+        // TODO: Navigation: Logout: Cleanup this logic...
         updateNavigation()
         invalidateOptionsMenu()
 
         when (navController.currentDestination?.id) {
             R.id.nav_user, R.id.nav_poll -> {
-                Log.i(LOG_TAG, "Navigating User to Home on Logout")
+                Log.i(LOG_TAG, "logoutLocalUser: navigate: nav_home")
                 navController.navigate(
                     R.id.nav_home, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_user, true)
+                        .setPopUpTo(navController.currentDestination?.id!!, true)
+                        .build()
+                )
+            }
+
+            else -> {
+                Log.i(LOG_TAG, "logoutLocalUser: navigate: currentDestination")
+                navController.navigate(
+                    navController.currentDestination!!.id, null, NavOptions.Builder()
+                        .setPopUpTo(navController.currentDestination?.id!!, true)
                         .build()
                 )
             }
         }
-        navView.menu.findItem(R.id.nav_user).isVisible = false
-
         Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show()
     }
 
@@ -447,14 +483,15 @@ class MainActivity : AppCompatActivity() {
                     putString("name", loginResponse.name)
                 }
                 Toast.makeText(this, "Login Success", Toast.LENGTH_LONG).show()
+
+                // TODO: Navigation: Login: Cleanup this logic...
                 Log.i("processDeepAuth", "RECREATE")
-                //updateNavigation() // TODO: recreate() runs onCreate() runs updateNavigation()
+                updateNavigation()
                 recreate()
-                Log.i("processDeepAuth", "NAVIGATE")
-                //navController.navigate(R.id.nav_user)
+                Log.i("DEBUG", "NAVCONTROLLER NAVIGATE")
                 navController.navigate(
                     R.id.nav_user, null, NavOptions.Builder()
-                        .setPopUpTo(R.id.nav_home, true)
+                        .setPopUpTo(navController.graph.id, true)
                         .build()
                 )
                 return

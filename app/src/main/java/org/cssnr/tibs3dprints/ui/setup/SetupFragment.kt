@@ -2,15 +2,12 @@ package org.cssnr.tibs3dprints.ui.setup
 
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
-import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -138,16 +135,17 @@ class SetupFragment : Fragment() {
             val bundle = bundleOf()
             when (view.id) {
                 R.id.btn_continue -> {
-                    Log.i(LOG_TAG, "Continue Button Pressed. Showing First Run...")
+                    Log.i(LOG_TAG, "Continue Button: Showing Tap Targets...")
                     bundle.putBoolean("isFirstRun", true)
                 }
             }
             Log.d(LOG_TAG, "startAppListener: bundle: $bundle")
 
             // Navigate Home
-            findNavController().navigate(
+            val navController = findNavController()
+            navController.navigate(
                 R.id.nav_action_setup_home, bundle, NavOptions.Builder()
-                    .setPopUpTo(R.id.nav_setup, true)
+                    .setPopUpTo(navController.graph.id, true)
                     .build()
             )
         }
@@ -166,24 +164,16 @@ class SetupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(LOG_TAG, "onStart - Hide UI and Lock Drawer")
-        val act = requireActivity()
-        act.findViewById<ConstraintLayout>(R.id.content_main_layout).setPadding(0, 0, 0, 0)
-        act.findViewById<Toolbar>(R.id.toolbar).visibility = View.GONE
-        act.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        Log.d("Setup[onStart]", "onStart - Hide UI")
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         (activity as? MainActivity)?.setDrawerLockMode(false)
     }
 
     override fun onStop() {
-        super.onStop()
-        Log.d(LOG_TAG, "onStop - Show UI and Unlock Drawer")
-        val act = requireActivity()
-        val padding = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 80f, resources.displayMetrics
-        ).toInt()
-        act.findViewById<ConstraintLayout>(R.id.content_main_layout).setPadding(0, 0, 0, padding)
-        act.findViewById<Toolbar>(R.id.toolbar).visibility = View.VISIBLE
-        act.findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+        Log.d("Setup[onStop]", "onStop - Show UI")
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
         (activity as? MainActivity)?.setDrawerLockMode(true)
+        super.onStop()
     }
 }

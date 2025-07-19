@@ -4,6 +4,11 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_user"
+            android:icon="@drawable/md_account_circle_24px"
+            android:title="@string/user" />
+
+        <item
             android:id="@+id/nav_home"
             android:icon="@drawable/md_dashboard_24px"
             android:title="@string/home" />

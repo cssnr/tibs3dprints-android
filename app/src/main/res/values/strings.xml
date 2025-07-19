@@ -2,6 +2,7 @@
     <string name="app_name">Tibs3DPrints</string>
     <string name="version_string">v%s</string>
 
+    <string name="user">User</string>
     <string name="home">Home</string>
     <string name="news">News</string>
     <string name="settings">Settings</string>
