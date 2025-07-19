@@ -216,7 +216,7 @@ jobs:
         id: notes
         run: |
           body="${{ github.event.release.body }}"
-          summary=$(printf '%s' "$body" | awk 'BEGIN{found=0} /^#/ {found=1} !found{print}' | sed -Ez 's/^\n+|\n+$//g')
+          summary=$(printf '%s' "$body" | awk '/^#/ {exit} {print}' | sed -Ez 's/^\n+|\n+$//g')
           echo "summary<<EOF" >> "$GITHUB_OUTPUT"
           echo "$summary" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
