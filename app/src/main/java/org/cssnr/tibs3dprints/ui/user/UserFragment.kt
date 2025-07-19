@@ -52,9 +52,9 @@ class UserFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         countDownTimer?.cancel()
         countDownTimer = null
+        super.onDestroyView()
         _binding = null
     }
 
@@ -117,7 +117,7 @@ class UserFragment : Fragment() {
             if (poll != null) {
                 userViewModel.poll.value = poll
             } else {
-                binding.emptyLayout.visibility = View.VISIBLE
+                _binding?.emptyLayout?.visibility = View.VISIBLE
             }
 
             val userResponse = api.getUser()
