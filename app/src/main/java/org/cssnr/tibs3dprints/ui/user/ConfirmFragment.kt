@@ -16,6 +16,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
+import org.cssnr.tibs3dprints.MainActivity
 import org.cssnr.tibs3dprints.R
 import org.cssnr.tibs3dprints.api.ServerApi
 import org.cssnr.tibs3dprints.api.ServerApi.ErrorResponse
@@ -32,6 +33,7 @@ class ConfirmFragment : Fragment() {
     private lateinit var state: String
     private lateinit var email: String
 
+    private val navController by lazy { findNavController() }
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(requireContext()) }
 
     companion object {
@@ -66,9 +68,7 @@ class ConfirmFragment : Fragment() {
 
         binding.emailAddress.text = email
 
-        binding.goBackBtn.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        binding.goBackBtn.setOnClickListener { navController.navigateUp() }
 
         binding.loginButton.setOnClickListener {
             val code = binding.code.text.toString().trim()
@@ -125,12 +125,20 @@ class ConfirmFragment : Fragment() {
                         putString("name", loginResponse.name)
                     }
                     Toast.makeText(this@processCode, "Login Successful", Toast.LENGTH_LONG).show()
-                    val popUpTo = preferences.getInt("popUpTo", 0)
-                    Log.d("processCode", "popUpTo: $popUpTo")
-                    requireActivity().recreate()
-                    findNavController().navigate(
+
+                    // TODO: Navigation: Login: Cleanup this logic...
+                    //val popUpTo = preferences.getInt("popUpTo", 0)
+                    //Log.d("processCode", "popUpTo: $popUpTo")
+                    //Log.i("DEBUG", "RECREATE ACTIVITY")
+                    Log.i("DEBUG", "UPDATE NAVIGATION")
+                    val mainActivity = (requireActivity() as MainActivity)
+                    mainActivity.updateNavigation()
+                    mainActivity.recreate()
+
+                    Log.i("DEBUG", "NAVCONTROLLER NAVIGATE")
+                    navController.navigate(
                         R.id.nav_user, null, NavOptions.Builder()
-                            .setPopUpTo(popUpTo, true)
+                            .setPopUpTo(navController.graph.id, true)
                             .build()
                     )
                 } else {
