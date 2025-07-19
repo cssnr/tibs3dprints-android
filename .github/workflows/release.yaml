@@ -221,7 +221,6 @@ jobs:
           echo "$summary" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
-
       - name: "Generate Whats New"
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         run: |
