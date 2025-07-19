@@ -201,18 +201,29 @@ jobs:
           name: bundle
           path: ${{ env.aab_path }}
 
-      - name: "Parse Release Notes"
-        if: ${{ !github.event.release.prerelease }}
+      #- name: "Parse Release Notes"
+      #  if: ${{ !github.event.release.prerelease }}
+      #  id: notes
+      #  run: |
+      #    body="$(jq -r .release.body "$GITHUB_EVENT_PATH")"
+      #    summary="$(printf '%s\n' "$body" | awk 'NF==0{exit} /^\-/')"
+      #    echo "summary<<EOF" >> $GITHUB_OUTPUT
+      #    echo "$summary" >> $GITHUB_OUTPUT
+      #    echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: "Parse Release Notes 2"
+        if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         id: notes
         run: |
-          body="$(jq -r .release.body "$GITHUB_EVENT_PATH")"
-          summary="$(printf '%s\n' "$body" | awk 'NF==0{exit} /^\-/')"
-          echo "summary<<EOF" >> $GITHUB_OUTPUT
-          echo "$summary" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          body="${{ github.event.release.body }}"
+          summary=$(printf '%s' "$body" | awk 'BEGIN{found=0} /^#/ {found=1} !found{print}' | sed -Ez 's/^\n+|\n+$//g')
+          echo "summary<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$summary" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
 
       - name: "Generate Whats New"
-        if: ${{ !github.event.release.prerelease }}
+        if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         run: |
           mkdir -p whatsNew
           echo "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
