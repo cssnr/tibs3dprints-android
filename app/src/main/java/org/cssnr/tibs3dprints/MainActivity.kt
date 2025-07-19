@@ -418,26 +418,31 @@ class MainActivity : AppCompatActivity() {
         // TODO: Navigation: Logout: Cleanup this logic...
         updateNavigation()
         invalidateOptionsMenu()
-
-        when (navController.currentDestination?.id) {
-            R.id.nav_user, R.id.nav_poll -> {
-                Log.i(LOG_TAG, "logoutLocalUser: navigate: nav_home")
-                navController.navigate(
-                    R.id.nav_home, null, NavOptions.Builder()
-                        .setPopUpTo(navController.currentDestination?.id!!, true)
-                        .build()
-                )
-            }
-
-            else -> {
-                Log.i(LOG_TAG, "logoutLocalUser: navigate: currentDestination")
-                navController.navigate(
-                    navController.currentDestination!!.id, null, NavOptions.Builder()
-                        .setPopUpTo(navController.currentDestination?.id!!, true)
-                        .build()
-                )
-            }
-        }
+        // NOTE: Need to reset navigation here or else it gets out of sync...
+        navController.navigate(
+            R.id.nav_home, null, NavOptions.Builder()
+                .setPopUpTo(navController.graph.id, true)
+                .build()
+        )
+        //when (navController.currentDestination?.id) {
+        //    R.id.nav_user, R.id.nav_poll -> {
+        //        Log.i(LOG_TAG, "logoutLocalUser: navigate: nav_home")
+        //        navController.navigate(
+        //            R.id.nav_home, null, NavOptions.Builder()
+        //                .setPopUpTo(navController.currentDestination?.id!!, true)
+        //                .build()
+        //        )
+        //    }
+        //
+        //    else -> {
+        //        Log.i(LOG_TAG, "logoutLocalUser: navigate: currentDestination")
+        //        navController.navigate(
+        //            navController.currentDestination!!.id, null, NavOptions.Builder()
+        //                .setPopUpTo(R.id.nav_user, true)
+        //                .build()
+        //        )
+        //    }
+        //}
         Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show()
     }
 
