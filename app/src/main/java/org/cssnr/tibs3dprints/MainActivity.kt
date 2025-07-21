@@ -199,6 +199,23 @@ class MainActivity : AppCompatActivity() {
         Log.d(LOG_TAG, "versionName: $versionName")
 
         headerView = binding.navView.getHeaderView(0)
+
+        ////window.setNavigationBarColor(ContextCompat.getColor(this, android.R.attr.windowBackground))
+        //val background = binding.navView.background
+        //val color = when (background) {
+        //    is ColorDrawable -> background.color
+        //    else -> {
+        //        val typedValue = TypedValue()
+        //        theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        //        if (typedValue.resourceId != 0) ContextCompat.getColor(this, typedValue.resourceId) else typedValue.data
+        //    }
+        //}
+        //Log.d("NavBarColor", "color.toInt: $color")
+        //Log.d("NavBarColor", "color.toInt: ${color.toInt()}")
+        //Log.d("NavBarColor", "color.toUInt().toString: ${color.toUInt().toString(16)}")
+        ////window.navigationBarColor = color
+        //window.setNavigationBarColor(color)
+
         //val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
         //val formattedVersion = getString(R.string.version_string, versionName)
         //Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
