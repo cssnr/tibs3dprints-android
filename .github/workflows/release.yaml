@@ -215,8 +215,10 @@ jobs:
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         id: notes
         run: |
+          #body="$(jq -r .release.body "$GITHUB_EVENT_PATH")"
+          #summary=$(printf '%s' "$body" | awk '/^#/ {exit} {print}' | sed -Ez 's/^\n+|\n+$//g')
           body="${{ github.event.release.body }}"
-          summary=$(printf '%s' "$body" | awk '/^#/ {exit} {print}' | sed -Ez 's/^\n+|\n+$//g')
+          summary="$(echo "$body" | tr -d '\r' | sed ':a;N;$!ba;s/\n*$//')"
           echo "summary<<EOF" >> "$GITHUB_OUTPUT"
           echo "$summary" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -226,7 +228,12 @@ jobs:
         run: |
           mkdir -p whatsNew
           echo "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
+          echo "-------- raw -------"
           cat whatsNew/whatsnew-en-US
+          echo "-------- var -------"
+          echo "${{ steps.notes.outputs.summary }}" | od -c
+          echo "-------- cat -------"
+          cat whatsNew/whatsnew-en-US | od -c
 
       - name: "Upload Google Play"
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}

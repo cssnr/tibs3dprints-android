@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -164,16 +165,21 @@ class SetupFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Log.d("Setup[onStart]", "onStart - Hide UI")
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-        (activity as? MainActivity)?.setDrawerLockMode(false)
+        Log.i(LOG_TAG, "onStart - SetupFragment - Hide UI - Lock Drawer")
+        val mainActivity = (activity as? MainActivity)
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.GONE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.GONE
+        mainActivity?.setDrawerLockMode(false)
+        mainActivity?.setStatusDecor(true)
     }
 
     override fun onStop() {
-        Log.d("Setup[onStop]", "onStop - Show UI")
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
-            View.VISIBLE
-        (activity as? MainActivity)?.setDrawerLockMode(true)
+        Log.i(LOG_TAG, "onStop - SetupFragment - Show UI - Unlock Drawer")
+        val mainActivity = (activity as? MainActivity)
+        mainActivity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
+        mainActivity?.findViewById<BottomNavigationView>(R.id.bottom_nav)?.visibility = View.VISIBLE
+        mainActivity?.setDrawerLockMode(true)
+        mainActivity?.setStatusDecor(false)
         super.onStop()
     }
 }

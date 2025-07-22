@@ -4,7 +4,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -17,7 +20,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
-import androidx.core.view.WindowCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -51,8 +56,6 @@ import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var headerView: View
 
     private lateinit var navController: NavController
     private lateinit var navHostFragment: NavHostFragment
@@ -182,10 +185,6 @@ class MainActivity : AppCompatActivity() {
         // TODO: Determine why this is done here and add a NOTE
         binding.navView.menu.findItem(R.id.nav_user).isVisible = false
 
-        // Force White Status Bar Text in for Light Mode
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars =
-            false
-
         // Set Default Preferences
         Log.d(LOG_TAG, "Set Default Preferences")
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
@@ -194,11 +193,32 @@ class MainActivity : AppCompatActivity() {
         //Log.d(LOG_TAG, "Initialize Shared Preferences Listener")
         //preferences.registerOnSharedPreferenceChangeListener(changeListener)
 
-        val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
-        val versionName = packageInfo.versionName
-        Log.d(LOG_TAG, "versionName: $versionName")
+        // Update Status Bar
+        window.statusBarColor = Color.TRANSPARENT
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
-        headerView = binding.navView.getHeaderView(0)
+        // Update Navigation Bar
+        window.navigationBarColor = Color.TRANSPARENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.setNavigationBarContrastEnforced(false)
+        }
+
+        // Set Nav Header Top Padding
+        val headerView = binding.navView.getHeaderView(0)
+        ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
+            val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            if (paddingTop > 0) {
+                Log.d("ViewCompat", "paddingTop: $paddingTop")
+                view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
+            }
+            insets
+        }
+        ViewCompat.requestApplyInsets(headerView)
+
+        //// Update Header Text
+        //val packageInfo = packageManager.getPackageInfo(this.packageName, 0)
+        //val versionName = packageInfo.versionName
+        //Log.d(LOG_TAG, "versionName: $versionName")
         //val versionTextView = headerView.findViewById<TextView>(R.id.header_version)
         //val formattedVersion = getString(R.string.version_string, versionName)
         //Log.d(LOG_TAG, "formattedVersion: $formattedVersion")
@@ -595,5 +615,18 @@ class MainActivity : AppCompatActivity() {
             if (enabled) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
         Log.d("setDrawerLockMode", "lockMode: $lockMode")
         binding.drawerLayout.setDrawerLockMode(lockMode)
+    }
+
+    fun setStatusDecor(system: Boolean = false) {
+        Log.d("setStatusDecor", "system: $system")
+        val mode = if (system) {
+            val configMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            Log.d("setStatusDecor", "configMode: $configMode")
+            configMode == Configuration.UI_MODE_NIGHT_NO
+        } else {
+            false
+        }
+        Log.d("setStatusDecor", "mode: $mode")
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = mode
     }
 }

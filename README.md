@@ -25,8 +25,6 @@
 
 Android Application for Tibs3DPrints: https://tibs3dprints.com/
 
-- Supports Android 8 (API 26) 2017 or Newer.
-
 ## Install
 
 > [!TIP]  
@@ -48,6 +46,8 @@ Android Application for Tibs3DPrints: https://tibs3dprints.com/
 
 _Note: Until published on the play store, you may need to allow installation of apps from unknown sources._
 
+- Supports Android 8 (API 26) 2017 or Newer.
+
 Downloading and Installing the [apk](https://github.com/cssnr/tibs3dprints-android/releases/latest/download/app-release.apk)
 should take you to the settings area to allow installation if not already enabled.
 For more information, see [Release through a website](https://developer.android.com/studio/publish#publishing-website).
@@ -65,6 +65,19 @@ For more information, see [Release through a website](https://developer.android.
 7. The app is now installed.
 
 </details>
+
+## Support
+
+For general help or to request a feature, see:
+
+- Q&A Discussion: https://github.com/cssnr/tibs3dprints-android/discussions/categories/q-a
+- Request a Feature: https://github.com/cssnr/tibs3dprints-android/discussions/categories/feature-requests
+
+If you are experiencing an issue/bug or getting unexpected results, you can:
+
+- Report an Issue: https://github.com/cssnr/tibs3dprints-android/issues
+- Chat with us on Discord: https://discord.gg/wXy6m2X8wY
+- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Tibs3DPrints%20Android%20App)
 
 # Development
 
@@ -159,19 +172,6 @@ $ adb -s RF9M33Z1Q0M install app-release-unsigned.apk
 _Note: you may have to uninstall before installing due to different certificate signatures._
 
 For more details, see the [ADB Documentation](https://developer.android.com/tools/adb#move).
-
-# Support
-
-For general help or to request a feature, see:
-
-- Q&A Discussion: https://github.com/cssnr/tibs3dprints-android/discussions/categories/q-a
-- Request a Feature: https://github.com/cssnr/tibs3dprints-android/discussions/categories/feature-requests
-
-If you are experiencing an issue/bug or getting unexpected results, you can:
-
-- Report an Issue: https://github.com/cssnr/tibs3dprints-android/issues
-- Chat with us on Discord: https://discord.gg/wXy6m2X8wY
-- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Tibs3DPrints%20Android%20App)
 
 # Contributing
 
