@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:theme="@style/Theme.Tibs3DPrints"
     tools:context=".ui.setup.SetupFragment">
 
@@ -16,10 +17,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_layout">
+        app:layout_constraintBottom_toBottomOf="parent">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="56dp"
             tools:ignore="ScrollViewSize">
             <LinearLayout
                 android:id="@+id/linear_layout"
@@ -202,7 +204,7 @@
             android:textColor="?attr/colorPrimary"
             android:text="Skip Tutorial"
             app:strokeColor="?attr/colorPrimary"
-            app:backgroundTint="@android:color/transparent"
+            app:backgroundTint="?attr/colorSurface"
             app:strokeWidth="3dp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,48 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="56dp"
-    android:paddingBottom="8dp"
-    android:background="?attr/colorSurfaceContainer">
+    android:background="@color/ic_launcher_background"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
         android:gravity="center"
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables,UselessParent">
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:padding="12dp"
-            android:background="@drawable/image_border">
-            <ImageView
-                android:id="@+id/header_image"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/app_name"
-                app:srcCompat="@drawable/logo" />
-        </FrameLayout>
+        <!--<FrameLayout-->
+        <!--    android:layout_width="wrap_content"-->
+        <!--    android:layout_height="wrap_content"-->
+        <!--    android:layout_marginBottom="8dp"-->
+        <!--    android:padding="12dp"-->
+        <!--    android:background="@drawable/image_border">-->
+        <!--    <ImageView-->
+        <!--        android:id="@+id/header_image"-->
+        <!--        android:layout_width="96dp"-->
+        <!--        android:layout_height="96dp"-->
+        <!--        android:contentDescription="@string/app_name"-->
+        <!--        app:srcCompat="@drawable/logo" />-->
+        <ImageView
+            android:id="@+id/header_image"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/logo" />
+        <!--</FrameLayout>-->
         <TextView
             android:id="@+id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
-
-    <!--<TextView-->
-    <!--    android:id="@+id/header_version"-->
-    <!--    android:layout_width="wrap_content"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:layout_gravity="bottom"-->
-    <!--    android:layout_marginStart="12dp"-->
-    <!--    android:layout_marginBottom="1dp"-->
-    <!--    tools:text="v0.0.1-dev" />-->
 
 </LinearLayout>
