@@ -218,7 +218,7 @@ jobs:
           #body="$(jq -r .release.body "$GITHUB_EVENT_PATH")"
           #summary=$(printf '%s' "$body" | awk '/^#/ {exit} {print}' | sed -Ez 's/^\n+|\n+$//g')
           body="${{ github.event.release.body }}"
-          summary="$(echo -n "${body%%#*}" | sed ':a;N;$!ba;s/\n*$//')"
+          summary="$(echo "$body" | tr -d '\r' | sed ':a;N;$!ba;s/\n*$//')"
           echo "summary<<EOF" >> "$GITHUB_OUTPUT"
           echo "$summary" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
