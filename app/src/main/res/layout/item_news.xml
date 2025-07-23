@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="2dp"
+        android:paddingHorizontal="4dp"
         android:background="@drawable/item_border">
 
         <TextView
