@@ -11,6 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestPermissi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -58,6 +61,19 @@ class SetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "onViewCreated: ${savedInstanceState?.size()}")
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            Log.i("Setup[ViewCompat]", "bars: $bars")
+            binding.bottomLayout.updatePadding(bottom = bars.bottom)
+            binding.linearLayout.updatePadding(top = bars.top + 12)
+            insets
+        }
+
+        binding.bottomLayout.post {
+            Log.i("Setup[bottomLayout]", "post: bottom = ${binding.bottomLayout.height}")
+            binding.linearLayout.updatePadding(bottom = binding.bottomLayout.height + 12)
+        }
 
         val ctx = requireContext()
 
