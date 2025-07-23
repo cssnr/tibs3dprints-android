@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
@@ -101,6 +102,10 @@ class ConfirmFragment : Fragment() {
 
         if (code.isEmpty()) {
             binding.code.error = "Required"
+            binding.loginButton.isEnabled = true
+            return
+        } else if (code.length < 4 || !code.isDigitsOnly()) {
+            binding.code.error = "Invalid"
             binding.loginButton.isEnabled = true
             return
         }
