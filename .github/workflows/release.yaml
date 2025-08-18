@@ -217,13 +217,7 @@ jobs:
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
         run: |
           mkdir -p whatsNew
-          echo "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
-          echo "-------- raw -------"
-          cat whatsNew/whatsnew-en-US
-          echo "-------- var -------"
-          echo "${{ steps.notes.outputs.summary }}" | od -c
-          echo "-------- cat -------"
-          cat whatsNew/whatsnew-en-US | od -c
+          echo -n "${{ steps.notes.outputs.summary }}" > whatsNew/whatsnew-en-US
 
       - name: "Upload Google Play"
         if: ${{ github.event_name == 'release' && !github.event.release.prerelease }}
