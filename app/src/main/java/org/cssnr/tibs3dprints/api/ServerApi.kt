@@ -21,7 +21,7 @@ import retrofit2.http.POST
 class ServerApi(val context: Context) {
 
     val api: ApiService
-    val retrofit: Retrofit = createRetrofit()
+    val retrofit: Retrofit
 
     val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
     val userAgent = "${context.packageName}/${versionName}"
@@ -30,6 +30,7 @@ class ServerApi(val context: Context) {
             ?: ""
 
     init {
+        retrofit = createRetrofit()
         api = retrofit.create(ApiService::class.java)
     }
 
