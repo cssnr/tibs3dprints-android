@@ -136,9 +136,10 @@ class ConfirmFragment : Fragment() {
                     //Log.d("processCode", "popUpTo: $popUpTo")
                     //Log.i("DEBUG", "RECREATE ACTIVITY")
                     Log.i("DEBUG", "UPDATE NAVIGATION")
+                    // TODO: Use a ViewModel..........
                     val mainActivity = (requireActivity() as MainActivity)
                     mainActivity.updateNavigation()
-                    mainActivity.recreate()
+                    //mainActivity.recreate()
 
                     Log.i("DEBUG", "NAVCONTROLLER NAVIGATE")
                     navController.navigate(

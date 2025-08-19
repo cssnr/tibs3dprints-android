@@ -45,12 +45,6 @@ class NewsItemFragment : Fragment() {
         viewPager.setCurrentItem(position ?: 0, false)
     }
 
-    override fun onPause() {
-        super.onPause()
-        //newsViewModel.position.value = binding.pager.currentItem
-        //Log.i(LOG_TAG, "onPause: position: ${homeViewModel.position.value}")
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
