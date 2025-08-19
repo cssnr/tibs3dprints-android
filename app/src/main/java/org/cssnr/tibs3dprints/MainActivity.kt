@@ -212,17 +212,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-//        // Set Nav Header Top Padding
-//        val headerView = binding.navView.getHeaderView(0)
-//        ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
-//            val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-//            if (paddingTop > 0) {
-//                Log.d("ViewCompat", "paddingTop: $paddingTop")
-//                view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
-//            }
-//            insets
-//        }
-//        ViewCompat.requestApplyInsets(headerView)
+        //// Set Nav Header Top Padding
+        //val headerView = binding.navView.getHeaderView(0)
+        //ViewCompat.setOnApplyWindowInsetsListener(headerView) { view, insets ->
+        //    val paddingTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+        //    if (paddingTop > 0) {
+        //        Log.d("ViewCompat", "paddingTop: $paddingTop")
+        //        view.setPadding(view.paddingLeft, paddingTop, view.paddingRight, view.paddingBottom)
+        //    }
+        //    insets
+        //}
+        //ViewCompat.requestApplyInsets(headerView)
 
         // Update Header Padding
         val headerView = binding.navView.getHeaderView(0)
